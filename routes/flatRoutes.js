@@ -1,0 +1,136 @@
+const express = require("express");
+const router = express.Router();
+const controller = require("../controllers/flatController");
+
+/**
+ * @swagger
+ * tags:
+ *   name: Flat
+ */
+
+
+/* ======================= GET ALL ======================= */
+/**
+ * @swagger
+ * /FlatMaster/GetAllFlat:
+ *   get:
+ *     summary: Get all flats
+ *     tags: [Flat]
+ *     responses:
+ *       200:
+ *         description: Flat list
+ */
+router.get("/FlatMaster/GetAllFlat", controller.getAll);
+
+
+/* ======================= GET BY ID ======================= */
+/**
+ * @swagger
+ * /FlatMaster/GetFlatById/{id}:
+ *   get:
+ *     summary: Get flat by ID
+ *     tags: [Flat]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Flat details
+ */
+router.get("/FlatMaster/GetFlatById/:id", controller.getById);
+
+
+/* ======================= CREATE ======================= */
+/**
+ * @swagger
+ * /FlatMaster/CreateFlat:
+ *   post:
+ *     summary: Create flat
+ *     tags: [Flat]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               Block_Id:
+ *                 type: integer
+ *               Flat_Number:
+ *                 type: string
+ *               Floor_Number:
+ *                 type: integer
+ *               Flat_Type:
+ *                 type: string
+ *               Area:
+ *                 type: number
+ *                 format: float
+ *               Status:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Flat created successfully
+ */
+router.post("/FlatMaster/CreateFlat", controller.create);
+
+
+/* ======================= UPDATE ======================= */
+/**
+ * @swagger
+ * /FlatMaster/UpdateFlat:
+ *   put:
+ *     summary: Update flat
+ *     tags: [Flat]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               Flat_Id:
+ *                 type: integer
+ *               Block_Id:
+ *                 type: integer
+ *               Flat_Number:
+ *                 type: string
+ *               Floor_Number:
+ *                 type: integer
+ *               Flat_Type:
+ *                 type: string
+ *               Area:
+ *                 type: number
+ *                 format: float
+ *               Status:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Flat updated successfully
+ */
+router.put("/FlatMaster/UpdateFlat", controller.update);
+
+
+/* ======================= DELETE ======================= */
+/**
+ * @swagger
+ * /FlatMaster/DeleteFlat/{id}:
+ *   delete:
+ *     summary: Delete flat
+ *     tags: [Flat]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Flat deleted successfully
+ */
+router.delete("/FlatMaster/DeleteFlat/:id", controller.remove);
+
+
+module.exports = router;
