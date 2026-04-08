@@ -59,9 +59,22 @@ const remove = asyncHandler(async (req, res) => {
     return APIResponse.send(res, response);
 });
 
+// GET: api/BlockMaster/GetBlockBySociety/1
+const getBySociety = asyncHandler(async (req, res) => {
+    const societyId = parseInt(req.params.societyId);
+
+    const data = await blockService.getBySociety(societyId);
+
+    const response = APIResponse.emptyOr404(data);
+
+    return APIResponse.send(res, response);
+});
+
+
 module.exports = {
     getAll,
     getById,
+    getBySociety,
     create,
     update,
     remove

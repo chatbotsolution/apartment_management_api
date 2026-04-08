@@ -67,6 +67,8 @@ router.get("/SocietyMaster/GetSocietyById/:id", controller.getById);
  *                 type: string
  *               Pincode:
  *                 type: string
+ *               Created_By:
+ *                 type: integer
  *     responses:
  *       200:
  *         description: Society created successfully
@@ -100,6 +102,8 @@ router.post("/SocietyMaster/CreateSociety", controller.create);
  *                 type: string
  *               Pincode:
  *                 type: string
+ *               Created_By:
+ *                 type: integer
  *     responses:
  *       200:
  *         description: Society updated successfully
