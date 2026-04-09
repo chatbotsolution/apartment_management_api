@@ -2,7 +2,7 @@ const db = require("../config/db");
 
 const getAll = async () => {
     const [rows] = await db.query(
-        "CALL SP_Parking(?, NULL, NULL, NULL, NULL, NULL, NULL)",
+        "CALL SP_Parking(?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
         ["GET_ALL"]
     );
     return rows[0];
@@ -10,7 +10,7 @@ const getAll = async () => {
 
 const getById = async (id) => {
     const [rows] = await db.query(
-        "CALL SP_Parking(?, ?, NULL, NULL, NULL, NULL, NULL)",
+        "CALL SP_Parking(?, ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
         ["GET_BY_ID", id]
     );
     return rows[0];
@@ -18,7 +18,7 @@ const getById = async (id) => {
 
 const getByFlat = async (flatId) => {
     const [rows] = await db.query(
-        "CALL SP_Parking(?, NULL, ?, NULL, NULL, NULL, NULL)",
+        "CALL SP_Parking(?, NULL, ?, NULL, NULL, NULL, NULL, NULL, NULL)",
         ["GET_BY_FLAT", flatId]
     );
     return rows[0];
@@ -27,21 +27,22 @@ const getByFlat = async (flatId) => {
 const create = async (data) => {
     console.log("Parking Data = ", data);
 
-    const { Flat_Id, Vehicle_Number, Vehicle_Type, Parking_Slot } = data;
+    const { Flat_Id, Vehicle_Number, Vehicle_Type, parkingId, createdBy  } = data;
 
     const [rows] = await db.query(
-        "CALL SP_Parking(?, NULL, ?, ?, ?, ?, NULL)",
+        "CALL SP_Parking(?, NULL, ?, ?, ?, ?, NULL, ?, NULL)",
         [
             "INSERT",
             Flat_Id,
             Vehicle_Number,
             Vehicle_Type,
-            Parking_Slot
+            parkingId,
+            createdBy
         ]
     );
 
     if (!rows || !rows[0] || !rows[0][0]) {
-        return { message: "Insert failed or no response from DB" };
+        return {ParkingAllot_Id: 0, message: "Insert failed or no response from DB" };
     }
 
     return rows[0][0];
@@ -49,24 +50,26 @@ const create = async (data) => {
 
 const update = async (data) => {
     const {
-        Parking_Id,
+        ParkingAllot_Id,
         Flat_Id,
         Vehicle_Number,
         Vehicle_Type,
-        Parking_Slot,
-        Is_Active
+        parkingId,
+        isActive,
+        updatedBy 
     } = data;
 
     const [rows] = await db.query(
-        "CALL SP_Parking(?, ?, ?, ?, ?, ?, ?)",
+        "CALL SP_Parking(?, ?, ?, ?, ?, ?, ?, NULL, ?)",
         [
             "UPDATE",
-            Parking_Id,
+            ParkingAllot_Id,
             Flat_Id,
             Vehicle_Number,
             Vehicle_Type,
-            Parking_Slot,
-            Is_Active
+            parkingId,
+            isActive,
+            updatedBy
         ]
     );
 
@@ -75,7 +78,7 @@ const update = async (data) => {
 
 const remove = async (id) => {
     const [rows] = await db.query(
-        "CALL SP_Parking(?, ?, NULL, NULL, NULL, NULL, NULL)",
+        "CALL SP_Parking(?, ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
         ["DELETE", id]
     );
 

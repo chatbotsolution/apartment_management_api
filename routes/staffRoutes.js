@@ -8,7 +8,6 @@ const controller = require("../controllers/staffController");
  *   name: Staff Master
  */
 
-
 /* ======================= GET ALL ======================= */
 /**
  * @swagger
@@ -21,7 +20,6 @@ const controller = require("../controllers/staffController");
  *         description: Staff list
  */
 router.get("/StaffMaster/GetAllStaff", controller.getAll);
-
 
 /* ======================= GET BY ID ======================= */
 /**
@@ -42,7 +40,6 @@ router.get("/StaffMaster/GetAllStaff", controller.getAll);
  */
 router.get("/StaffMaster/GetStaffById/:id", controller.getById);
 
-
 /* ======================= CREATE ======================= */
 /**
  * @swagger
@@ -59,18 +56,19 @@ router.get("/StaffMaster/GetStaffById/:id", controller.getById);
  *             properties:
  *               Name:
  *                 type: string
- *               Role:
- *                 type: string
+ *               staffTypeId:
+ *                 type: integer
  *               Mobile:
  *                 type: string
  *               Shift:
- *                 type: string
+ *                 type: integer
+ *               Created_By:
+ *                 type: integer
  *     responses:
  *       200:
  *         description: Staff created successfully
  */
 router.post("/StaffMaster/CreateStaff", controller.create);
-
 
 /* ======================= UPDATE ======================= */
 /**
@@ -90,12 +88,12 @@ router.post("/StaffMaster/CreateStaff", controller.create);
  *                 type: integer
  *               Name:
  *                 type: string
- *               Role:
- *                 type: string
+ *               staffTypeId:
+ *                 type: integer
  *               Mobile:
  *                 type: string
  *               Shift:
- *                 type: string
+ *                 type: integer
  *               Is_Active:
  *                 type: integer
  *     responses:
@@ -103,7 +101,6 @@ router.post("/StaffMaster/CreateStaff", controller.create);
  *         description: Staff updated successfully
  */
 router.put("/StaffMaster/UpdateStaff", controller.update);
-
 
 /* ======================= DELETE ======================= */
 /**

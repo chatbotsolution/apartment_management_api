@@ -2,7 +2,7 @@ const db = require("../config/db");
 
 const getAll = async () => {
     const [rows] = await db.query(
-        "CALL SP_Staff(?, NULL, NULL, NULL, NULL, NULL, NULL)",
+        "CALL SP_Staff(?, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
         ["GET_ALL"]
     );
     return rows[0];
@@ -10,7 +10,7 @@ const getAll = async () => {
 
 const getById = async (id) => {
     const [rows] = await db.query(
-        "CALL SP_Staff(?, ?, NULL, NULL, NULL, NULL, NULL)",
+        "CALL SP_Staff(?, ?, NULL, NULL, NULL, NULL, NULL, NULL)",
         ["GET_BY_ID", id]
     );
     return rows[0];
@@ -19,16 +19,17 @@ const getById = async (id) => {
 const create = async (data) => {
     console.log("Staff Data = ", data);
 
-    const { Name, Role, Mobile, Shift } = data;
+    const { Name, staffTypeId, Mobile, Shift, createdBy } = data;
 
     const [rows] = await db.query(
-        "CALL SP_Staff(?, NULL, ?, ?, ?, ?, NULL)",
+        "CALL SP_Staff(?, NULL, ?, ?, ?, ?, NULL, ?)",
         [
             "INSERT",
             Name,
-            Role,
+            staffTypeId,
             Mobile,
-            Shift
+            Shift,
+            createdBy
         ]
     );
 
@@ -40,15 +41,15 @@ const create = async (data) => {
 };
 
 const update = async (data) => {
-    const { Staff_Id, Name, Role, Mobile, Shift, Is_Active } = data;
+    const { Staff_Id, Name, staffTypeId, Mobile, Shift, Is_Active } = data;
 
     const [rows] = await db.query(
-        "CALL SP_Staff(?, ?, ?, ?, ?, ?, ?)",
+        "CALL SP_Staff(?, ?, ?, ?, ?, ?, ?, NULL)",
         [
             "UPDATE",
             Staff_Id,
             Name,
-            Role,
+            staffTypeId,
             Mobile,
             Shift,
             Is_Active
@@ -60,7 +61,7 @@ const update = async (data) => {
 
 const remove = async (id) => {
     const [rows] = await db.query(
-        "CALL SP_Staff(?, ?, NULL, NULL, NULL, NULL, NULL)",
+        "CALL SP_Staff(?, ?, NULL, NULL, NULL, NULL, NULL, NULL)",
         ["DELETE", id]
     );
 

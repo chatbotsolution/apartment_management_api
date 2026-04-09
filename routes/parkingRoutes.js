@@ -8,7 +8,6 @@ const controller = require("../controllers/parkingController");
  *   name: Parking 
  */
 
-
 /* ======================= GET ALL ======================= */
 /**
  * @swagger
@@ -21,7 +20,6 @@ const controller = require("../controllers/parkingController");
  *         description: Parking list
  */
 router.get("/Parking/GetAllParking", controller.getAll);
-
 
 /* ======================= GET BY ID ======================= */
 /**
@@ -42,7 +40,6 @@ router.get("/Parking/GetAllParking", controller.getAll);
  */
 router.get("/Parking/GetParkingById/:id", controller.getById);
 
-
 /* ======================= GET BY FLAT ======================= */
 /**
  * @swagger
@@ -61,7 +58,6 @@ router.get("/Parking/GetParkingById/:id", controller.getById);
  *         description: Parking list for a flat
  */
 router.get("/Parking/GetParkingByFlat/:flatId", controller.getByFlat);
-
 
 /* ======================= CREATE ======================= */
 /**
@@ -83,14 +79,15 @@ router.get("/Parking/GetParkingByFlat/:flatId", controller.getByFlat);
  *                 type: string
  *               Vehicle_Type:
  *                 type: string
- *               Parking_Slot:
- *                 type: string
+ *               parkingId:
+ *                 type: integer
+ *               createdBy:
+ *                 type: integer
  *     responses:
  *       200:
  *         description: Parking created successfully
  */
 router.post("/Parking/CreateParking", controller.create);
-
 
 /* ======================= UPDATE ======================= */
 /**
@@ -106,7 +103,7 @@ router.post("/Parking/CreateParking", controller.create);
  *           schema:
  *             type: object
  *             properties:
- *               Parking_Id:
+ *               ParkingAllot_Id:
  *                 type: integer
  *               Flat_Id:
  *                 type: integer
@@ -114,16 +111,17 @@ router.post("/Parking/CreateParking", controller.create);
  *                 type: string
  *               Vehicle_Type:
  *                 type: string
- *               Parking_Slot:
- *                 type: string
- *               Is_Active:
+ *               parkingId:
+ *                 type: integer
+ *               isActive:
+ *                 type: integer
+ *               updatedBy:
  *                 type: integer
  *     responses:
  *       200:
  *         description: Parking updated successfully
  */
 router.put("/Parking/UpdateParking", controller.update);
-
 
 /* ======================= DELETE ======================= */
 /**

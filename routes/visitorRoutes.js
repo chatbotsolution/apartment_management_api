@@ -8,7 +8,6 @@ const controller = require("../controllers/visitorController");
  *   name: Visitor Master
  */
 
-
 /* ======================= GET ALL ======================= */
 /**
  * @swagger
@@ -21,7 +20,6 @@ const controller = require("../controllers/visitorController");
  *         description: Visitor list
  */
 router.get("/VisitorMaster/GetAllVisitor", controller.getAll);
-
 
 /* ======================= GET BY ID ======================= */
 /**
@@ -42,7 +40,6 @@ router.get("/VisitorMaster/GetAllVisitor", controller.getAll);
  */
 router.get("/VisitorMaster/GetVisitorById/:id", controller.getById);
 
-
 /* ======================= GET BY FLAT ======================= */
 /**
  * @swagger
@@ -61,7 +58,6 @@ router.get("/VisitorMaster/GetVisitorById/:id", controller.getById);
  *         description: Visitor list for a flat
  */
 router.get("/VisitorMaster/GetVisitorByFlat/:flatId", controller.getByFlat);
-
 
 /* ======================= CREATE ======================= */
 /**
@@ -87,12 +83,13 @@ router.get("/VisitorMaster/GetVisitorByFlat/:flatId", controller.getByFlat);
  *                 type: string
  *               Purpose:
  *                 type: string
+ *               createdBy:
+ *                 type: integer
  *     responses:
  *       200:
  *         description: Visitor created successfully
  */
 router.post("/VisitorMaster/CreateVisitor", controller.create);
-
 
 /* ======================= UPDATE ======================= */
 /**
@@ -123,7 +120,6 @@ router.post("/VisitorMaster/CreateVisitor", controller.create);
  *         description: Visitor updated successfully
  */
 router.put("/VisitorMaster/UpdateVisitor", controller.update);
-
 
 /* ======================= EXIT ======================= */
 /**
