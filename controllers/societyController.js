@@ -14,7 +14,7 @@ const getById = asyncHandler(async (req, res) => {
 });
 
 const create = asyncHandler(async (req, res) => {
-    console.log("Request data = ", req.body);
+    //console.log("Request data = ", req.body);
     const result = await societyService.create(req.body);
     if (result.Society_Id === 0) {
         const response = APIResponse.badRequestResponse(result);

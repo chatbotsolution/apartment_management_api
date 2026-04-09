@@ -5,31 +5,31 @@ const controller = require("../controllers/parkingController");
 /**
  * @swagger
  * tags:
- *   name: Parking Master
+ *   name: Parking 
  */
 
 
 /* ======================= GET ALL ======================= */
 /**
  * @swagger
- * /ParkingMaster/GetAllParking:
+ * /Parking/GetAllParking:
  *   get:
  *     summary: Get all parking records
- *     tags: [Parking Master]
+ *     tags: [Parking]
  *     responses:
  *       200:
  *         description: Parking list
  */
-router.get("/ParkingMaster/GetAllParking", controller.getAll);
+router.get("/Parking/GetAllParking", controller.getAll);
 
 
 /* ======================= GET BY ID ======================= */
 /**
  * @swagger
- * /ParkingMaster/GetParkingById/{id}:
+ * /Parking/GetParkingById/{id}:
  *   get:
  *     summary: Get parking by ID
- *     tags: [Parking Master]
+ *     tags: [Parking]
  *     parameters:
  *       - in: path
  *         name: id
@@ -40,16 +40,16 @@ router.get("/ParkingMaster/GetAllParking", controller.getAll);
  *       200:
  *         description: Parking details
  */
-router.get("/ParkingMaster/GetParkingById/:id", controller.getById);
+router.get("/Parking/GetParkingById/:id", controller.getById);
 
 
 /* ======================= GET BY FLAT ======================= */
 /**
  * @swagger
- * /ParkingMaster/GetParkingByFlat/{flatId}:
+ * /Parking/GetParkingByFlat/{flatId}:
  *   get:
  *     summary: Get parking by Flat ID
- *     tags: [Parking Master]
+ *     tags: [Parking]
  *     parameters:
  *       - in: path
  *         name: flatId
@@ -60,16 +60,16 @@ router.get("/ParkingMaster/GetParkingById/:id", controller.getById);
  *       200:
  *         description: Parking list for a flat
  */
-router.get("/ParkingMaster/GetParkingByFlat/:flatId", controller.getByFlat);
+router.get("/Parking/GetParkingByFlat/:flatId", controller.getByFlat);
 
 
 /* ======================= CREATE ======================= */
 /**
  * @swagger
- * /ParkingMaster/CreateParking:
+ * /Parking/CreateParking:
  *   post:
  *     summary: Create parking
- *     tags: [Parking Master]
+ *     tags: [Parking]
  *     requestBody:
  *       required: true
  *       content:
@@ -89,16 +89,16 @@ router.get("/ParkingMaster/GetParkingByFlat/:flatId", controller.getByFlat);
  *       200:
  *         description: Parking created successfully
  */
-router.post("/ParkingMaster/CreateParking", controller.create);
+router.post("/Parking/CreateParking", controller.create);
 
 
 /* ======================= UPDATE ======================= */
 /**
  * @swagger
- * /ParkingMaster/UpdateParking:
+ * /Parking/UpdateParking:
  *   put:
  *     summary: Update parking
- *     tags: [Parking Master]
+ *     tags: [Parking]
  *     requestBody:
  *       required: true
  *       content:
@@ -122,16 +122,16 @@ router.post("/ParkingMaster/CreateParking", controller.create);
  *       200:
  *         description: Parking updated successfully
  */
-router.put("/ParkingMaster/UpdateParking", controller.update);
+router.put("/Parking/UpdateParking", controller.update);
 
 
 /* ======================= DELETE ======================= */
 /**
  * @swagger
- * /ParkingMaster/DeleteParking/{id}:
+ * /Parking/DeleteParking/{id}:
  *   delete:
  *     summary: Delete parking
- *     tags: [Parking Master]
+ *     tags: [Parking]
  *     parameters:
  *       - in: path
  *         name: id
@@ -142,6 +142,6 @@ router.put("/ParkingMaster/UpdateParking", controller.update);
  *       200:
  *         description: Parking deleted successfully
  */
-router.delete("/ParkingMaster/DeleteParking/:id", controller.remove);
+router.delete("/Parking/DeleteParking/:id", controller.remove);
 
 module.exports = router;
