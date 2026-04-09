@@ -6,6 +6,7 @@ const controller = require("../controllers/memberController");
  * @swagger
  * tags:
  *   name: Member
+ *   description: Member management APIs
  */
 
 
@@ -18,7 +19,7 @@ const controller = require("../controllers/memberController");
  *     tags: [Member]
  *     responses:
  *       200:
- *         description: Member list
+ *         description: Member list retrieved successfully
  */
 router.get("/Member/GetAllMember", controller.getAll);
 
@@ -32,7 +33,7 @@ router.get("/Member/GetAllMember", controller.getAll);
  *     tags: [Member]
  *     responses:
  *       200:
- *         description: Active member list
+ *         description: Active member list retrieved
  */
 router.get("/Member/GetActiveMember", controller.getActive);
 
@@ -52,7 +53,7 @@ router.get("/Member/GetActiveMember", controller.getActive);
  *           type: integer
  *     responses:
  *       200:
- *         description: Member details
+ *         description: Member details retrieved
  */
 router.get("/Member/GetMemberById/:id", controller.getById);
 
@@ -62,7 +63,7 @@ router.get("/Member/GetMemberById/:id", controller.getById);
  * @swagger
  * /Member/GetMemberByFlat/{flatId}:
  *   get:
- *     summary: Get members by Flat ID
+ *     summary: Get members by flat ID
  *     tags: [Member]
  *     parameters:
  *       - in: path
@@ -72,7 +73,7 @@ router.get("/Member/GetMemberById/:id", controller.getById);
  *           type: integer
  *     responses:
  *       200:
- *         description: Members of a flat
+ *         description: Members list for given flat
  */
 router.get("/Member/GetMemberByFlat/:flatId", controller.getByFlat);
 
@@ -103,6 +104,8 @@ router.get("/Member/GetMemberByFlat/:flatId", controller.getByFlat);
  *               Move_Out_Date:
  *                 type: string
  *                 format: date
+ *               maintainance_head_id:
+ *                 type: string
  *     responses:
  *       200:
  *         description: Member created successfully
@@ -140,6 +143,8 @@ router.post("/Member/CreateMember", controller.create);
  *                 format: date
  *               Is_Active:
  *                 type: boolean
+ *               maintainance_head_id:
+ *                 type: string
  *     responses:
  *       200:
  *         description: Member updated successfully

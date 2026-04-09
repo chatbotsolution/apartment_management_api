@@ -2,47 +2,31 @@ const flatService = require("../services/flat.service");
 const APIResponse = require("../utils/response");
 const asyncHandler = require("../middlewares/async.middleware");
 
-// GET ALL
 const getAll = asyncHandler(async (req, res) => {
     const data = await flatService.getAll();
-    const response = APIResponse.emptyOr404(data);
-    return APIResponse.send(res, response);
+    return APIResponse.send(res, APIResponse.emptyOr404(data));
 });
 
-// GET BY ID
 const getById = asyncHandler(async (req, res) => {
     const id = parseInt(req.params.id);
     const data = await flatService.getById(id);
-    const response = APIResponse.emptyOr404(data);
-    return APIResponse.send(res, response);
+    return APIResponse.send(res, APIResponse.emptyOr404(data));
 });
 
-// CREATE
 const create = asyncHandler(async (req, res) => {
     const result = await flatService.create(req.body);
-    const response = APIResponse.successResponse(result);
-    return APIResponse.send(res, response);
+    return APIResponse.send(res, APIResponse.successResponse(result));
 });
 
-// UPDATE
 const update = asyncHandler(async (req, res) => {
     const result = await flatService.update(req.body);
-    const response = APIResponse.successResponse(result);
-    return APIResponse.send(res, response);
+    return APIResponse.send(res, APIResponse.successResponse(result));
 });
 
-// DELETE
 const remove = asyncHandler(async (req, res) => {
     const id = parseInt(req.params.id);
     const result = await flatService.delete(id);
-    const response = APIResponse.successResponse(result);
-    return APIResponse.send(res, response);
+    return APIResponse.send(res, APIResponse.successResponse(result));
 });
 
-module.exports = {
-    getAll,
-    getById,
-    create,
-    update,
-    remove
-};
+module.exports = { getAll, getById, create, update, remove };
