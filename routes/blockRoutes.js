@@ -43,6 +43,26 @@ router.get("/BlockMaster/GetAllBlock", controller.getAll);
 router.get("/BlockMaster/GetBlockById/:id", controller.getById);
 
 
+/* ======================= GET BY SOCIETY ======================= */
+/**
+ * @swagger
+ * /BlockMaster/GetBlockBySociety/{societyId}:
+ *   get:
+ *     summary: Get blocks by Society ID
+ *     tags: [Block Master]
+ *     parameters:
+ *       - in: path
+ *         name: societyId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Block list for society
+ */
+router.get("/BlockMaster/GetBlockBySociety/:societyId", controller.getBySociety);
+
+
 /* ======================= CREATE ======================= */
 /**
  * @swagger
@@ -62,6 +82,8 @@ router.get("/BlockMaster/GetBlockById/:id", controller.getById);
  *               Block_Name:
  *                 type: string
  *               Total_Floors:
+ *                 type: integer
+ *               Created_By:
  *                 type: integer
  *     responses:
  *       200:
@@ -91,6 +113,8 @@ router.post("/BlockMaster/CreateBlock", controller.create);
  *               Block_Name:
  *                 type: string
  *               Total_Floors:
+ *                 type: integer
+ *               Created_By:
  *                 type: integer
  *     responses:
  *       200:

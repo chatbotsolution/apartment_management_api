@@ -28,6 +28,12 @@ const create = asyncHandler(async (req, res) => {
 
 const update = asyncHandler(async (req, res) => {
     const result = await societyService.update(req.body);
+
+    if (result.Society_Id === 0) {
+        const response = APIResponse.badRequestResponse(result);
+        return APIResponse.send(res, response);
+    }
+
     return APIResponse.send(res, APIResponse.successResponse(result));
 });
 
