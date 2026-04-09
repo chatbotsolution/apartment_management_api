@@ -20,6 +20,14 @@ const getByFlat = asyncHandler(async (req, res) => {
 });
 
 const create = asyncHandler(async (req, res) => {
+
+     // ensure Created_By is passed
+    if (!req.body.createdBy) {
+        return APIResponse.send(
+            res,
+            APIResponse.badRequestResponse({ message: "createdBy is required" })
+        );
+    }
     const result = await visitorService.create(req.body);
 
     if (result.Visitor_Id === 0) {
