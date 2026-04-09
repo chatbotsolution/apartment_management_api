@@ -1,11 +1,11 @@
 const db = require("../config/db");
 
 /**
- * Service to handle Payment operations using stored procedure SP_Payments.
+ * Service to handle Transaction operations using stored procedure sp_Transactions.
  */
 const getAll = async () => {
     const [rows] = await db.query(
-        "CALL SP_Payments(?, NULL, NULL, NULL, NULL, NULL, NULL)",
+        "CALL sp_Transactions(?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
         ["GET_ALL"]
     );
     return rows[0];
@@ -13,38 +13,46 @@ const getAll = async () => {
 
 const getById = async (id) => {
     const [rows] = await db.query(
-        "CALL SP_Payments(?, ?, NULL, NULL, NULL, NULL, NULL)",
+        "CALL sp_Transactions(?, ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
         ["GET_BY_ID", id]
     );
     return rows[0][0];
 };
 
-const getByBillId = async (billId) => {
-    const [rows] = await db.query(
-        "CALL SP_Payments(?, NULL, ?, NULL, NULL, NULL, NULL)",
-        ["GET_BY_BILL", billId]
-    );
-    return rows[0];
-};
-
 const create = async (data) => {
-    const { Bill_Id, Paid_Amount, Payment_Date, Payment_Mode, Transaction_Id } = data;
+    const { Flat_Id, Transaction_Type, Invoice_No, Debit, Credit, Payment_Mode, Remarks } = data;
     const [rows] = await db.query(
-        "CALL SP_Payments(?, NULL, ?, ?, ?, ?, ?)",
-        ["INSERT", Bill_Id, Paid_Amount, Payment_Date, Payment_Mode, Transaction_Id]
+        "CALL sp_Transactions(?, NULL, ?, ?, ?, ?, ?, ?, ?)",
+        [
+            "INSERT",
+            Flat_Id,
+            Transaction_Type,
+            Invoice_No,
+            Debit || 0,
+            Credit || 0,
+            Payment_Mode,
+            Remarks
+        ]
     );
     
-    if (!rows || !rows[0] || !rows[0][0]) {
-        return { message: "Failed to record payment" };
-    }
     return rows[0][0];
 };
 
 const update = async (data) => {
-    const { Payment_Id, Bill_Id, Paid_Amount, Payment_Date, Payment_Mode, Transaction_Id } = data;
+    const { Transaction_Id, Flat_Id, Transaction_Type, Invoice_No, Debit, Credit, Payment_Mode, Remarks } = data;
     const [rows] = await db.query(
-        "CALL SP_Payments(?, ?, ?, ?, ?, ?, ?)",
-        ["UPDATE", Payment_Id, Bill_Id, Paid_Amount, Payment_Date, Payment_Mode, Transaction_Id]
+        "CALL sp_Transactions(?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        [
+            "UPDATE",
+            Transaction_Id,
+            Flat_Id,
+            Transaction_Type,
+            Invoice_No,
+            Debit || 0,
+            Credit || 0,
+            Payment_Mode,
+            Remarks
+        ]
     );
 
     return rows[0][0];
@@ -52,7 +60,7 @@ const update = async (data) => {
 
 const remove = async (id) => {
     const [rows] = await db.query(
-        "CALL SP_Payments(?, ?, NULL, NULL, NULL, NULL, NULL)",
+        "CALL sp_Transactions(?, ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
         ["DELETE", id]
     );
 
@@ -62,7 +70,6 @@ const remove = async (id) => {
 module.exports = {
     getAll,
     getById,
-    getByBillId,
     create,
     update,
     delete: remove
