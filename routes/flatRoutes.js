@@ -6,6 +6,7 @@ const controller = require("../controllers/flatController");
  * @swagger
  * tags:
  *   name: Flat
+ *   description: Flat management APIs
  */
 
 
@@ -18,7 +19,7 @@ const controller = require("../controllers/flatController");
  *     tags: [Flat]
  *     responses:
  *       200:
- *         description: Flat list
+ *         description: Flat list retrieved successfully
  */
 router.get("/FlatMaster/GetAllFlat", controller.getAll);
 
@@ -38,7 +39,7 @@ router.get("/FlatMaster/GetAllFlat", controller.getAll);
  *           type: integer
  *     responses:
  *       200:
- *         description: Flat details
+ *         description: Flat details retrieved successfully
  */
 router.get("/FlatMaster/GetFlatById/:id", controller.getById);
 
@@ -48,7 +49,7 @@ router.get("/FlatMaster/GetFlatById/:id", controller.getById);
  * @swagger
  * /FlatMaster/CreateFlat:
  *   post:
- *     summary: Create flat
+ *     summary: Create a new flat
  *     tags: [Flat]
  *     requestBody:
  *       required: true
@@ -68,8 +69,10 @@ router.get("/FlatMaster/GetFlatById/:id", controller.getById);
  *               Area:
  *                 type: number
  *                 format: float
- *               Status:
- *                 type: string
+ *               Occup_Status:
+ *                 type: integer
+ *               isRent:
+ *                 type: integer
  *     responses:
  *       200:
  *         description: Flat created successfully
@@ -82,7 +85,7 @@ router.post("/FlatMaster/CreateFlat", controller.create);
  * @swagger
  * /FlatMaster/UpdateFlat:
  *   put:
- *     summary: Update flat
+ *     summary: Update an existing flat
  *     tags: [Flat]
  *     requestBody:
  *       required: true
@@ -104,8 +107,10 @@ router.post("/FlatMaster/CreateFlat", controller.create);
  *               Area:
  *                 type: number
  *                 format: float
- *               Status:
+ *               Occup_Status:
  *                 type: string
+ *               isRent:
+ *                 type: integer
  *     responses:
  *       200:
  *         description: Flat updated successfully

@@ -6,6 +6,7 @@ const controller = require("../controllers/userController");
  * @swagger
  * tags:
  *   name: User
+ *   description: User management APIs
  */
 
 
@@ -18,7 +19,7 @@ const controller = require("../controllers/userController");
  *     tags: [User]
  *     responses:
  *       200:
- *         description: User list
+ *         description: User list retrieved successfully
  */
 router.get("/User/GetAllUser", controller.getAll);
 
@@ -38,7 +39,7 @@ router.get("/User/GetAllUser", controller.getAll);
  *           type: integer
  *     responses:
  *       200:
- *         description: User details
+ *         description: User details retrieved
  */
 router.get("/User/GetUserById/:id", controller.getById);
 
@@ -90,7 +91,7 @@ router.post("/User/CreateUser", controller.create);
  *           schema:
  *             type: object
  *             properties:
- *               User_Id:
+ *               F_User_Id:
  *                 type: integer
  *               Full_Name:
  *                 type: string
@@ -129,5 +130,6 @@ router.put("/User/UpdateUser", controller.update);
  *         description: User deleted successfully
  */
 router.delete("/User/DeleteUser/:id", controller.remove);
+
 
 module.exports = router;

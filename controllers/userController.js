@@ -2,51 +2,36 @@ const userService = require("../services/user.service");
 const APIResponse = require("../utils/response");
 const asyncHandler = require("../middlewares/async.middleware");
 
-/**
- * UserController
- */
-
-// GET: api/User/GetAllUsers
+// GET ALL
 const getAll = asyncHandler(async (req, res) => {
     const data = await userService.getAll();
-    const response = APIResponse.emptyOr404(data);
-    return APIResponse.send(res, response);
+    return APIResponse.send(res, APIResponse.emptyOr404(data));
 });
 
-// GET: api/User/GetUserById/1
+// GET BY ID
 const getById = asyncHandler(async (req, res) => {
     const id = parseInt(req.params.id);
     const data = await userService.getById(id);
-    const response = APIResponse.emptyOr404(data);
-    return APIResponse.send(res, response);
+    return APIResponse.send(res, APIResponse.emptyOr404(data));
 });
 
-// POST: api/User/CreateUser
+// CREATE
 const create = asyncHandler(async (req, res) => {
     const result = await userService.create(req.body);
-    const response = APIResponse.successResponse(result);
-    return APIResponse.send(res, response);
+    return APIResponse.send(res, APIResponse.successResponse(result));
 });
 
-// PUT: api/User/UpdateUser
+// UPDATE
 const update = asyncHandler(async (req, res) => {
     const result = await userService.update(req.body);
-    const response = APIResponse.successResponse(result);
-    return APIResponse.send(res, response);
+    return APIResponse.send(res, APIResponse.successResponse(result));
 });
 
-// DELETE: api/User/DeleteUser/1
+// DELETE
 const remove = asyncHandler(async (req, res) => {
     const id = parseInt(req.params.id);
     const result = await userService.delete(id);
-    const response = APIResponse.successResponse(result);
-    return APIResponse.send(res, response);
+    return APIResponse.send(res, APIResponse.successResponse(result));
 });
 
-module.exports = {
-    getAll,
-    getById,
-    create,
-    update,
-    remove
-};
+module.exports = { getAll, getById, create, update, remove };
