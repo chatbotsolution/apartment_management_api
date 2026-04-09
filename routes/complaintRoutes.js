@@ -5,7 +5,8 @@ const controller = require("../controllers/complaintController");
 /**
  * @swagger
  * tags:
- *   name: Complaints
+ *   name: User Requests
+ *   description: Management of user complaints and service requests
  */
 
 /* ======================= GET ALL ======================= */
@@ -13,11 +14,11 @@ const controller = require("../controllers/complaintController");
  * @swagger
  * /Complaints/GetAllComplaints:
  *   get:
- *     summary: Get all active complaints
- *     tags: [Complaints]
+ *     summary: Get all user requests
+ *     tags: [User Requests]
  *     responses:
  *       200:
- *         description: Complaints list
+ *         description: List of complaints/requests
  */
 router.get("/Complaints/GetAllComplaints", controller.getAll);
 
@@ -26,8 +27,8 @@ router.get("/Complaints/GetAllComplaints", controller.getAll);
  * @swagger
  * /Complaints/GetComplaintById/{id}:
  *   get:
- *     summary: Get complaint by ID
- *     tags: [Complaints]
+ *     summary: Get request by ID
+ *     tags: [User Requests]
  *     parameters:
  *       - in: path
  *         name: id
@@ -36,36 +37,17 @@ router.get("/Complaints/GetAllComplaints", controller.getAll);
  *           type: integer
  *     responses:
  *       200:
- *         description: Complaint details
+ *         description: Request details
  */
 router.get("/Complaints/GetComplaintById/:id", controller.getById);
-
-/* ======================= GET BY USER ID ======================= */
-/**
- * @swagger
- * /Complaints/GetComplaintsByUserId/{userId}:
- *   get:
- *     summary: Get complaints by User ID
- *     tags: [Complaints]
- *     parameters:
- *       - in: path
- *         name: userId
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: List of complaints by user
- */
-router.get("/Complaints/GetComplaintsByUserId/:userId", controller.getByUserId);
 
 /* ======================= CREATE ======================= */
 /**
  * @swagger
  * /Complaints/RegisterComplaint:
  *   post:
- *     summary: Register a new complaint
- *     tags: [Complaints]
+ *     summary: Register a new complaint/request
+ *     tags: [User Requests]
  *     requestBody:
  *       required: true
  *       content:
@@ -77,15 +59,19 @@ router.get("/Complaints/GetComplaintsByUserId/:userId", controller.getByUserId);
  *                 type: integer
  *               User_Id:
  *                 type: integer
- *               Title:
- *                 type: string
+ *               complaintTypeId:
+ *                 type: integer
  *               Description:
  *                 type: string
  *               Priority:
  *                 type: string
+ *               req_type:
+ *                 type: string
+ *               req_Id:
+ *                 type: string
  *     responses:
  *       200:
- *         description: Complaint registered successfully
+ *         description: Request submitted successfully
  */
 router.post("/Complaints/RegisterComplaint", controller.create);
 
@@ -94,8 +80,8 @@ router.post("/Complaints/RegisterComplaint", controller.create);
  * @swagger
  * /Complaints/UpdateComplaint:
  *   put:
- *     summary: Update complaint details or status
- *     tags: [Complaints]
+ *     summary: Update complaint/request
+ *     tags: [User Requests]
  *     requestBody:
  *       required: true
  *       content:
@@ -105,17 +91,23 @@ router.post("/Complaints/RegisterComplaint", controller.create);
  *             properties:
  *               Complaint_Id:
  *                 type: integer
- *               Title:
- *                 type: string
+ *               Flat_Id:
+ *                 type: integer
+ *               complaintTypeId:
+ *                 type: integer
  *               Description:
  *                 type: string
  *               Status:
  *                 type: string
  *               Priority:
  *                 type: string
+ *               req_type:
+ *                 type: string
+ *               req_Id:
+ *                 type: string
  *     responses:
  *       200:
- *         description: Complaint updated successfully
+ *         description: Request updated successfully
  */
 router.put("/Complaints/UpdateComplaint", controller.update);
 
@@ -124,8 +116,8 @@ router.put("/Complaints/UpdateComplaint", controller.update);
  * @swagger
  * /Complaints/DeleteComplaint/{id}:
  *   delete:
- *     summary: Delete complaint (Soft delete)
- *     tags: [Complaints]
+ *     summary: Delete request
+ *     tags: [User Requests]
  *     parameters:
  *       - in: path
  *         name: id
@@ -134,7 +126,7 @@ router.put("/Complaints/UpdateComplaint", controller.update);
  *           type: integer
  *     responses:
  *       200:
- *         description: Complaint deleted successfully
+ *         description: Request deleted successfully
  */
 router.delete("/Complaints/DeleteComplaint/:id", controller.remove);
 

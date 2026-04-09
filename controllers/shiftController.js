@@ -1,38 +1,42 @@
-const paymentService = require("../services/payment.service");
+const shiftService = require("../services/shift.service");
 const APIResponse = require("../utils/response");
 const asyncHandler = require("../middlewares/async.middleware");
 
-// GET: api/Payments/GetAllPayments
-const getAll = asyncHandler(async (req, res) => {
-    const data = await paymentService.getAll();
-    return APIResponse.send(res, APIResponse.successResponse(data));
-});
+/**
+ * ShiftController
+ */
 
-// GET: api/Payments/GetPaymentById/1
-const getById = asyncHandler(async (req, res) => {
-    const id = parseInt(req.params.id);
-    const data = await paymentService.getById(id);
+// GET: api/Shift/GetAll
+const getAll = asyncHandler(async (req, res) => {
+    const data = await shiftService.getAll();
     return APIResponse.send(res, APIResponse.emptyOr404(data));
 });
 
-// POST: api/Payments/CreatePayment
+// GET: api/Shift/GetById/1
+const getById = asyncHandler(async (req, res) => {
+    const id = parseInt(req.params.id);
+    const data = await shiftService.getById(id);
+    return APIResponse.send(res, APIResponse.emptyOr404(data));
+});
+
+// POST: api/Shift/Create
 const create = asyncHandler(async (req, res) => {
-    const result = await paymentService.create(req.body);
+    const result = await shiftService.create(req.body);
     const response = APIResponse.successResponse(result);
     return APIResponse.send(res, response);
 });
 
-// PUT: api/Payments/UpdatePayment
+// PUT: api/Shift/Update
 const update = asyncHandler(async (req, res) => {
-    const result = await paymentService.update(req.body);
+    const result = await shiftService.update(req.body);
     const response = APIResponse.successResponse(result);
     return APIResponse.send(res, response);
 });
 
-// DELETE: api/Payments/DeletePayment/1
+// DELETE: api/Shift/Delete/1
 const remove = asyncHandler(async (req, res) => {
     const id = parseInt(req.params.id);
-    const result = await paymentService.delete(id);
+    const result = await shiftService.delete(id);
     const response = APIResponse.successResponse(result);
     return APIResponse.send(res, response);
 });

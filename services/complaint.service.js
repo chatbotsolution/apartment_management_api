@@ -1,11 +1,11 @@
 const db = require("../config/db");
 
 /**
- * Service to handle Complaints operations using stored procedure SP_Complaints.
+ * Service to handle User Request (Complaint) operations using stored procedure sp_UserRequests.
  */
 const getAll = async () => {
     const [rows] = await db.query(
-        "CALL SP_Complaints(?, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
+        "CALL sp_UserRequests(?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
         ["GET_ALL"]
     );
     return rows[0];
@@ -13,38 +13,48 @@ const getAll = async () => {
 
 const getById = async (id) => {
     const [rows] = await db.query(
-        "CALL SP_Complaints(?, ?, NULL, NULL, NULL, NULL, NULL, NULL)",
+        "CALL sp_UserRequests(?, ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
         ["GET_BY_ID", id]
     );
     return rows[0][0];
 };
 
-const getByUserId = async (userId) => {
-    const [rows] = await db.query(
-        "CALL SP_Complaints(?, NULL, NULL, ?, NULL, NULL, NULL, NULL)",
-        ["GET_BY_USER", userId]
-    );
-    return rows[0];
-};
-
 const create = async (data) => {
-    const { Flat_Id, User_Id, Title, Description, Priority } = data;
+    const { Flat_Id, User_Id, complaintTypeId, Description, Status, Priority, req_type, req_Id } = data;
     const [rows] = await db.query(
-        "CALL SP_Complaints(?, NULL, ?, ?, ?, ?, NULL, ?)",
-        ["INSERT", Flat_Id, User_Id, Title, Description, Priority]
+        "CALL sp_UserRequests(?, NULL, ?, ?, ?, ?, ?, ?, ?, ?)",
+        [
+            "INSERT",
+            Flat_Id,
+            User_Id,
+            complaintTypeId,
+            Description,
+            Status || 'Open',
+            Priority || 'Medium',
+            req_type,
+            req_Id
+        ]
     );
     
-    if (!rows || !rows[0] || !rows[0][0]) {
-        return { message: "Failed to register complaint" };
-    }
     return rows[0][0];
 };
 
 const update = async (data) => {
-    const { Complaint_Id, Title, Description, Status, Priority } = data;
+    const { Complaint_Id, Flat_Id, User_Id, complaintTypeId, Description, Status, Priority, req_type, req_Id } = data;
     const [rows] = await db.query(
-        "CALL SP_Complaints(?, ?, NULL, NULL, ?, ?, ?, ?)",
-        ["UPDATE", Complaint_Id, Title, Description, Status, Priority]
+        "CALL sp_UserRequests(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        [
+            "UPDATE",
+            Complaint_Id,
+            Flat_Id,
+            User_Id,
+            complaintTypeId,
+            Description,
+            Status,
+            Priority,
+            req_type,
+            req_Id
+        ]
     );
 
     return rows[0][0];
@@ -52,7 +62,7 @@ const update = async (data) => {
 
 const remove = async (id) => {
     const [rows] = await db.query(
-        "CALL SP_Complaints(?, ?, NULL, NULL, NULL, NULL, NULL, NULL)",
+        "CALL sp_UserRequests(?, ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
         ["DELETE", id]
     );
 
@@ -62,7 +72,6 @@ const remove = async (id) => {
 module.exports = {
     getAll,
     getById,
-    getByUserId,
     create,
     update,
     delete: remove

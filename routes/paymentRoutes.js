@@ -5,7 +5,8 @@ const controller = require("../controllers/paymentController");
 /**
  * @swagger
  * tags:
- *   name: Payments
+ *   name: Transactions
+ *   description: Management of accounting transactions
  */
 
 /* ======================= GET ALL ======================= */
@@ -13,11 +14,11 @@ const controller = require("../controllers/paymentController");
  * @swagger
  * /Payments/GetAllPayments:
  *   get:
- *     summary: Get all payments
- *     tags: [Payments]
+ *     summary: Get all transactions
+ *     tags: [Transactions]
  *     responses:
  *       200:
- *         description: Payments list
+ *         description: Transactions list
  */
 router.get("/Payments/GetAllPayments", controller.getAll);
 
@@ -26,8 +27,8 @@ router.get("/Payments/GetAllPayments", controller.getAll);
  * @swagger
  * /Payments/GetPaymentById/{id}:
  *   get:
- *     summary: Get payment by ID
- *     tags: [Payments]
+ *     summary: Get transaction by ID
+ *     tags: [Transactions]
  *     parameters:
  *       - in: path
  *         name: id
@@ -36,36 +37,17 @@ router.get("/Payments/GetAllPayments", controller.getAll);
  *           type: integer
  *     responses:
  *       200:
- *         description: Payment details
+ *         description: Transaction details
  */
 router.get("/Payments/GetPaymentById/:id", controller.getById);
-
-/* ======================= GET BY BILL ID ======================= */
-/**
- * @swagger
- * /Payments/GetPaymentByBillId/{billId}:
- *   get:
- *     summary: Get payments by Bill ID
- *     tags: [Payments]
- *     parameters:
- *       - in: path
- *         name: billId
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: List of payments for the bill
- */
-router.get("/Payments/GetPaymentByBillId/:billId", controller.getByBillId);
 
 /* ======================= CREATE ======================= */
 /**
  * @swagger
  * /Payments/CreatePayment:
  *   post:
- *     summary: Record a payment
- *     tags: [Payments]
+ *     summary: Record a new transaction
+ *     tags: [Transactions]
  *     requestBody:
  *       required: true
  *       content:
@@ -73,20 +55,23 @@ router.get("/Payments/GetPaymentByBillId/:billId", controller.getByBillId);
  *           schema:
  *             type: object
  *             properties:
- *               Bill_Id:
+ *               Flat_Id:
  *                 type: integer
- *               Paid_Amount:
- *                 type: number
- *               Payment_Date:
+ *               Transaction_Type:
  *                 type: string
- *                 format: date-time
+ *               Invoice_No:
+ *                 type: string
+ *               Debit:
+ *                 type: number
+ *               Credit:
+ *                 type: number
  *               Payment_Mode:
  *                 type: string
- *               Transaction_Id:
+ *               Remarks:
  *                 type: string
  *     responses:
  *       200:
- *         description: Payment recorded successfully
+ *         description: Transaction recorded successfully
  */
 router.post("/Payments/CreatePayment", controller.create);
 
@@ -95,8 +80,8 @@ router.post("/Payments/CreatePayment", controller.create);
  * @swagger
  * /Payments/UpdatePayment:
  *   put:
- *     summary: Update payment details
- *     tags: [Payments]
+ *     summary: Update transaction details
+ *     tags: [Transactions]
  *     requestBody:
  *       required: true
  *       content:
@@ -104,22 +89,25 @@ router.post("/Payments/CreatePayment", controller.create);
  *           schema:
  *             type: object
  *             properties:
- *               Payment_Id:
+ *               Transaction_Id:
  *                 type: integer
- *               Bill_Id:
+ *               Flat_Id:
  *                 type: integer
- *               Paid_Amount:
- *                 type: number
- *               Payment_Date:
+ *               Transaction_Type:
  *                 type: string
- *                 format: date-time
+ *               Invoice_No:
+ *                 type: string
+ *               Debit:
+ *                 type: number
+ *               Credit:
+ *                 type: number
  *               Payment_Mode:
  *                 type: string
- *               Transaction_Id:
+ *               Remarks:
  *                 type: string
  *     responses:
  *       200:
- *         description: Payment updated successfully
+ *         description: Transaction updated successfully
  */
 router.put("/Payments/UpdatePayment", controller.update);
 
@@ -128,8 +116,8 @@ router.put("/Payments/UpdatePayment", controller.update);
  * @swagger
  * /Payments/DeletePayment/{id}:
  *   delete:
- *     summary: Delete payment
- *     tags: [Payments]
+ *     summary: Delete transaction
+ *     tags: [Transactions]
  *     parameters:
  *       - in: path
  *         name: id
@@ -138,7 +126,7 @@ router.put("/Payments/UpdatePayment", controller.update);
  *           type: integer
  *     responses:
  *       200:
- *         description: Payment deleted successfully
+ *         description: Transaction deleted successfully
  */
 router.delete("/Payments/DeletePayment/:id", controller.remove);
 
