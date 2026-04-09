@@ -141,8 +141,6 @@ router.put("/VisitorMaster/UpdateVisitor", controller.update);
  *             properties:
  *               Visitor_Id:
  *                 type: integer
- *               Exit_Time:
- *                 type: string
  *     responses:
  *       200:
  *         description: Visitor exit recorded

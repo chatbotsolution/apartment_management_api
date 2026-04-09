@@ -11,7 +11,7 @@ const options = {
 
     servers: [
       {
-        url: "http://localhost:3000/api", // match your app.js
+        url: "http://localhost:5000/api", // match your app.js
         description: "Local server",
       },
     ],

@@ -69,10 +69,13 @@ const update = async (data) => {
 };
 
 const exitVisitor = async (data) => {
-    const { Visitor_Id, Exit_Time } = data;
+    const { Visitor_Id } = data;
+
+     // Auto generate current time
+    const Exit_Time = new Date(); // OR new Date().toISOString()
 
     const [rows] = await db.query(
-        "CALL SP_Visitors(?, ?, NULL, NULL, NULL, ?, NULL, NULL)",
+        "CALL SP_Visitors(?, ?, NULL, NULL, NULL, NULL, ?, NULL)",
         [
             "EXIT",
             Visitor_Id,
