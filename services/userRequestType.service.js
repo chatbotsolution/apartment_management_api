@@ -3,7 +3,7 @@ const db = require("../config/db");
 /* ======================= GET ALL ======================= */
 const getAll = async () => {
     const [rows] = await db.query(
-        "CALL SP_UserRequestType(?, NULL, NULL, NULL, NULL)",
+        "CALL SP_UserRequestType(?, NULL, NULL, NULL, NULL, NULL)",
         ["GETALL"]
     );
     return rows[0];
@@ -12,7 +12,7 @@ const getAll = async () => {
 /* ======================= GET BY ID ======================= */
 const getById = async (id) => {
     const [rows] = await db.query(
-        "CALL SP_UserRequestType(?, ?, NULL, NULL, NULL)",
+        "CALL SP_UserRequestType(?, ?, NULL, NULL, NULL, NULL)",
         ["GETBYID", id]
     );
     return rows[0];
@@ -25,7 +25,7 @@ const create = async (data) => {
     const { complaintType, createdBy } = data;
 
     const [rows] = await db.query(
-        "CALL SP_UserRequestType(?, NULL, ?, ?, NULL)",
+        "CALL SP_UserRequestType(?, NULL, ?, ?, NULL, NULL)",
         [
             "INSERT",
             complaintType,
@@ -42,15 +42,16 @@ const create = async (data) => {
 
 /* ======================= UPDATE ======================= */
 const update = async (data) => {
-    const { id, complaintType, updatedBy } = data;
+    const { id, complaintType, updatedBy, isActive } = data;
 
     const [rows] = await db.query(
-        "CALL SP_UserRequestType(?, ?, ?, NULL, ?)",
+        "CALL SP_UserRequestType(?, ?, ?, NULL, ?, ?)",
         [
             "UPDATE",
             id,
             complaintType,
-            updatedBy
+            updatedBy,
+            isActive
         ]
     );
 
@@ -60,7 +61,7 @@ const update = async (data) => {
 /* ======================= DELETE ======================= */
 const remove = async (id) => {
     const [rows] = await db.query(
-        "CALL SP_UserRequestType(?, ?, NULL, NULL, ?)",
+        "CALL SP_UserRequestType(?, ?, NULL, NULL, ?, NULL)",
         ["DELETE", id, 1] // updatedBy = 1 (or pass dynamically if needed)
     );
 
