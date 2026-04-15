@@ -22,7 +22,7 @@ const getByFlat = asyncHandler(async (req, res) => {
 const create = asyncHandler(async (req, res) => {
     console.log("Request Data = ", req.body);
 
-     // 🔥 Ensure createdBy exists
+     // Ensure createdBy exists
     req.body.createdBy = req.body.createdBy || 1;
 
     const result = await parkingService.create(req.body);
