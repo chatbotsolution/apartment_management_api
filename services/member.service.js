@@ -1,10 +1,10 @@
 const db = require("../config/db");
-
+const NULL_PARAMS = new Array(45).fill(null);
 // GET ALL
 const getAll = async () => {
     const [rows] = await db.query(
-        "CALL SP_Owner(?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
-        ["GET_ALL"]
+        "CALL sp_Owner_Master_CRUD(?" + ",?".repeat(45) + ")",
+        ["GET_ALL", ...NULL_PARAMS]
     );
     return rows[0];
 };
@@ -12,7 +12,7 @@ const getAll = async () => {
 // GET ACTIVE MEMBERS
 const getActive = async () => {
     const [rows] = await db.query(
-        "CALL SP_Owner(?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
+        "CALL sp_Owner_Master_CRUD(?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
         ["GET_ACTIVE"]
     );
     return rows[0];
@@ -21,16 +21,17 @@ const getActive = async () => {
 // GET BY ID
 const getById = async (id) => {
     const [rows] = await db.query(
-        "CALL SP_Owner(?, ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
-        ["GET_BY_ID", id]
+        "CALL sp_Owner_Master_CRUD(?, ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
+        ["SELECT_BY_ID", id]
     );
     return rows[0][0];
 };
 
+
 // GET BY FLAT
 const getByFlat = async (flatId) => {
     const [rows] = await db.query(
-        "CALL SP_Owner(?, NULL, NULL, ?, NULL, NULL, NULL, NULL, NULL)",
+       "CALL sp_Owner_Master_CRUD(?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
         ["GET_BY_FLAT", flatId]
     );
     return rows[0];
@@ -38,45 +39,53 @@ const getByFlat = async (flatId) => {
 
 // CREATE
 const create = async (data) => {
-    const { User_Id, Flat_Id, Member_Type, Move_In_Date, Move_Out_Date, maintainance_head_id } = data;
+    const values = ["INSERT",null,data.First_Name, data.Middle_Name,data.Last_Name,data.Gender,data.Date_of_Birth,data.Age,
+        data.Marital_Status,data.Nationality, data.Flat_Id, data.Block_Id,data.Occupancy_Status,data.Property_Ownership_Type,
+        data.Purchase_Date,data.Total_Family_Members, data.Live_With_Family,data.Mobile_Number_1,data.Mobile_Number_2,data.Email_Id,
+        data.Emergency_Contact_Name,data.Emergency_Contact_Number,data.Emergency_Contact_Relation,data.Aadhaar_Number,
+        data.PAN_Number,data.Passport_Number,data.Voter_ID,data.Aadhaar_Document || null,data.PAN_Document || null,
+        data.Profile_Photo || null,data.Ownership_Deed_Doc || null,data.Address_Line1,data.Address_Line2,data.City,data.State,
+        data.Country,data.Pincode,data.Username,data.Password_Hash,data.Vehicle_1_Number,data.Vehicle_1_Type,data.Vehicle_2_Number,
+        data.KYC_Verified,data.Police_Verification_Status,data.User_Status,data.Created_By
+    ];
+
+    const placeholders = values.map(() => "?").join(",");
 
     const [rows] = await db.query(
-        "CALL SP_Owner(?, NULL, ?, ?, ?, ?, ?, NULL, ?)",
-        ["INSERT", User_Id, Flat_Id, Member_Type, Move_In_Date, Move_Out_Date, maintainance_head_id]
+        `CALL sp_Owner_Master_CRUD(${placeholders})`,
+        values
     );
 
     return rows[0][0];
 };
 
-// UPDATE
 const update = async (data) => {
-    const {
-        Member_Id, // Kept variable name as requested
-        User_Id,
-        Flat_Id,
-        Member_Type,
-        Move_In_Date,
-        Move_Out_Date,
-        Is_Active,
-        maintainance_head_id
-    } = data;
+    const values = ["UPDATE",data.Owner_Id,data.First_Name, data.Middle_Name,data.Last_Name,data.Gender,data.Date_of_Birth,data.Age,
+        data.Marital_Status,data.Nationality, data.Flat_Id, data.Block_Id,data.Occupancy_Status,data.Property_Ownership_Type,
+        data.Purchase_Date,data.Total_Family_Members, data.Live_With_Family,data.Mobile_Number_1,data.Mobile_Number_2,data.Email_Id,
+        data.Emergency_Contact_Name,data.Emergency_Contact_Number,data.Emergency_Contact_Relation,data.Aadhaar_Number,
+        data.PAN_Number,data.Passport_Number,data.Voter_ID,data.Aadhaar_Document || null,data.PAN_Document || null,
+        data.Profile_Photo || null,data.Ownership_Deed_Doc || null,data.Address_Line1,data.Address_Line2,data.City,
+        data.State,data.Country,data.Pincode,data.Username,data.Password_Hash,data.Vehicle_1_Number,data.Vehicle_1_Type,
+        data.Vehicle_2_Number,data.KYC_Verified,data.Police_Verification_Status,data.User_Status,data.Created_By
+    ];
+
+    const placeholders = values.map(() => "?").join(",");
 
     const [rows] = await db.query(
-        "CALL SP_Owner(?, ?, ?, ?, ?, ?, ?, ?, ?)",
-        ["UPDATE", Member_Id, User_Id, Flat_Id, Member_Type, Move_In_Date, Move_Out_Date, Is_Active, maintainance_head_id]
+        `CALL sp_Owner_Master_CRUD(${placeholders})`,
+        values
     );
 
     return rows[0][0];
 };
-
 // DELETE
 const remove = async (id) => {
     const [rows] = await db.query(
-        "CALL SP_Owner(?, ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
+        "CALL sp_Owner_Master_CRUD(?, ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
         ["DELETE", id]
     );
-
-    return rows[0][0];
+    return rows[0];
 };
 
 module.exports = {
