@@ -57,6 +57,9 @@ router.get("/FlatMaster/GetFlatById/:id", controller.getById);
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - Block_Id
+ *               - Flat_Number
  *             properties:
  *               Block_Id:
  *                 type: integer
@@ -66,7 +69,13 @@ router.get("/FlatMaster/GetFlatById/:id", controller.getById);
  *                 type: integer
  *               Flat_Type:
  *                 type: string
- *               Area:
+ *               Super_Builtup_Area:
+ *                 type: number
+ *                 format: float
+ *               BuiltUp_Area:
+ *                 type: number
+ *                 format: float
+ *               Carpet_Area:
  *                 type: number
  *                 format: float
  *               Occup_Status:
@@ -93,6 +102,8 @@ router.post("/FlatMaster/CreateFlat", controller.create);
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - Flat_Id
  *             properties:
  *               Flat_Id:
  *                 type: integer
@@ -104,11 +115,17 @@ router.post("/FlatMaster/CreateFlat", controller.create);
  *                 type: integer
  *               Flat_Type:
  *                 type: string
- *               Area:
+ *               Super_Builtup_Area:
+ *                 type: number
+ *                 format: float
+ *               BuiltUp_Area:
+ *                 type: number
+ *                 format: float
+ *               Carpet_Area:
  *                 type: number
  *                 format: float
  *               Occup_Status:
- *                 type: string
+ *                 type: integer
  *               isRent:
  *                 type: integer
  *     responses:
