@@ -51,5 +51,18 @@ router.get("/Common/GetAllState", controller.getAllState);
  */
 router.get("/Common/GetAllDistrict", controller.getAllDistrict);
 
+/* ======================= GET FLOOR DROPDOWN ======================= */
+/**
+ * @swagger
+ * /Common/GetAllFloors:
+ *   get:
+ *     summary: Get All floors
+ *     tags: [Common Master]
+ *     responses:
+ *       200:
+ *         description: Floor dropdown fetched successfully
+ */
+router.get("/Common/GetAllFloors", controller.getAllFloors);
+
 
 module.exports = router;

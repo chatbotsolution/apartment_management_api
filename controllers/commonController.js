@@ -32,9 +32,18 @@ const getAllDistrict = asyncHandler(async (req, res) => {
     return APIResponse.send(res, APIResponse.emptyOr404(data));
 });
 
+/* ======================= GET FLOOR DROPDOWN ======================= */
+const getAllFloors = asyncHandler(async (req, res) => {
+    console.log("Get Floor Dropdown Request :", req.url);
+
+    const data = await commonService.getAllFloors();
+
+    return APIResponse.send(res, APIResponse.emptyOr404(data));
+});
 
 module.exports = {
     getAllCountry,
     getAllState,
-    getAllDistrict
+    getAllDistrict,
+    getAllFloors
 };
