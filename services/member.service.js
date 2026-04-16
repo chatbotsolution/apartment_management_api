@@ -31,7 +31,7 @@ const getById = async (id) => {
 // GET BY FLAT
 const getByFlat = async (flatId) => {
     const [rows] = await db.query(
-       "CALL sp_Owner_Master_CRUD(?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
+       "CALL sp_Owner_Master_CRUD(?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,null, ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
         ["GET_BY_FLAT", flatId]
     );
     return rows[0];
@@ -77,7 +77,7 @@ const update = async (data) => {
         values
     );
 
-    return rows[0][0];
+    return rows[0];
 };
 // DELETE
 const remove = async (id) => {
@@ -87,6 +87,14 @@ const remove = async (id) => {
     );
     return rows[0];
 };
+const toggleStatus = async (id) => {
+    const [rows] = await db.query(
+        "CALL sp_Owner_Master_CRUD(?, ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
+        ["TOGGLE_STATUS", id]
+    );
+
+    return rows[0][0]; // returns updated status
+};
 
 module.exports = {
     getAll,
@@ -95,5 +103,6 @@ module.exports = {
     getByFlat,
     create,
     update,
-    delete: remove
+    delete: remove,
+    toggleStatus
 };

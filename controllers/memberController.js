@@ -94,5 +94,18 @@ const remove = asyncHandler(async (req, res) => {
     const result = await memberService.delete(id);
     return APIResponse.send(res, APIResponse.successResponse(result));
 });
+const toggleStatus = asyncHandler(async (req, res) => {
+    const id = parseInt(req.params.id);
 
-module.exports = { getAll, getActive, getById, getByFlat, create, update, remove };
+    const result = await memberService.toggleStatus(id);
+
+    return APIResponse.send(
+        res,
+        APIResponse.successResponse({
+            message: "Member status toggled successfully",
+            data: result
+        })
+    );
+});
+
+module.exports = { getAll, getActive, getById, getByFlat, create, update, remove, toggleStatus };
