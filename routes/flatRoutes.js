@@ -43,6 +43,30 @@ router.get("/FlatMaster/GetAllFlat", controller.getAll);
  */
 router.get("/FlatMaster/GetFlatById/:id", controller.getById);
 
+/* ======================= GET BY BLOCK ======================= */
+/**
+ * @swagger
+ * /FlatMaster/GetFlatsByBlock/{blockId}:
+ *   get:
+ *     summary: Get all flats belonging to a specific block
+ *     tags: [Flat]
+ *     parameters:
+ *       - in: path
+ *         name: blockId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the block
+ *     responses:
+ *       200:
+ *         description: List of flats for the block retrieved successfully
+ *       400:
+ *         description: Invalid block ID supplied
+ *       404:
+ *         description: Flats not found for the given block
+ */
+router.get("/FlatMaster/GetFlatsByBlock/:blockId", controller.getByBlock);
+
 
 /* ======================= CREATE ======================= */
 /**
@@ -81,6 +105,8 @@ router.get("/FlatMaster/GetFlatById/:id", controller.getById);
  *               Occup_Status:
  *                 type: integer
  *               isRent:
+ *                 type: integer
+ *               Parking:
  *                 type: integer
  *     responses:
  *       200:
@@ -127,6 +153,8 @@ router.post("/FlatMaster/CreateFlat", controller.create);
  *               Occup_Status:
  *                 type: integer
  *               isRent:
+ *                 type: integer
+ *               Parking:
  *                 type: integer
  *     responses:
  *       200:
