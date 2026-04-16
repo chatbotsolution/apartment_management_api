@@ -15,6 +15,12 @@ const getById = asyncHandler(async (req, res) => {
     return APIResponse.send(res, APIResponse.emptyOr404(data));
 });
 
+// GET BY BLOCK
+const getByBlock = asyncHandler(async (req, res) => {
+    const blockId = parseInt(req.params.blockId);
+    const data = await flatService.getByBlock(blockId);
+    return APIResponse.send(res, APIResponse.emptyOr404(data));
+});
 // CREATE
 const create = asyncHandler(async (req, res) => {
     const {
@@ -26,7 +32,8 @@ const create = asyncHandler(async (req, res) => {
         BuiltUp_Area,
         Carpet_Area,
         Occup_Status,
-        isRent
+        isRent,
+        Parking
     } = req.body;
 
     const result = await flatService.create({
@@ -38,7 +45,8 @@ const create = asyncHandler(async (req, res) => {
         BuiltUp_Area,
         Carpet_Area,
         Occup_Status,
-        isRent
+        isRent,
+        Parking
     });
 
     return APIResponse.send(res, APIResponse.successResponse(result));
@@ -56,7 +64,8 @@ const update = asyncHandler(async (req, res) => {
         BuiltUp_Area,
         Carpet_Area,
         Occup_Status,
-        isRent
+        isRent,
+        Parking
     } = req.body;
 
     const result = await flatService.update({
@@ -69,7 +78,8 @@ const update = asyncHandler(async (req, res) => {
         BuiltUp_Area,
         Carpet_Area,
         Occup_Status,
-        isRent
+        isRent,
+        Parking
     });
 
     return APIResponse.send(res, APIResponse.successResponse(result));
@@ -85,6 +95,7 @@ const remove = asyncHandler(async (req, res) => {
 module.exports = {
     getAll,
     getById,
+    getByBlock,
     create,
     update,
     remove
