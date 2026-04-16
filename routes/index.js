@@ -8,6 +8,8 @@ fs.readdirSync(__dirname).forEach((file) => {
 
     if (file === "index.js") return;
 
+    console.log("Checking file:", file);
+
     if (file.endsWith(".js")) {
 
         try {
