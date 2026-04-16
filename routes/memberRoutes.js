@@ -102,6 +102,8 @@ const upload = require("../middlewares/upload.middleware");
  *           type: string
  *         KYC_Verified:
  *           type: boolean
+ *         Is_Deleted:
+ *           type: boolean
  *         Police_Verification_Status:
  *           type: string
  *         User_Status:
@@ -116,6 +118,8 @@ const upload = require("../middlewares/upload.middleware");
  *         - Flat_Id
  *         - Block_Id
  *       properties:
+ *         Owner_Id:
+ *           type: integer
  *         First_Name:
  *           type: string
  *         Middle_Name:
@@ -400,5 +404,24 @@ router.put(
  *         description: Deleted successfully
  */
 router.delete("/Member/DeleteMember/:id", controller.remove);
+
+/**
+ * @swagger
+ * /Member/ToggleStatus/{id}:
+ *   put:
+ *     summary: Toggle Active/Inactive status
+ *     tags: [Member]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Status toggled successfully
+ */
+router.put("/Member/ToggleStatus/:id", controller.toggleStatus);
+
 
 module.exports = router;
