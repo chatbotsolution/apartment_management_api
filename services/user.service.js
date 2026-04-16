@@ -1,4 +1,5 @@
 const db = require("../config/db");
+const { hashPassword } = require("../services/auth.service");
 
 // GET ALL
 const getAll = async () => {
@@ -20,7 +21,9 @@ const getById = async (id) => {
 
 // INSERT
 const create = async (data) => {
-    const { Full_Name, Email, Mobile, Password_Hash, Role, Is_Active } = data;
+    let { Full_Name, Email, Mobile, Password_Hash, Role, Is_Active } = data;
+    if (Password_Hash) Password_Hash = hashPassword(Password_Hash);
+
     const [rows] = await db.query(
         "CALL SP_FlatUsers(?, NULL, ?, ?, ?, ?, ?, ?)",
         ["INSERT", Full_Name, Email, Mobile, Password_Hash, Role, Is_Active]
@@ -30,7 +33,9 @@ const create = async (data) => {
 
 // UPDATE
 const update = async (data) => {
-    const { F_User_Id, Full_Name, Email, Mobile, Password_Hash, Role, Is_Active } = data;
+    let { F_User_Id, Full_Name, Email, Mobile, Password_Hash, Role, Is_Active } = data;
+    if (Password_Hash) Password_Hash = hashPassword(Password_Hash);
+
     const [rows] = await db.query(
         "CALL SP_FlatUsers(?, ?, ?, ?, ?, ?, ?, ?)",
         ["UPDATE", F_User_Id, Full_Name, Email, Mobile, Password_Hash, Role, Is_Active]
