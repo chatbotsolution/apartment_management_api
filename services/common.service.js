@@ -30,9 +30,20 @@ const getAllDistrict = async () => {
     return rows[0];
 };
 
+/* ======================= GET FLOOR DROPDOWN ======================= */
+const getAllFloors = async () => {
+    const [rows] = await db.query(
+        "CALL SP_FloorMaster(?, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
+        ["GETDROPDOWN"]
+    );
+
+    return rows[0];
+};
+
 
 module.exports = {
     getAllCountry,
     getAllState,
-    getAllDistrict
+    getAllDistrict,
+    getAllFloors
 };
