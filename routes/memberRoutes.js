@@ -110,6 +110,12 @@ const upload = require("../middlewares/upload.middleware");
  *           type: string
  *         Created_By:
  *           type: string
+ *         Has_Parking:   
+ *           type: boolean
+ *         Parking_Type: 
+ *           type: integer
+ *         Parking_Slot:
+ *           type: integer
 
  *     MemberOwnerCreate:
  *       type: object
@@ -214,6 +220,12 @@ const upload = require("../middlewares/upload.middleware");
  *           type: string
  *         Created_By:
  *           type: string
+ *         Has_Parking:   
+ *           type: boolean
+ *         Parking_Type: 
+ *           type: integer
+ *         Parking_Slot:
+ *           type: integer
  */
 
 /**
