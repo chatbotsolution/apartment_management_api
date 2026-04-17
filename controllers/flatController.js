@@ -21,6 +21,12 @@ const getByBlock = asyncHandler(async (req, res) => {
     const data = await flatService.getByBlock(blockId);
     return APIResponse.send(res, APIResponse.emptyOr404(data));
 });
+
+// GET AVAILABLE PARKING
+const getAvailableParking = asyncHandler(async (req, res) => {
+    const data = await flatService.getAvailableParking();
+    return APIResponse.send(res, APIResponse.emptyOr404(data));
+});
 // CREATE
 const create = asyncHandler(async (req, res) => {
     const {
@@ -33,7 +39,8 @@ const create = asyncHandler(async (req, res) => {
         Carpet_Area,
         Occup_Status,
         isRent,
-        Parking
+        Parking,
+        parkingId
     } = req.body;
 
     const result = await flatService.create({
@@ -46,7 +53,8 @@ const create = asyncHandler(async (req, res) => {
         Carpet_Area,
         Occup_Status,
         isRent,
-        Parking
+        Parking,
+        parkingId
     });
 
     return APIResponse.send(res, APIResponse.successResponse(result));
@@ -65,7 +73,8 @@ const update = asyncHandler(async (req, res) => {
         Carpet_Area,
         Occup_Status,
         isRent,
-        Parking
+        Parking,
+        parkingId
     } = req.body;
 
     const result = await flatService.update({
@@ -79,7 +88,8 @@ const update = asyncHandler(async (req, res) => {
         Carpet_Area,
         Occup_Status,
         isRent,
-        Parking
+        Parking,
+        parkingId
     });
 
     return APIResponse.send(res, APIResponse.successResponse(result));
@@ -96,6 +106,7 @@ module.exports = {
     getAll,
     getById,
     getByBlock,
+    getAvailableParking,
     create,
     update,
     remove
