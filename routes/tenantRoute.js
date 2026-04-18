@@ -245,6 +245,8 @@ router.get("/TenantMaster/GetTenantById/:id", controller.getById);
  *                 type: integer
  *               Remarks:
  *                 type: string
+ *               Owner_Id:
+ *                  type: integer
 
  *     responses:
  *       200:
@@ -467,6 +469,8 @@ router.post(
  *                 type: integer
  *               Remarks:
  *                 type: string
+ *               Owner_Id:
+ *                  type: string
 
  *     responses:
  *       200:
