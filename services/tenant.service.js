@@ -39,7 +39,7 @@ const getById = async (id) => {
 /* ======================= CREATE ======================= */
 const create = async (data) => {
 
-    const values = new Array(85).fill(null);
+    const values = new Array(86).fill(null);
 
     values[0] = null;
 
@@ -145,8 +145,8 @@ const create = async (data) => {
     values[81] = null; // Updated_By
     values[82] = null; // Updated_Date
     values[83] = data.Remarks;
-
     values[84] = "INSERT";
+    values[85] = data.Owner_Id;
 
     const placeholders = values.map(() => "?").join(",");
 
@@ -210,8 +210,8 @@ const update = async (data) => {
         data.Updated_By,
         null,
         data.Remarks,
-
-        "UPDATE"
+        "UPDATE",
+        data.Owner_Id
     ];
 
     const placeholders = values.map(() => "?").join(",");

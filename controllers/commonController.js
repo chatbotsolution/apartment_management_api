@@ -41,6 +41,51 @@ const getAllFloors = asyncHandler(async (req, res) => {
     return APIResponse.send(res, APIResponse.emptyOr404(data));
 });
 
+/* ======================= GET OWNER DROPDOWN ======================= */
+const getOwners = asyncHandler(async (req, res) => {
+    console.log("Get Owner Dropdown :", req.url);
+
+    const data = await commonService.getOwners();
+
+    return APIResponse.send(res, APIResponse.emptyOr404(data));
+});
+
+
+/* ======================= GET BLOCK BY OWNER ======================= */
+const getBlocksByOwner = asyncHandler(async (req, res) => {
+    const { ownerId } = req.query;
+
+    console.log("Get Blocks By Owner :", req.url);
+
+    const data = await commonService.getBlocksByOwner(ownerId);
+
+    return APIResponse.send(res, APIResponse.emptyOr404(data));
+});
+
+
+/* ======================= GET FLOOR BY OWNER + BLOCK ======================= */
+const getFloorsByOwnerBlock = asyncHandler(async (req, res) => {
+    const { ownerId, blockId } = req.query;
+
+    console.log("Get Floors By Owner + Block :", req.url);
+
+    const data = await commonService.getFloorsByOwnerBlock(ownerId, blockId);
+
+    return APIResponse.send(res, APIResponse.emptyOr404(data));
+});
+
+
+/* ======================= GET FLAT BY OWNER + BLOCK + FLOOR ======================= */
+const getFlatsByOwnerBlockFloor = asyncHandler(async (req, res) => {
+    const { ownerId, blockId, floorId } = req.query;
+
+    console.log("Get Flats By Owner + Block + Floor :", req.url);
+
+    const data = await commonService.getFlatsByOwnerBlockFloor(ownerId, blockId, floorId);
+
+    return APIResponse.send(res, APIResponse.emptyOr404(data));
+});
+
 const getAllNationality = asyncHandler(async (req, res) => {
     console.log("Get Nationality Dropdown Request :", req.url);
 
@@ -54,5 +99,9 @@ module.exports = {
     getAllState,
     getAllDistrict,
     getAllFloors,
+    getOwners,
+    getBlocksByOwner,
+    getFloorsByOwnerBlock,
+    getFlatsByOwnerBlockFloor,
     getAllNationality
 };
