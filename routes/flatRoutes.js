@@ -67,6 +67,19 @@ router.get("/FlatMaster/GetFlatById/:id", controller.getById);
  */
 router.get("/FlatMaster/GetFlatsByBlock/:blockId", controller.getByBlock);
 
+/* ======================= GET AVAILABLE PARKING ======================= */
+/**
+ * @swagger
+ * /FlatMaster/GetAvailableParking:
+ *   get:
+ *     summary: Get available parking slots for dropdown
+ *     tags: [Flat]
+ *     responses:
+ *       200:
+ *         description: Available parking slots retrieved successfully
+ */
+router.get("/FlatMaster/GetAvailableParking", controller.getAvailableParking);
+
 
 /* ======================= CREATE ======================= */
 /**
@@ -108,6 +121,8 @@ router.get("/FlatMaster/GetFlatsByBlock/:blockId", controller.getByBlock);
  *                 type: integer
  *               Parking:
  *                 type: integer
+ *               parkingId:
+ *                 type: string
  *     responses:
  *       200:
  *         description: Flat created successfully
@@ -156,6 +171,8 @@ router.post("/FlatMaster/CreateFlat", controller.create);
  *                 type: integer
  *               Parking:
  *                 type: integer
+ *               parkingId:
+ *                 type: string
  *     responses:
  *       200:
  *         description: Flat updated successfully

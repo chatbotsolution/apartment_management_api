@@ -86,6 +86,14 @@ const getFlatsByOwnerBlockFloor = asyncHandler(async (req, res) => {
     return APIResponse.send(res, APIResponse.emptyOr404(data));
 });
 
+const getAllNationality = asyncHandler(async (req, res) => {
+    console.log("Get Nationality Dropdown Request :", req.url);
+
+    const data = await commonService.getAllNationality();
+
+    return APIResponse.send(res, APIResponse.emptyOr404(data));
+});
+
 module.exports = {
     getAllCountry,
     getAllState,
@@ -94,5 +102,6 @@ module.exports = {
     getOwners,
     getBlocksByOwner,
     getFloorsByOwnerBlock,
-    getFlatsByOwnerBlockFloor
+    getFlatsByOwnerBlockFloor,
+    getAllNationality
 };

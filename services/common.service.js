@@ -41,6 +41,14 @@ const getAllFloors = async () => {
     return rows[0];
 };
 
+const getAllNationality = async () => {
+    const [rows] = await db.query(
+        "CALL sp_Nationality_Dropdown()"
+    );
+    console.log(rows[0]);
+    return rows[0];
+};
+
 
 /* ======================= GET OWNER DROPDOWN ======================= */
 const getOwners = async () => {
@@ -93,5 +101,6 @@ module.exports = {
     getOwners,
     getBlocksByOwner,
     getFloorsByOwnerBlock,
-    getFlatsByOwnerBlockFloor
+    getFlatsByOwnerBlockFloor,
+    getAllNationality
 };
