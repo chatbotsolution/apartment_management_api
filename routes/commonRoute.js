@@ -64,5 +64,17 @@ router.get("/Common/GetAllDistrict", controller.getAllDistrict);
  */
 router.get("/Common/GetAllFloors", controller.getAllFloors);
 
+/**
+ * @swagger
+ * /Common/GetAllNationality:
+ *   get:
+ *     summary: Get All Nationalities
+ *     tags: [Common Master]
+ *     responses:
+ *       200:
+ *         description: Nationality dropdown fetched successfully
+ */
+router.get("/Common/GetAllNationality", controller.getAllNationality);
+
 
 module.exports = router;

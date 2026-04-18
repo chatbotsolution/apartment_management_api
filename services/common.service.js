@@ -40,10 +40,19 @@ const getAllFloors = async () => {
     return rows[0];
 };
 
+const getAllNationality = async () => {
+    const [rows] = await db.query(
+        "CALL sp_Nationality_Dropdown()"
+    );
+    console.log(rows[0]);
+    return rows[0];
+};
+
 
 module.exports = {
     getAllCountry,
     getAllState,
     getAllDistrict,
-    getAllFloors
+    getAllFloors,
+    getAllNationality
 };
