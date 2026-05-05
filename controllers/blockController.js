@@ -1,80 +1,56 @@
-const blockService = require("../services/block.service");
+const service = require("../services/block.service");
 const APIResponse = require("../utils/response");
 const asyncHandler = require("../middlewares/async.middleware");
 
-/**
- * BlockMasterController
- */
 
-// GET: api/BlockMaster/GetAllBlock
+/* ======================= GET ALL ======================= */
 const getAll = asyncHandler(async (req, res) => {
-    const data = await blockService.getAll();
+    const society_id = parseInt(req.query.society_id);
 
-    const response = APIResponse.emptyOr404(data);
+    if (!society_id) {
+        return APIResponse.send(res, APIResponse.badRequestResponse("society_id required"));
+    }
 
-    return APIResponse.send(res, response);
+    const data = await service.getAll(society_id);
+    return APIResponse.send(res, APIResponse.successResponse(data));
 });
 
 
-// GET: api/BlockMaster/GetBlockById/1
+/* ======================= GET BY ID ======================= */
 const getById = asyncHandler(async (req, res) => {
     const id = parseInt(req.params.id);
+    const data = await service.getById(id);
 
-    const data = await blockService.getById(id);
-
-    const response = APIResponse.emptyOr404(data);
-
-    return APIResponse.send(res, response);
+    return APIResponse.send(res, APIResponse.emptyOr404(data));
 });
 
 
-// POST: api/BlockMaster/CreateBlock
+/* ======================= CREATE ======================= */
 const create = asyncHandler(async (req, res) => {
-    const result = await blockService.create(req.body);
-
-    const response = APIResponse.successResponse(result);
-
-    return APIResponse.send(res, response);
+    const result = await service.create(req.body);
+    return APIResponse.send(res, APIResponse.successResponse(result));
 });
 
 
-// PUT: api/BlockMaster/UpdateBlock
+/* ======================= UPDATE ======================= */
 const update = asyncHandler(async (req, res) => {
-    const result = await blockService.update(req.body);
-
-    const response = APIResponse.successResponse(result);
-
-    return APIResponse.send(res, response);
+    const result = await service.update(req.body);
+    return APIResponse.send(res, APIResponse.successResponse(result));
 });
 
 
-// DELETE: api/BlockMaster/DeleteBlock/1
+/* ======================= DELETE ======================= */
 const remove = asyncHandler(async (req, res) => {
     const id = parseInt(req.params.id);
+    const result = await service.remove(id);
 
-    const result = await blockService.delete(id);
-
-    const response = APIResponse.successResponse(result);
-
-    return APIResponse.send(res, response);
-});
-
-// GET: api/BlockMaster/GetBlockBySociety/1
-const getBySociety = asyncHandler(async (req, res) => {
-    const societyId = parseInt(req.params.societyId);
-
-    const data = await blockService.getBySociety(societyId);
-
-    const response = APIResponse.emptyOr404(data);
-
-    return APIResponse.send(res, response);
+    return APIResponse.send(res, APIResponse.successResponse(result));
 });
 
 
 module.exports = {
     getAll,
     getById,
-    getBySociety,
     create,
     update,
     remove

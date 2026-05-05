@@ -1,61 +1,36 @@
 const db = require("../config/db");
-const { hashPassword } = require("../services/auth.service");
 
-// GET ALL
-const getAll = async () => {
-    const [rows] = await db.query(
-        "CALL SP_FlatUsers(?, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
-        ["GET_ALL"]
-    );
-    return rows[0];
-};
-
-// GET BY ID
-const getById = async (id) => {
-    const [rows] = await db.query(
-        "CALL SP_FlatUsers(?, ?, NULL, NULL, NULL, NULL, NULL, NULL)",
-        ["GET_BY_ID", id]
-    );
-    return rows[0][0];
-};
-
-// INSERT
-const create = async (data) => {
-    let { Full_Name, Email, Mobile, Password_Hash, Role, Is_Active } = data;
-    if (Password_Hash) Password_Hash = hashPassword(Password_Hash);
+/* ======================= EXECUTE SP ======================= */
+const execute = async (
+    action,
+    userId = null,
+    ownerId = null,
+    tenantId = null,
+    staffId = null,
+    username = null,
+    passwordHash = null,
+    roleId = null,
+    isActive = null
+) => {
 
     const [rows] = await db.query(
-        "CALL SP_FlatUsers(?, NULL, ?, ?, ?, ?, ?, ?)",
-        ["INSERT", Full_Name, Email, Mobile, Password_Hash, Role, Is_Active]
+        "CALL sp_user(?,?,?,?,?,?,?,?,?)",
+        [
+            action,
+            userId,
+            ownerId,
+            tenantId,
+            staffId,
+            username,
+            passwordHash,
+            roleId,
+            isActive
+        ]
     );
-    return rows[0][0];
-};
 
-// UPDATE
-const update = async (data) => {
-    let { F_User_Id, Full_Name, Email, Mobile, Password_Hash, Role, Is_Active } = data;
-    if (Password_Hash) Password_Hash = hashPassword(Password_Hash);
-
-    const [rows] = await db.query(
-        "CALL SP_FlatUsers(?, ?, ?, ?, ?, ?, ?, ?)",
-        ["UPDATE", F_User_Id, Full_Name, Email, Mobile, Password_Hash, Role, Is_Active]
-    );
-    return rows[0][0];
-};
-
-// DELETE
-const remove = async (id) => {
-    const [rows] = await db.query(
-        "CALL SP_FlatUsers(?, ?, NULL, NULL, NULL, NULL, NULL, NULL)",
-        ["DELETE", id]
-    );
-    return rows[0][0];
+    return rows;
 };
 
 module.exports = {
-    getAll,
-    getById,
-    create,
-    update,
-    delete: remove
+    execute
 };

@@ -2,59 +2,127 @@ const parkingService = require("../services/parking.service");
 const APIResponse = require("../utils/response");
 const asyncHandler = require("../middlewares/async.middleware");
 
-const getAll = asyncHandler(async (req, res) => {
-    const data = await parkingService.getAll();
-    return APIResponse.send(res, APIResponse.emptyOr404(data));
+/* ======================= ASSIGN ======================= */
+const assign = asyncHandler(async (req, res) => {
+    const {
+        slotId,
+        flatId,
+        ownerId,
+        tenantId,
+        vehicleNumber,
+        vehicleType,
+        vehicleModel,
+        vehicleColor,
+        allotmentDate,
+        validUntil,
+        monthlyCharge,
+        notes
+    } = req.body;
+
+    const result = await service.execute(
+        "ASSIGN",
+        null,
+        slotId,
+        flatId,
+        ownerId,
+        tenantId,
+        vehicleNumber,
+        vehicleType,
+        vehicleModel,
+        vehicleColor,
+        allotmentDate,
+        validUntil,
+        monthlyCharge,
+        notes,
+        1
+    );
+
+    return APIResponse.send(res, APIResponse.successResponse("Parking assigned successfully", result));
 });
 
+
+/* ======================= UPDATE ======================= */
+const update = asyncHandler(async (req, res) => {
+    const {
+        allotmentId,
+        vehicleNumber,
+        vehicleType,
+        vehicleModel,
+        vehicleColor,
+        validUntil,
+        monthlyCharge,
+        notes
+    } = req.body;
+
+    const result = await service.execute(
+        "UPDATE",
+        allotmentId,
+        null,
+        null,
+        null,
+        null,
+        vehicleNumber,
+        vehicleType,
+        vehicleModel,
+        vehicleColor,
+        null,
+        validUntil,
+        monthlyCharge,
+        notes,
+        null
+    );
+
+    return APIResponse.send(res, APIResponse.successResponse("Updated successfully", result));
+});
+
+
+/* ======================= RELEASE ======================= */
+const release = asyncHandler(async (req, res) => {
+    const { allotmentId, slotId } = req.body;
+
+    const result = await service.execute(
+        "RELEASE",
+        allotmentId,
+        slotId
+    );
+
+    return APIResponse.send(res, APIResponse.successResponse("Slot released successfully", result));
+});
+
+
+/* ======================= GET BY ID ======================= */
 const getById = asyncHandler(async (req, res) => {
     const id = parseInt(req.params.id);
-    const data = await parkingService.getById(id);
-    return APIResponse.send(res, APIResponse.emptyOr404(data));
+
+    const data = await service.execute("GET_BY_ID", id);
+
+    return APIResponse.send(res, APIResponse.emptyOr404(data?.[0]));
 });
 
-const getByFlat = asyncHandler(async (req, res) => {
-    const flatId = parseInt(req.params.flatId);
-    const data = await parkingService.getByFlat(flatId);
-    return APIResponse.send(res, APIResponse.emptyOr404(data));
+
+/* ======================= GET ALL ======================= */
+const getAll = asyncHandler(async (req, res) => {
+    const data = await service.execute("GET_ALL");
+
+    return APIResponse.send(res, APIResponse.successResponse("Fetched successfully", data?.[0]));
 });
 
-const create = asyncHandler(async (req, res) => {
-    console.log("Request Data = ", req.body);
 
-     // Ensure createdBy exists
-    req.body.createdBy = req.body.createdBy || 1;
+/* ======================= GET HISTORY BY SLOT ======================= */
+const getHistoryBySlot = asyncHandler(async (req, res) => {
+    const slotId = parseInt(req.query.slot_id);
 
-    const result = await parkingService.create(req.body);
+    const data = await service.execute("GET_HISTORY_BY_SLOT", null, slotId);
 
-    if (result.ParkingAllot_Id  === 0) {
-        const response = APIResponse.badRequestResponse(result);
-        return APIResponse.send(res, response);
-    }
-
-    const response = APIResponse.successResponse(result);
-    return APIResponse.send(res, response);
+    return APIResponse.send(res, APIResponse.successResponse("History fetched", data?.[0]));
 });
 
-const update = asyncHandler(async (req, res) => {
-
-    req.body.updatedBy = req.body.updatedBy || 1;
-
-    const result = await parkingService.update(req.body);
-    return APIResponse.send(res, APIResponse.successResponse(result));
-});
-
-const remove = asyncHandler(async (req, res) => {
-    const id = parseInt(req.params.id);
-    const result = await parkingService.delete(id);
-    return APIResponse.send(res, APIResponse.successResponse(result));
-});
 
 module.exports = {
-    getAll,
-    getById,
-    getByFlat,
-    create,
+    assign,
     update,
-    remove
+    release,
+    getById,
+    getAll,
+    getHistoryBySlot
 };

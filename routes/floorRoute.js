@@ -2,121 +2,65 @@ const express = require("express");
 const router = express.Router();
 const controller = require("../controllers/floorController");
 
-/**
- * @swagger
- * tags:
- *   name: Floor
- */
 
 /* ======================= GET ALL ======================= */
 /**
  * @swagger
- * /Floor/GetAllFloor:
+ * /Floor/GetAll:
  *   get:
- *     summary: Get all floor records
+ *     summary: Get all floors by society
  *     tags: [Floor]
- *     responses:
- *       200:
- *         description: Floor list
+ *     parameters:
+ *       - in: query
+ *         name: society_id
+ *         required: true
+ *         schema:
+ *           type: integer
  */
-router.get("/Floor/GetAllFloor", controller.getAll);
+router.get("/Floor/GetAll", controller.getAll);
+
 
 /* ======================= GET BY ID ======================= */
 /**
  * @swagger
- * /Floor/GetFloorById/{id}:
+ * /Floor/GetById/{id}:
  *   get:
  *     summary: Get floor by ID
  *     tags: [Floor]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Floor details
  */
-router.get("/Floor/GetFloorById/:id", controller.getById);
+router.get("/Floor/GetById/:id", controller.getById);
+
 
 /* ======================= CREATE ======================= */
 /**
  * @swagger
- * /Floor/CreateFloor:
+ * /Floor/Create:
  *   post:
  *     summary: Create floor
  *     tags: [Floor]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               Block_Id:
- *                 type: integer
- *               Floor_Number:
- *                 type: integer
- *               Floor_Name:
- *                 type: string
- *               Created_By:
- *                 type: integer
- *     responses:
- *       200:
- *         description: Floor created successfully
  */
-router.post("/Floor/CreateFloor", controller.create);
+router.post("/Floor/Create", controller.create);
+
 
 /* ======================= UPDATE ======================= */
 /**
  * @swagger
- * /Floor/UpdateFloor:
+ * /Floor/Update:
  *   put:
  *     summary: Update floor
  *     tags: [Floor]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               Floor_Id:
- *                 type: integer
- *               Block_Id:
- *                 type: integer
- *               Floor_Number:
- *                 type: integer
- *               Floor_Name:
- *                 type: string
- *               Updated_By:
- *                 type: integer
- *               Is_Active:
- *                 type: integer
- *     responses:
- *       200:
- *         description: Floor updated successfully
  */
-router.put("/Floor/UpdateFloor", controller.update);
+router.put("/Floor/Update", controller.update);
+
 
 /* ======================= DELETE ======================= */
 /**
  * @swagger
- * /Floor/DeleteFloor/{id}:
+ * /Floor/Delete/{id}:
  *   delete:
  *     summary: Delete floor
  *     tags: [Floor]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Floor deleted successfully
  */
-router.delete("/Floor/DeleteFloor/:id", controller.remove);
+router.delete("/Floor/Delete/:id", controller.remove);
 
 module.exports = router;

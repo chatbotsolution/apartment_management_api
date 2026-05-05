@@ -1,145 +1,75 @@
 const express = require("express");
 const router = express.Router();
-const controller = require("../controllers/blockController");
+const controller = require("../controllers/block.controller");
+
 
 /**
  * @swagger
  * tags:
  *   name: Block Master
+ *   description: Block management APIs
  */
 
 
 /* ======================= GET ALL ======================= */
 /**
  * @swagger
- * /BlockMaster/GetAllBlock:
+ * /Block/GetAll:
  *   get:
- *     summary: Get all blocks
+ *     summary: Get all blocks by society
  *     tags: [Block Master]
- *     responses:
- *       200:
- *         description: Block list
+ *     parameters:
+ *       - in: query
+ *         name: society_id
+ *         required: true
+ *         schema:
+ *           type: integer
  */
-router.get("/BlockMaster/GetAllBlock", controller.getAll);
+router.get("/Block/GetAll", controller.getAll);
 
 
 /* ======================= GET BY ID ======================= */
 /**
  * @swagger
- * /BlockMaster/GetBlockById/{id}:
+ * /Block/GetById/{id}:
  *   get:
  *     summary: Get block by ID
  *     tags: [Block Master]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Block details
  */
-router.get("/BlockMaster/GetBlockById/:id", controller.getById);
-
-
-/* ======================= GET BY SOCIETY ======================= */
-/**
- * @swagger
- * /BlockMaster/GetBlockBySociety/{societyId}:
- *   get:
- *     summary: Get blocks by Society ID
- *     tags: [Block Master]
- *     parameters:
- *       - in: path
- *         name: societyId
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Block list for society
- */
-router.get("/BlockMaster/GetBlockBySociety/:societyId", controller.getBySociety);
+router.get("/Block/GetById/:id", controller.getById);
 
 
 /* ======================= CREATE ======================= */
 /**
  * @swagger
- * /BlockMaster/CreateBlock:
+ * /Block/Create:
  *   post:
  *     summary: Create block
  *     tags: [Block Master]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               Society_Id:
- *                 type: integer
- *               Block_Name:
- *                 type: string
- *               Total_Floors:
- *                 type: integer
- *               Created_By:
- *                 type: integer
- *     responses:
- *       200:
- *         description: Block created successfully
  */
-router.post("/BlockMaster/CreateBlock", controller.create);
+router.post("/Block/Create", controller.create);
 
 
 /* ======================= UPDATE ======================= */
 /**
  * @swagger
- * /BlockMaster/UpdateBlock:
+ * /Block/Update:
  *   put:
  *     summary: Update block
  *     tags: [Block Master]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               Block_Id:
- *                 type: integer
- *               Society_Id:
- *                 type: integer
- *               Block_Name:
- *                 type: string
- *               Total_Floors:
- *                 type: integer
- *               Created_By:
- *                 type: integer
- *     responses:
- *       200:
- *         description: Block updated successfully
  */
-router.put("/BlockMaster/UpdateBlock", controller.update);
+router.put("/Block/Update", controller.update);
 
 
 /* ======================= DELETE ======================= */
 /**
  * @swagger
- * /BlockMaster/DeleteBlock/{id}:
+ * /Block/Delete/{id}:
  *   delete:
  *     summary: Delete block
  *     tags: [Block Master]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Block deleted successfully
  */
-router.delete("/BlockMaster/DeleteBlock/:id", controller.remove);
+router.delete("/Block/Delete/:id", controller.remove);
+
 
 module.exports = router;

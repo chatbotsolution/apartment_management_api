@@ -1,69 +1,79 @@
 const db = require("../config/db");
 
-// ================= GET ALL =================
-const getAll = async () => {
+/* ======================= GET ALL ======================= */
+const getAll = async (societyId) => {
     const [rows] = await db.query(
-        "CALL SP_FloorMaster(?, NULL, NULL, NULL, NULL, NULL, NULL, Null)",
-        ["GETALL"]
+        "CALL sp_floor('GET_ALL', NULL, NULL, NULL, NULL, NULL, ?)",
+        [societyId]
     );
     return rows[0];
 };
 
-// ================= GET BY ID =================
+
+/* ======================= GET BY ID ======================= */
 const getById = async (id) => {
     const [rows] = await db.query(
-        "CALL SP_FloorMaster(?, ?, NULL, NULL, NULL, NULL, NULL, NULL)",
-        ["GETBYID", id]
+        "CALL sp_floor('GET_BY_ID', ?, NULL, NULL, NULL, NULL, NULL)",
+        [id]
     );
     return rows[0];
 };
 
-// ================= CREATE =================
+
+/* ======================= CREATE ======================= */
 const create = async (data) => {
-    const { Block_Id, Floor_Number, Floor_Name, Created_By } = data;
+    const {
+        Block_Id,
+        Floor_Number,
+        Floor_Label,
+        Total_Flats
+    } = data;
 
     const [rows] = await db.query(
-        "CALL SP_FloorMaster(?, NULL, ?, ?, ?, ?, NULL, ?)",
+        "CALL sp_floor('INSERT', NULL, ?, ?, ?, ?, NULL)",
         [
-            "INSERT",
             Block_Id,
             Floor_Number,
-            Floor_Name,
-            Created_By,
-            1
+            Floor_Label,
+            Total_Flats
         ]
     );
 
-    return rows[0][0];
+    return rows[0][0] || { Message: "Insert failed" };
 };
 
-// ================= UPDATE =================
+
+/* ======================= UPDATE ======================= */
 const update = async (data) => {
-    const { Floor_Id, Block_Id, Floor_Number, Floor_Name, Updated_By, Is_Active } = data;
+    const {
+        Floor_Id,
+        Block_Id,
+        Floor_Number,
+        Floor_Label,
+        Total_Flats
+    } = data;
 
     const [rows] = await db.query(
-        "CALL SP_FloorMaster(?, ?, ?, ?, ?, NULL, ?, ?)",
+        "CALL sp_floor('UPDATE', ?, ?, ?, ?, ?, NULL)",
         [
-            "UPDATE",
             Floor_Id,
             Block_Id,
             Floor_Number,
-            Floor_Name,
-            Updated_By,
-            Is_Active
+            Floor_Label,
+            Total_Flats
         ]
     );
 
     return rows[0][0];
 };
 
-// ================= DELETE =================
+
+/* ======================= DELETE ======================= */
 const remove = async (id) => {
     const [rows] = await db.query(
-        "CALL SP_FloorMaster(?, ?, NULL, NULL, NULL, NULL, NULL, NULL)",
-        ["DELETE", id]
+        "CALL sp_floor('DELETE', ?, NULL, NULL, NULL, NULL, NULL)",
+        [id]
     );
-
     return rows[0][0];
 };
 
@@ -72,5 +82,5 @@ module.exports = {
     getById,
     create,
     update,
-    delete: remove
+    remove
 };

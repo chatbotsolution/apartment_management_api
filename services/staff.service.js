@@ -1,77 +1,58 @@
 const db = require("../config/db");
 
-const getAll = async () => {
+/* ======================= EXECUTE SP ======================= */
+const execute = async (
+    action,
+    staffId = null,
+    societyId = null,
+    firstName = null,
+    lastName = null,
+    designation = null,
+    department = null,
+    phone = null,
+    email = null,
+    aadhaar = null,
+    dob = null,
+    genderId = null,
+    joiningDate = null,
+    leavingDate = null,
+    statusId = null,
+    salary = null,
+    shiftTiming = null,
+    address = null,
+    emergencyContact = null,
+    photoUrl = null
+) => {
+
     const [rows] = await db.query(
-        "CALL SP_Staff(?, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
-        ["GET_ALL"]
-    );
-    return rows[0];
-};
-
-const getById = async (id) => {
-    const [rows] = await db.query(
-        "CALL SP_Staff(?, ?, NULL, NULL, NULL, NULL, NULL, NULL)",
-        ["GET_BY_ID", id]
-    );
-    return rows[0];
-};
-
-const create = async (data) => {
-    console.log("Staff Data = ", data);
-
-    const { Name, staffTypeId, Mobile, Shift, createdBy } = data;
-
-    const [rows] = await db.query(
-        "CALL SP_Staff(?, NULL, ?, ?, ?, ?, NULL, ?)",
+        "CALL sp_staff(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         [
-            "INSERT",
-            Name,
-            staffTypeId,
-            Mobile,
-            Shift,
-            createdBy
+            action,
+            staffId,
+            societyId,
+            firstName,
+            lastName,
+            designation,
+            department,
+            phone,
+            email,
+            aadhaar,
+            dob,
+            genderId,
+            joiningDate,
+            leavingDate,
+            statusId,
+            salary,
+            shiftTiming,
+            address,
+            emergencyContact,
+            photoUrl
         ]
     );
 
-    if (!rows || !rows[0] || !rows[0][0]) {
-        return { message: "Insert failed or no response from DB" };
-    }
-
-    return rows[0][0];
-};
-
-const update = async (data) => {
-    const { Staff_Id, Name, staffTypeId, Mobile, Shift, Is_Active } = data;
-
-    const [rows] = await db.query(
-        "CALL SP_Staff(?, ?, ?, ?, ?, ?, ?, NULL)",
-        [
-            "UPDATE",
-            Staff_Id,
-            Name,
-            staffTypeId,
-            Mobile,
-            Shift,
-            Is_Active
-        ]
-    );
-
-    return rows[0][0];
-};
-
-const remove = async (id) => {
-    const [rows] = await db.query(
-        "CALL SP_Staff(?, ?, NULL, NULL, NULL, NULL, NULL, NULL)",
-        ["DELETE", id]
-    );
-
-    return rows[0][0];
+    return rows;
 };
 
 module.exports = {
-    getAll,
-    getById,
-    create,
-    update,
-    delete: remove
+    execute
 };

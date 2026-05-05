@@ -1,12 +1,20 @@
-const amenitiesService = require("../services/amenities.service");
+const amenityService = require("../services/amenities.service");
 const APIResponse = require("../utils/response");
 const asyncHandler = require("../middlewares/async.middleware");
 
 
 /* ======================= GET ALL ======================= */
 const getAll = asyncHandler(async (req, res) => {
-    console.log("Get All Request Data : ", req);
-    const data = await amenitiesService.getAll();
+    const societyId = parseInt(req.query.society_id);
+
+    if (!societyId) {
+        return APIResponse.send(
+            res,
+            APIResponse.badRequestResponse("society_id is required")
+        );
+    }
+
+    const data = await amenityService.getAll(societyId);
     return APIResponse.send(res, APIResponse.emptyOr404(data));
 });
 
@@ -14,18 +22,16 @@ const getAll = asyncHandler(async (req, res) => {
 /* ======================= GET BY ID ======================= */
 const getById = asyncHandler(async (req, res) => {
     const id = parseInt(req.params.id);
-    const data = await amenitiesService.getById(id);
+    const societyId = parseInt(req.query.society_id);
+
+    const data = await amenityService.getById(id, societyId);
     return APIResponse.send(res, APIResponse.emptyOr404(data));
 });
 
 
 /* ======================= CREATE ======================= */
 const create = asyncHandler(async (req, res) => {
-    const result = await amenitiesService.create(req.body);
-
-    if (!result || result.AmenitiesId === 0) {
-        return APIResponse.send(res, APIResponse.badRequestResponse(result));
-    }
+    const result = await amenityService.create(req.body);
 
     return APIResponse.send(res, APIResponse.successResponse(result));
 });
@@ -33,23 +39,20 @@ const create = asyncHandler(async (req, res) => {
 
 /* ======================= UPDATE ======================= */
 const update = asyncHandler(async (req, res) => {
-    const result = await amenitiesService.update(req.body);
+    const result = await amenityService.update(req.body);
+
     return APIResponse.send(res, APIResponse.successResponse(result));
 });
 
 
-/* ======================= STATUS CHANGE ======================= */
-const changeStatus = asyncHandler(async (req, res) => {
-    const { AmenitiesId, IsActive, Updated_By } = req.params;
+/* ======================= DELETE (SOFT) ======================= */
+const deleteAmenity = asyncHandler(async (req, res) => {
+    const { amenity_id, society_id } = req.params;
 
-    console.log("Change Status Data : ", AmenitiesId, IsActive, Updated_By);
-
-    const result = await amenitiesService.changeStatus({
-        AmenitiesId: parseInt(AmenitiesId),
-        IsActive: IsActive === "true" || IsActive === true,
-        Updated_By: parseInt(Updated_By)
+    const result = await amenityService.deleteAmenity({
+        amenity_id: parseInt(amenity_id),
+        society_id: parseInt(society_id)
     });
-    console.log("Status Change Result : ", result);
 
     return APIResponse.send(res, APIResponse.successResponse(result));
 });
@@ -60,5 +63,5 @@ module.exports = {
     getById,
     create,
     update,
-    changeStatus
+    deleteAmenity
 };

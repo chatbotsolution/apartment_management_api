@@ -1,107 +1,138 @@
-const commonService = require("../services/common.service");
+const service = require("../services/common.service");
 const APIResponse = require("../utils/response");
 const asyncHandler = require("../middlewares/async.middleware");
 
+/* ======================= GENERIC ACTION HANDLER ======================= */
+const byAction = (action, requireSociety = false) =>
+    asyncHandler(async (req, res) => {
+        const societyId = req.query.society_id
+            ? parseInt(req.query.society_id)
+            : null;
 
-/* ======================= GET ALL COUNTRY ======================= */
-const getAllCountry = asyncHandler(async (req, res) => {
-    console.log("Get All Country Request : ", req.url);
+        if (requireSociety && !societyId) {
+            return APIResponse.send(
+                res,
+                APIResponse.badRequestResponse("society_id required")
+            );
+        }
 
-    const data = await commonService.getAllCountry();
+        const data = await service.getByAction(action, societyId);
+        return APIResponse.send(res, {
+            statusCode: 200,
+            success: true,
+            message: "Data fetched successfully",
+            data: data
+        });
+    });
 
-    return APIResponse.send(res, APIResponse.emptyOr404(data));
+/* ================= COMMON HANDLER ================= */
+const getLookupByGroup = (groupName) =>
+    asyncHandler(async (req, res) => {
+        console.log(groupName, "groupName");
+        const data = await service.getLookupByGroup(groupName);
+        return APIResponse.send(res, {
+            statusCode: 200,
+            success: true,
+            message: "Data fetched successfully",
+            data: data
+        });
+    });
+
+/* ================= GROUP APIs ================= */
+
+const gender = getLookupByGroup("gender");
+const vehicleType = getLookupByGroup("vehicle_type");
+const priority = getLookupByGroup("priority");
+const role = getLookupByGroup("role");
+const paymentMode = getLookupByGroup("payment_mode");
+const parkingSlotType = getLookupByGroup("parking_slot_type");
+const parkingSlotStatus = getLookupByGroup("parking_slot_status");
+const maintenanceStatus = getLookupByGroup("maintenance_status");
+const maintenanceCategory = getLookupByGroup("maintenance_category");
+const complaintStatus = getLookupByGroup("complaint_status");
+const complaintCategory = getLookupByGroup("complaint_category");
+const staffStatus = getLookupByGroup("staff_status");
+const ownershipType = getLookupByGroup("ownership_type");
+const flatType = getLookupByGroup("flat_type");
+const flatStatus = getLookupByGroup("flat_status");
+const flatFacing = getLookupByGroup("flat_facing");
+const idProofType = getLookupByGroup("id_proof_type");
+const occupation = getLookupByGroup("occupation");
+const costBorneBy = getLookupByGroup("cost_borne_by");
+const feeStatus = getLookupByGroup("fee_status");
+const noticeCategory = getLookupByGroup("notice_category");
+const noticeTarget = getLookupByGroup("notice_target");
+const amenityCategory = getLookupByGroup("amenity_category");
+const amenityBookingStatus = getLookupByGroup("amenity_booking_status");
+
+/* ================= ACTION APIs ================= */
+
+const department = byAction("DEPARTMENT");
+const designation = byAction("DESIGNATION");
+const society = byAction("SOCIETY");
+const block = byAction("BLOCK", true); // requires society_id
+const floor = byAction("FLOOR");
+const flat = byAction("FLAT");
+const owner = byAction("OWNER");
+const tenant = byAction("TENANT");
+const staff = byAction("STAFF");
+const parkingSlot = byAction("PARKING_SLOT");
+const vehicle = byAction("VEHICLE");
+const amenity = byAction("AMENITY");
+
+/* ======================= ALL LOOKUPS ======================= */
+const getAllLookups = asyncHandler(async (req, res) => {
+    const data = await service.getAllLookups();
+    return APIResponse.send(res, {
+        statusCode: 200,
+        success: true,
+        message: "All lookups fetched",
+        data: data
+    });
 });
 
-
-/* ======================= GET ALL STATE ======================= */
-const getAllState = asyncHandler(async (req, res) => {
-    console.log("Get All State Request : ", req.url);
-
-    const data = await commonService.getAllState();
-
-    return APIResponse.send(res, APIResponse.emptyOr404(data));
-});
-
-
-/* ======================= GET ALL DISTRICT ======================= */
-const getAllDistrict = asyncHandler(async (req, res) => {
-    console.log("Get All District Request : ", req.url);
-
-    const data = await commonService.getAllDistrict();
-
-    return APIResponse.send(res, APIResponse.emptyOr404(data));
-});
-
-/* ======================= GET FLOOR DROPDOWN ======================= */
-const getAllFloors = asyncHandler(async (req, res) => {
-    console.log("Get Floor Dropdown Request :", req.url);
-
-    const data = await commonService.getAllFloors();
-
-    return APIResponse.send(res, APIResponse.emptyOr404(data));
-});
-
-/* ======================= GET OWNER DROPDOWN ======================= */
-const getOwners = asyncHandler(async (req, res) => {
-    console.log("Get Owner Dropdown :", req.url);
-
-    const data = await commonService.getOwners();
-
-    return APIResponse.send(res, APIResponse.emptyOr404(data));
-});
-
-
-/* ======================= GET BLOCK BY OWNER ======================= */
-const getBlocksByOwner = asyncHandler(async (req, res) => {
-    const { ownerId } = req.query;
-
-    console.log("Get Blocks By Owner :", req.url);
-
-    const data = await commonService.getBlocksByOwner(ownerId);
-
-    return APIResponse.send(res, APIResponse.emptyOr404(data));
-});
-
-
-/* ======================= GET FLOOR BY OWNER + BLOCK ======================= */
-const getFloorsByOwnerBlock = asyncHandler(async (req, res) => {
-    const { ownerId, blockId } = req.query;
-
-    console.log("Get Floors By Owner + Block :", req.url);
-
-    const data = await commonService.getFloorsByOwnerBlock(ownerId, blockId);
-
-    return APIResponse.send(res, APIResponse.emptyOr404(data));
-});
-
-
-/* ======================= GET FLAT BY OWNER + BLOCK + FLOOR ======================= */
-const getFlatsByOwnerBlockFloor = asyncHandler(async (req, res) => {
-    const { ownerId, blockId, floorId } = req.query;
-
-    console.log("Get Flats By Owner + Block + Floor :", req.url);
-
-    const data = await commonService.getFlatsByOwnerBlockFloor(ownerId, blockId, floorId);
-
-    return APIResponse.send(res, APIResponse.emptyOr404(data));
-});
-
-const getAllNationality = asyncHandler(async (req, res) => {
-    console.log("Get Nationality Dropdown Request :", req.url);
-
-    const data = await commonService.getAllNationality();
-
-    return APIResponse.send(res, APIResponse.emptyOr404(data));
-});
-
+/* ======================= EXPORT ======================= */
 module.exports = {
-    getAllCountry,
-    getAllState,
-    getAllDistrict,
-    getAllFloors,
-    getOwners,
-    getBlocksByOwner,
-    getFloorsByOwnerBlock,
-    getFlatsByOwnerBlockFloor,
-    getAllNationality
+    // lookup group APIs
+    gender,
+    vehicleType,
+    priority,
+    role,
+    paymentMode,
+    parkingSlotType,
+    parkingSlotStatus,
+    maintenanceStatus,
+    maintenanceCategory,
+    complaintStatus,
+    complaintCategory,
+    staffStatus,
+    ownershipType,
+    flatType,
+    flatStatus,
+    flatFacing,
+    idProofType,
+    occupation,
+    costBorneBy,
+    feeStatus,
+    noticeCategory,
+    noticeTarget,
+    amenityCategory,
+    amenityBookingStatus,
+
+    // action APIs
+    department,
+    designation,
+    society,
+    block,
+    floor,
+    flat,
+    owner,
+    tenant,
+    staff,
+    parkingSlot,
+    vehicle,
+    amenity,
+
+    // common
+    getAllLookups
 };

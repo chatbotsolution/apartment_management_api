@@ -2,202 +2,65 @@ const express = require("express");
 const router = express.Router();
 const controller = require("../controllers/flatController");
 
-/**
- * @swagger
- * tags:
- *   name: Flat
- *   description: Flat management APIs
- */
-
 
 /* ======================= GET ALL ======================= */
 /**
  * @swagger
- * /FlatMaster/GetAllFlat:
+ * /Flat/GetAll:
  *   get:
- *     summary: Get all flats
+ *     summary: Get all flats by society
  *     tags: [Flat]
- *     responses:
- *       200:
- *         description: Flat list retrieved successfully
+ *     parameters:
+ *       - in: query
+ *         name: society_id
+ *         required: true
+ *         schema:
+ *           type: integer
  */
-router.get("/FlatMaster/GetAllFlat", controller.getAll);
+router.get("/Flat/GetAll", controller.getAll);
 
 
 /* ======================= GET BY ID ======================= */
 /**
  * @swagger
- * /FlatMaster/GetFlatById/{id}:
+ * /Flat/GetById/{id}:
  *   get:
  *     summary: Get flat by ID
  *     tags: [Flat]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Flat details retrieved successfully
  */
-router.get("/FlatMaster/GetFlatById/:id", controller.getById);
-
-/* ======================= GET BY BLOCK ======================= */
-/**
- * @swagger
- * /FlatMaster/GetFlatsByBlock/{blockId}:
- *   get:
- *     summary: Get all flats belonging to a specific block
- *     tags: [Flat]
- *     parameters:
- *       - in: path
- *         name: blockId
- *         required: true
- *         schema:
- *           type: integer
- *         description: ID of the block
- *     responses:
- *       200:
- *         description: List of flats for the block retrieved successfully
- *       400:
- *         description: Invalid block ID supplied
- *       404:
- *         description: Flats not found for the given block
- */
-router.get("/FlatMaster/GetFlatsByBlock/:blockId", controller.getByBlock);
-
-/* ======================= GET AVAILABLE PARKING ======================= */
-/**
- * @swagger
- * /FlatMaster/GetAvailableParking:
- *   get:
- *     summary: Get available parking slots for dropdown
- *     tags: [Flat]
- *     responses:
- *       200:
- *         description: Available parking slots retrieved successfully
- */
-router.get("/FlatMaster/GetAvailableParking", controller.getAvailableParking);
+router.get("/Flat/GetById/:id", controller.getById);
 
 
 /* ======================= CREATE ======================= */
 /**
  * @swagger
- * /FlatMaster/CreateFlat:
+ * /Flat/Create:
  *   post:
- *     summary: Create a new flat
+ *     summary: Create flat
  *     tags: [Flat]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - Block_Id
- *               - Flat_Number
- *             properties:
- *               Block_Id:
- *                 type: integer
- *               Flat_Number:
- *                 type: string
- *               Floor_Number:
- *                 type: integer
- *               Flat_Type:
- *                 type: string
- *               Super_Builtup_Area:
- *                 type: number
- *                 format: float
- *               BuiltUp_Area:
- *                 type: number
- *                 format: float
- *               Carpet_Area:
- *                 type: number
- *                 format: float
- *               Occup_Status:
- *                 type: integer
- *               isRent:
- *                 type: integer
- *               Parking:
- *                 type: integer
- *               parkingId:
- *                 type: string
- *     responses:
- *       200:
- *         description: Flat created successfully
  */
-router.post("/FlatMaster/CreateFlat", controller.create);
+router.post("/Flat/Create", controller.create);
 
 
 /* ======================= UPDATE ======================= */
 /**
  * @swagger
- * /FlatMaster/UpdateFlat:
+ * /Flat/Update:
  *   put:
- *     summary: Update an existing flat
+ *     summary: Update flat
  *     tags: [Flat]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - Flat_Id
- *             properties:
- *               Flat_Id:
- *                 type: integer
- *               Block_Id:
- *                 type: integer
- *               Flat_Number:
- *                 type: string
- *               Floor_Number:
- *                 type: integer
- *               Flat_Type:
- *                 type: string
- *               Super_Builtup_Area:
- *                 type: number
- *                 format: float
- *               BuiltUp_Area:
- *                 type: number
- *                 format: float
- *               Carpet_Area:
- *                 type: number
- *                 format: float
- *               Occup_Status:
- *                 type: integer
- *               isRent:
- *                 type: integer
- *               Parking:
- *                 type: integer
- *               parkingId:
- *                 type: string
- *     responses:
- *       200:
- *         description: Flat updated successfully
  */
-router.put("/FlatMaster/UpdateFlat", controller.update);
+router.put("/Flat/Update", controller.update);
 
 
 /* ======================= DELETE ======================= */
 /**
  * @swagger
- * /FlatMaster/DeleteFlat/{id}:
+ * /Flat/Delete/{id}:
  *   delete:
  *     summary: Delete flat
  *     tags: [Flat]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Flat deleted successfully
  */
-router.delete("/FlatMaster/DeleteFlat/:id", controller.remove);
-
+router.delete("/Flat/Delete/:id", controller.remove);
 
 module.exports = router;

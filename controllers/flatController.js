@@ -1,112 +1,48 @@
-const flatService = require("../services/flat.service");
+const service = require("../services/flat.service");
 const APIResponse = require("../utils/response");
 const asyncHandler = require("../middlewares/async.middleware");
 
-// GET ALL
+/* ======================= GET ALL ======================= */
 const getAll = asyncHandler(async (req, res) => {
-    const data = await flatService.getAll();
-    return APIResponse.send(res, APIResponse.emptyOr404(data));
+    const societyId = parseInt(req.query.society_id);
+
+    if (!societyId) {
+        return APIResponse.send(res, APIResponse.badRequestResponse("society_id required"));
+    }
+
+    const data = await service.getAll(societyId);
+    return APIResponse.send(res, APIResponse.successResponse(data));
 });
 
-// GET BY ID
+/* ======================= GET BY ID ======================= */
 const getById = asyncHandler(async (req, res) => {
     const id = parseInt(req.params.id);
-    const data = await flatService.getById(id);
-    return APIResponse.send(res, APIResponse.emptyOr404(data));
+    const data = await service.getById(id);
+    return APIResponse.send(res, APIResponse.successResponse(data));
 });
 
-// GET BY BLOCK
-const getByBlock = asyncHandler(async (req, res) => {
-    const blockId = parseInt(req.params.blockId);
-    const data = await flatService.getByBlock(blockId);
-    return APIResponse.send(res, APIResponse.emptyOr404(data));
-});
-
-// GET AVAILABLE PARKING
-const getAvailableParking = asyncHandler(async (req, res) => {
-    const data = await flatService.getAvailableParking();
-    return APIResponse.send(res, APIResponse.emptyOr404(data));
-});
-// CREATE
+/* ======================= CREATE ======================= */
 const create = asyncHandler(async (req, res) => {
-    const {
-        Block_Id,
-        Flat_Number,
-        Floor_Number,
-        Flat_Type,
-        Super_Builtup_Area,
-        BuiltUp_Area,
-        Carpet_Area,
-        Occup_Status,
-        isRent,
-        Parking,
-        parkingId
-    } = req.body;
-
-    const result = await flatService.create({
-        Block_Id,
-        Flat_Number,
-        Floor_Number,
-        Flat_Type,
-        Super_Builtup_Area,
-        BuiltUp_Area,
-        Carpet_Area,
-        Occup_Status,
-        isRent,
-        Parking,
-        parkingId
-    });
-
+    const result = await service.create(req.body);
     return APIResponse.send(res, APIResponse.successResponse(result));
 });
 
-// UPDATE
+/* ======================= UPDATE ======================= */
 const update = asyncHandler(async (req, res) => {
-    const {
-        Flat_Id,
-        Block_Id,
-        Flat_Number,
-        Floor_Number,
-        Flat_Type,
-        Super_Builtup_Area,
-        BuiltUp_Area,
-        Carpet_Area,
-        Occup_Status,
-        isRent,
-        Parking,
-        parkingId
-    } = req.body;
-
-    const result = await flatService.update({
-        Flat_Id,
-        Block_Id,
-        Flat_Number,
-        Floor_Number,
-        Flat_Type,
-        Super_Builtup_Area,
-        BuiltUp_Area,
-        Carpet_Area,
-        Occup_Status,
-        isRent,
-        Parking,
-        parkingId
-    });
-
+    const result = await service.update(req.body);
     return APIResponse.send(res, APIResponse.successResponse(result));
 });
 
-// DELETE
+/* ======================= DELETE ======================= */
 const remove = asyncHandler(async (req, res) => {
     const id = parseInt(req.params.id);
-    const result = await flatService.delete(id);
+    const result = await service.remove(id);
     return APIResponse.send(res, APIResponse.successResponse(result));
 });
 
 module.exports = {
     getAll,
     getById,
-    getByBlock,
-    getAvailableParking,
     create,
     update,
     remove

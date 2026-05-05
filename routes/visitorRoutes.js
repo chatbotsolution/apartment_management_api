@@ -2,145 +2,91 @@ const express = require("express");
 const router = express.Router();
 const controller = require("../controllers/visitorController");
 
+
+/* ======================= TAG ======================= */
 /**
  * @swagger
  * tags:
- *   name: Visitor Master
+ *   name: Visitor Management
+ *   description: Visitor entry & security APIs
  */
 
-/* ======================= GET ALL ======================= */
-/**
- * @swagger
- * /VisitorMaster/GetAllVisitor:
- *   get:
- *     summary: Get all visitors
- *     tags: [Visitor Master]
- *     responses:
- *       200:
- *         description: Visitor list
- */
-router.get("/VisitorMaster/GetAllVisitor", controller.getAll);
 
-/* ======================= GET BY ID ======================= */
+/* ======================= CHECK-IN ======================= */
 /**
  * @swagger
- * /VisitorMaster/GetVisitorById/{id}:
- *   get:
- *     summary: Get visitor by ID
- *     tags: [Visitor Master]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Visitor details
- */
-router.get("/VisitorMaster/GetVisitorById/:id", controller.getById);
-
-/* ======================= GET BY FLAT ======================= */
-/**
- * @swagger
- * /VisitorMaster/GetVisitorByFlat/{flatId}:
- *   get:
- *     summary: Get visitors by Flat ID
- *     tags: [Visitor Master]
- *     parameters:
- *       - in: path
- *         name: flatId
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Visitor list for a flat
- */
-router.get("/VisitorMaster/GetVisitorByFlat/:flatId", controller.getByFlat);
-
-/* ======================= CREATE ======================= */
-/**
- * @swagger
- * /VisitorMaster/CreateVisitor:
+ * /Visitor/CheckIn:
  *   post:
- *     summary: Create visitor entry
- *     tags: [Visitor Master]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               Name:
- *                 type: string
- *               Mobile:
- *                 type: string
- *               Flat_Id:
- *                 type: integer
- *               Entry_Time:
- *                 type: string
- *               Purpose:
- *                 type: string
- *               createdBy:
- *                 type: integer
- *     responses:
- *       200:
- *         description: Visitor created successfully
+ *     summary: Visitor check-in
+ *     tags: [Visitor Management]
  */
-router.post("/VisitorMaster/CreateVisitor", controller.create);
+router.post("/Visitor/CheckIn", controller.checkIn);
+
+
+/* ======================= CHECK-OUT ======================= */
+/**
+ * @swagger
+ * /Visitor/CheckOut:
+ *   post:
+ *     summary: Visitor check-out
+ *     tags: [Visitor Management]
+ */
+router.post("/Visitor/CheckOut", controller.checkOut);
+
 
 /* ======================= UPDATE ======================= */
 /**
  * @swagger
- * /VisitorMaster/UpdateVisitor:
+ * /Visitor/Update:
  *   put:
- *     summary: Update visitor
- *     tags: [Visitor Master]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               Visitor_Id:
- *                 type: integer
- *               Name:
- *                 type: string
- *               Mobile:
- *                 type: string
- *               Flat_Id:
- *                 type: integer
- *               Purpose:
- *                 type: string
- *     responses:
- *       200:
- *         description: Visitor updated successfully
+ *     summary: Update visitor details
+ *     tags: [Visitor Management]
  */
-router.put("/VisitorMaster/UpdateVisitor", controller.update);
+router.put("/Visitor/Update", controller.update);
 
-/* ======================= EXIT ======================= */
+
+/* ======================= GET BY ID ======================= */
 /**
  * @swagger
- * /VisitorMaster/ExitVisitor:
- *   put:
- *     summary: Mark visitor exit
- *     tags: [Visitor Master]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               Visitor_Id:
- *                 type: integer
- *     responses:
- *       200:
- *         description: Visitor exit recorded
+ * /Visitor/GetById/{id}:
+ *   get:
+ *     summary: Get visitor by id
+ *     tags: [Visitor Management]
  */
-router.put("/VisitorMaster/ExitVisitor", controller.exitVisitor);
+router.get("/Visitor/GetById/:id", controller.getById);
+
+
+/* ======================= TODAY ======================= */
+/**
+ * @swagger
+ * /Visitor/GetToday:
+ *   get:
+ *     summary: Today's visitors
+ *     tags: [Visitor Management]
+ */
+router.get("/Visitor/GetToday", controller.getToday);
+
+
+/* ======================= ACTIVE ======================= */
+/**
+ * @swagger
+ * /Visitor/GetActive:
+ *   get:
+ *     summary: Active visitors inside society
+ *     tags: [Visitor Management]
+ */
+router.get("/Visitor/GetActive", controller.getActive);
+
+
+/* ======================= SEARCH ======================= */
+/**
+ * @swagger
+ * /Visitor/Search:
+ *   get:
+ *     summary: Search visitors
+ *     tags: [Visitor Management]
+ */
+router.get("/Visitor/Search", controller.search);
+
 
 module.exports = router;

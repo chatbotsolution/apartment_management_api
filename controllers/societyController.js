@@ -1,52 +1,91 @@
-const societyService = require("../services/society.service");
+const service = require("../services/society.service");
 const APIResponse = require("../utils/response");
 const asyncHandler = require("../middlewares/async.middleware");
 
-const getAll = asyncHandler(async (req, res) => {
-    const data = await societyService.getAll();
-    return APIResponse.send(res, APIResponse.emptyOr404(data));
+
+/* ======================= INSERT ======================= */
+const insert = asyncHandler(async (req, res) => {
+    const body = req.body;
+
+    const result = await service.execute(
+        "INSERT",
+        null,
+        body.name,
+        body.address,
+        body.city,
+        body.state,
+        body.pincode,
+        body.registrationNo,
+        body.establishedDate,
+        body.contactEmail,
+        body.contactPhone,
+        body.totalBlocks,
+        body.totalUnits,
+        body.website
+    );
+
+    return APIResponse.send(res, APIResponse.successResponse("Society created successfully", result));
 });
 
+
+/* ======================= UPDATE ======================= */
+const update = asyncHandler(async (req, res) => {
+    const body = req.body;
+
+    const result = await service.execute(
+        "UPDATE",
+        body.societyId,
+        body.name,
+        body.address,
+        body.city,
+        body.state,
+        body.pincode,
+        body.registrationNo,
+        body.establishedDate,
+        body.contactEmail,
+        body.contactPhone,
+        body.totalBlocks,
+        body.totalUnits,
+        body.website
+    );
+
+    return APIResponse.send(res, APIResponse.successResponse("Society updated successfully", result));
+});
+
+
+/* ======================= DELETE (SOFT) ======================= */
+const remove = asyncHandler(async (req, res) => {
+    const { societyId } = req.body;
+
+    const result = await service.execute("DELETE", societyId);
+
+    return APIResponse.send(res, APIResponse.successResponse("Society deleted successfully", result));
+});
+
+
+/* ======================= GET BY ID ======================= */
 const getById = asyncHandler(async (req, res) => {
     const id = parseInt(req.params.id);
-    const data = await societyService.getById(id);
-    return APIResponse.send(res, APIResponse.emptyOr404(data));
+
+    const data = await service.execute("GET_BY_ID", id);
+
+    return APIResponse.send(res, APIResponse.emptyOr404(data?.[0]));
 });
 
-const create = asyncHandler(async (req, res) => {
-    //console.log("Request data = ", req.body);
-    const result = await societyService.create(req.body);
-    if (result.Society_Id === 0) {
-        const response = APIResponse.badRequestResponse(result);
-        return APIResponse.send(res, response);
-    }
 
-    const response = APIResponse.successResponse(result);
-    console.log("Create Society data = ", result);
-    return APIResponse.send(res, response);
+/* ======================= GET ALL ======================= */
+const getAll = asyncHandler(async (req, res) => {
+
+    const data = await service.execute("GET_ALL");
+
+    return APIResponse.send(res, APIResponse.successResponse("Fetched successfully", data?.[0]));
 });
 
-const update = asyncHandler(async (req, res) => {
-    const result = await societyService.update(req.body);
-
-    if (result.Society_Id === 0) {
-        const response = APIResponse.badRequestResponse(result);
-        return APIResponse.send(res, response);
-    }
-
-    return APIResponse.send(res, APIResponse.successResponse(result));
-});
-
-const remove = asyncHandler(async (req, res) => {
-    const id = parseInt(req.params.id);
-    const result = await societyService.delete(id);
-    return APIResponse.send(res, APIResponse.successResponse(result));
-});
 
 module.exports = {
-    getAll,
-    getById,
-    create,
+    insert,
     update,
-    remove
+    remove,
+    getById,
+    getAll
 };

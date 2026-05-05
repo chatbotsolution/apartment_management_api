@@ -1,43 +1,121 @@
-const staffService = require("../services/staff.service");
+const service = require("../services/staff.service");
 const APIResponse = require("../utils/response");
 const asyncHandler = require("../middlewares/async.middleware");
 
-const getAll = asyncHandler(async (req, res) => {
-    const data = await staffService.getAll();
-    return APIResponse.send(res, APIResponse.emptyOr404(data));
+
+/* ======================= INSERT ======================= */
+const insert = asyncHandler(async (req, res) => {
+    const body = req.body;
+
+    const result = await service.execute(
+        "INSERT",
+        null,
+        body.societyId,
+        body.firstName,
+        body.lastName,
+        body.designation,
+        body.department,
+        body.phone,
+        body.email,
+        body.aadhaarNumber,
+        body.dateOfBirth,
+        body.genderId,
+        body.joiningDate,
+        body.leavingDate,
+        body.statusId,
+        body.salary,
+        body.shiftTiming,
+        body.address,
+        body.emergencyContact,
+        body.photoUrl
+    );
+
+    return APIResponse.send(res, APIResponse.successResponse("Staff created successfully", result));
 });
 
+
+/* ======================= UPDATE ======================= */
+const update = asyncHandler(async (req, res) => {
+    const body = req.body;
+
+    const result = await service.execute(
+        "UPDATE",
+        body.staffId,
+        body.societyId,
+        body.firstName,
+        body.lastName,
+        body.designation,
+        body.department,
+        body.phone,
+        body.email,
+        body.aadhaarNumber,
+        body.dateOfBirth,
+        body.genderId,
+        body.joiningDate,
+        body.leavingDate,
+        body.statusId,
+        body.salary,
+        body.shiftTiming,
+        body.address,
+        body.emergencyContact,
+        body.photoUrl
+    );
+
+    return APIResponse.send(res, APIResponse.successResponse("Staff updated successfully", result));
+});
+
+
+/* ======================= DELETE (SOFT) ======================= */
+const remove = asyncHandler(async (req, res) => {
+    const { staffId } = req.body;
+
+    const result = await service.execute("DELETE", staffId);
+
+    return APIResponse.send(res, APIResponse.successResponse("Staff deactivated successfully", result));
+});
+
+
+/* ======================= GET BY ID ======================= */
 const getById = asyncHandler(async (req, res) => {
     const id = parseInt(req.params.id);
-    const data = await staffService.getById(id);
-    return APIResponse.send(res, APIResponse.emptyOr404(data));
+
+    const data = await service.execute("GET_BY_ID", id);
+
+    return APIResponse.send(res, APIResponse.emptyOr404(data?.[0]));
 });
 
-const create = asyncHandler(async (req, res) => {
-    const result = await staffService.create(req.body);
 
-    if (result.Staff_Id === 0) {
-        return APIResponse.send(res, APIResponse.badRequestResponse(result));
-    }
+/* ======================= GET ALL ======================= */
+const getAll = asyncHandler(async (req, res) => {
+    const societyId = parseInt(req.query.society_id);
 
-    return APIResponse.send(res, APIResponse.successResponse(result));
+    const data = await service.execute("GET_ALL", null, societyId);
+
+    return APIResponse.send(res, APIResponse.successResponse("Fetched successfully", data?.[0]));
 });
 
-const update = asyncHandler(async (req, res) => {
-    const result = await staffService.update(req.body);
-    return APIResponse.send(res, APIResponse.successResponse(result));
+
+/* ======================= SEARCH ======================= */
+const search = asyncHandler(async (req, res) => {
+    const societyId = parseInt(req.query.society_id);
+    const keyword = req.query.keyword || "";
+
+    const data = await service.execute(
+        "SEARCH",
+        null,
+        societyId,
+        keyword
+    );
+
+    return APIResponse.send(res, APIResponse.successResponse("Search results", data?.[0]));
 });
 
-const remove = asyncHandler(async (req, res) => {
-    const id = parseInt(req.params.id);
-    const result = await staffService.delete(id);
-    return APIResponse.send(res, APIResponse.successResponse(result));
-});
 
 module.exports = {
-    getAll,
-    getById,
-    create,
+    insert,
     update,
-    remove
+    remove,
+    getById,
+    getAll,
+    search
 };

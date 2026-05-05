@@ -1,57 +1,158 @@
-const visitorService = require("../services/visitor.service");
+const service = require("../services/visitor.service");
 const APIResponse = require("../utils/response");
 const asyncHandler = require("../middlewares/async.middleware");
 
-const getAll = asyncHandler(async (req, res) => {
-    const data = await visitorService.getAll();
-    return APIResponse.send(res, APIResponse.emptyOr404(data));
+
+/* ======================= CHECK-IN ======================= */
+const checkIn = asyncHandler(async (req, res) => {
+    const b = req.body;
+
+    const result = await service.execute(
+        "CHECKIN",
+        null,
+        b.hostFlatId,
+        b.visitorName,
+        b.visitorPhone,
+        b.vehicleNumber,
+        b.vehicleType,
+        b.purpose,
+        b.expectedCheckout,
+        b.idProofTypeId,
+        b.idProofNumber,
+        b.approvedBy,
+        b.entryStatusId,
+        b.visitorTypeId,
+        b.notes,
+        b.createdBy,
+        b.societyId
+    );
+
+    return APIResponse.send(res, APIResponse.successResponse("Visitor checked-in", result));
 });
 
+
+/* ======================= CHECK-OUT ======================= */
+const checkOut = asyncHandler(async (req, res) => {
+    const b = req.body;
+
+    const result = await service.execute(
+        "CHECKOUT",
+        b.visitorId,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        b.entryStatusId,
+        null,
+        null,
+        null,
+        b.societyId
+    );
+
+    return APIResponse.send(res, APIResponse.successResponse("Visitor checked-out", result));
+});
+
+
+/* ======================= UPDATE ======================= */
+const update = asyncHandler(async (req, res) => {
+    const b = req.body;
+
+    const result = await service.execute(
+        "UPDATE",
+        b.visitorId,
+        b.hostFlatId,
+        b.visitorName,
+        b.visitorPhone,
+        b.vehicleNumber,
+        b.vehicleType,
+        b.purpose,
+        b.expectedCheckout,
+        b.idProofTypeId,
+        b.idProofNumber,
+        b.approvedBy,
+        b.entryStatusId,
+        b.visitorTypeId,
+        b.notes,
+        null,
+        null,
+        b.societyId
+    );
+
+    return APIResponse.send(res, APIResponse.successResponse("Visitor updated", result));
+});
+
+
+/* ======================= GET BY ID ======================= */
 const getById = asyncHandler(async (req, res) => {
     const id = parseInt(req.params.id);
-    const data = await visitorService.getById(id);
-    return APIResponse.send(res, APIResponse.emptyOr404(data));
+
+    const data = await service.execute("GET_BY_ID", id);
+
+    return APIResponse.send(res, APIResponse.emptyOr404(data?.[0]));
 });
 
-const getByFlat = asyncHandler(async (req, res) => {
-    const flatId = parseInt(req.params.flatId);
-    const data = await visitorService.getByFlat(flatId);
-    return APIResponse.send(res, APIResponse.emptyOr404(data));
+
+/* ======================= TODAY VISITORS ======================= */
+const getToday = asyncHandler(async (req, res) => {
+    const societyId = parseInt(req.query.societyId);
+
+    const data = await service.execute("GET_TODAY", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, societyId);
+
+    return APIResponse.send(res, APIResponse.successResponse("Today visitors", data?.[0]));
 });
 
-const create = asyncHandler(async (req, res) => {
 
-     // ensure Created_By is passed
-    if (!req.body.createdBy) {
-        return APIResponse.send(
-            res,
-            APIResponse.badRequestResponse({ message: "createdBy is required" })
-        );
-    }
-    const result = await visitorService.create(req.body);
+/* ======================= ACTIVE VISITORS ======================= */
+const getActive = asyncHandler(async (req, res) => {
+    const societyId = parseInt(req.query.societyId);
 
-    if (result.Visitor_Id === 0) {
-        return APIResponse.send(res, APIResponse.badRequestResponse(result));
-    }
+    const data = await service.execute("GET_ACTIVE", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, societyId);
 
-    return APIResponse.send(res, APIResponse.successResponse(result));
+    return APIResponse.send(res, APIResponse.successResponse("Active visitors", data?.[0]));
 });
 
-const update = asyncHandler(async (req, res) => {
-    const result = await visitorService.update(req.body);
-    return APIResponse.send(res, APIResponse.successResponse(result));
+
+/* ======================= SEARCH ======================= */
+const search = asyncHandler(async (req, res) => {
+    const societyId = parseInt(req.query.societyId);
+    const keyword = req.query.keyword || "";
+
+    const data = await service.execute(
+        "SEARCH",
+        null,
+        null,
+        keyword,
+        keyword,
+        keyword,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        societyId
+    );
+
+    return APIResponse.send(res, APIResponse.successResponse("Search result", data?.[0]));
 });
 
-const exitVisitor = asyncHandler(async (req, res) => {
-    const result = await visitorService.exitVisitor(req.body);
-    return APIResponse.send(res, APIResponse.successResponse(result));
-});
 
 module.exports = {
-    getAll,
-    getById,
-    getByFlat,
-    create,
+    checkIn,
+    checkOut,
     update,
-    exitVisitor
+    getById,
+    getToday,
+    getActive,
+    search
 };

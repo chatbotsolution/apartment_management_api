@@ -58,18 +58,34 @@ router.get("/AmenitiesMaster/GetAmenitiesById/:id", controller.getById);
  *           schema:
  *             type: object
  *             properties:
- *               Amenities_Name:
+ *               society_id:
+ *                 type: integer
+ *               name:
  *                 type: string
- *               Description:
+ *               category:
+ *                 type: integer
+ *               description:
  *                 type: string
- *               Amount:
+ *               location:
+ *                 type: string
+ *               capacity:
+ *                 type: integer
+ *               open_time:
+ *                 type: string
+ *                 example: "09:00:00"
+ *               close_time:
+ *                 type: string
+ *                 example: "18:00:00"
+ *               is_bookable:
+ *                 type: boolean
+ *               booking_fee:
  *                 type: number
- *               IsChargeable:
+ *               advance_booking_days:
  *                 type: integer
- *               Society_Id:
- *                 type: integer
- *               CreatedBy:
- *                 type: integer
+ *               contact_person:
+ *                 type: string
+ *               contact_phone:
+ *                 type: string
  *     responses:
  *       200:
  *         description: Amenities created successfully
@@ -91,23 +107,39 @@ router.post("/AmenitiesMaster/CreateAmenities", controller.create);
  *           schema:
  *             type: object
  *             properties:
- *               AmenitiesId:
+ *               amenity_id:
  *                 type: integer
- *               Amenities_Name:
+ *               society_id:
+ *                 type: integer
+ *               name:
  *                 type: string
- *               Description:
+ *               category:
+ *                 type: integer
+ *               description:
  *                 type: string
- *               Amount:
+ *               location:
+ *                 type: string
+ *               capacity:
+ *                 type: integer
+ *               open_time:
+ *                 type: string
+ *               close_time:
+ *                 type: string
+ *               is_bookable:
+ *                 type: boolean
+ *               booking_fee:
  *                 type: number
- *               IsChargeable:
+ *               advance_booking_days:
  *                 type: integer
- *               Society_Id:
- *                 type: integer
- *               Updated_By:
- *                 type: integer
+ *               is_active:
+ *                 type: boolean
+ *               contact_person:
+ *                 type: string
+ *               contact_phone:
+ *                 type: string
  *     responses:
  *       200:
- *         description: Amenities updated successfully
+ *         description: Updated successfully
  */
 router.put("/AmenitiesMaster/UpdateAmenities", controller.update);
 
@@ -115,33 +147,20 @@ router.put("/AmenitiesMaster/UpdateAmenities", controller.update);
 /* ======================= STATUS CHANGE ======================= */
 /**
  * @swagger
- * /AmenitiesMaster/ChangeStatus/{AmenitiesId}/{IsActive}/{Updated_By}:
- *   patch:
- *     summary: Change amenities status
+ * /AmenitiesMaster/DeleteAmenities/{id}:
+ *   delete:
+ *     summary: Soft delete amenities
  *     tags: [Amenities Master]
  *     parameters:
  *       - in: path
- *         name: AmenitiesId
+ *         name: id
  *         required: true
  *         schema:
  *           type: integer
- *           example: 1
- *       - in: path
- *         name: IsActive
- *         required: true
- *         schema:
- *           type: boolean
- *           example: true
- *       - in: path
- *         name: Updated_By
- *         required: true
- *         schema:
- *           type: integer
- *           example: 5
  *     responses:
  *       200:
- *         description: Status changed successfully
+ *         description: Deleted successfully
  */
-router.patch("/AmenitiesMaster/ChangeStatus/:AmenitiesId/:IsActive/:Updated_By", controller.changeStatus);
+router.delete("/AmenitiesMaster/DeleteAmenities/:id", controller.remove);
 
 module.exports = router;

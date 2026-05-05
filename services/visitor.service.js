@@ -1,98 +1,52 @@
 const db = require("../config/db");
 
-const getAll = async () => {
-    const [rows] = await db.query(
-        "CALL SP_Visitors(?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
-        ["GET_ALL"]
-    );
-    return rows[0];
-};
-
-const getById = async (id) => { 
-    const [rows] = await db.query(
-        "CALL SP_Visitors(?, ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
-        ["GET_BY_ID", id]
-    );
-    return rows[0];
-};
-
-const getByFlat = async (flatId) => {
-    const [rows] = await db.query(
-        "CALL SP_Visitors(?, NULL, NULL, NULL, ?, NULL, NULL, NULL, NULL)",
-        ["GET_BY_FLAT", flatId]
-    );
-    const result = rows[0]; 
-
-    return result; 
-};
-
-const create = async (data) => {
-    console.log("Visitor Data = ", data);
-
-    const { Name, Mobile, Flat_Id, Entry_Time, Purpose, createdBy } = data;
+/* ======================= EXECUTE SP ======================= */
+const execute = async (
+    action,
+    visitorId = null,
+    hostFlatId = null,
+    visitorName = null,
+    visitorPhone = null,
+    vehicleNumber = null,
+    vehicleType = null,
+    purpose = null,
+    expectedCheckout = null,
+    idProofTypeId = null,
+    idProofNumber = null,
+    approvedBy = null,
+    entryStatusId = null,
+    visitorTypeId = null,
+    notes = null,
+    createdBy = null,
+    societyId = null
+) => {
 
     const [rows] = await db.query(
-        "CALL SP_Visitors(?, NULL, ?, ?, ?, ?, NULL, ?, ?)",
+        "CALL sp_visitor(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         [
-            "INSERT",
-            Name,
-            Mobile,
-            Flat_Id,
-            Entry_Time,
-            Purpose,
-            createdBy
+            action,
+            visitorId,
+            hostFlatId,
+            visitorName,
+            visitorPhone,
+            vehicleNumber,
+            vehicleType,
+            purpose,
+            expectedCheckout,
+            idProofTypeId,
+            idProofNumber,
+            approvedBy,
+            entryStatusId,
+            visitorTypeId,
+            notes,
+            createdBy,
+            societyId
         ]
     );
 
-    if (!rows || !rows[0] || !rows[0][0]) {
-        return { message: "Insert failed or no response from DB" };
-    }
-
-    return rows[0][0];
-};
-
-const update = async (data) => {
-    const { Visitor_Id, Name, Mobile, Flat_Id, Purpose, Entry_Time } = data;
-
-    const [rows] = await db.query(
-        "CALL SP_Visitors(?, ?, ?, ?, ?, ?, NULL, ?, NULL)",
-        [
-            "UPDATE",
-            Visitor_Id,
-            Name,
-            Mobile,
-            Flat_Id,
-            Entry_Time,
-            Purpose
-        ]
-    );
-
-    return rows[0][0];
-};
-
-const exitVisitor = async (data) => {
-    const { Visitor_Id } = data;
-
-     // Auto generate current time
-    const Exit_Time = new Date(); // OR new Date().toISOString()
-
-    const [rows] = await db.query(
-        "CALL SP_Visitors(?, ?, NULL, NULL, NULL, NULL, ?, NULL, NULL)",
-        [
-            "EXIT",
-            Visitor_Id,
-            Exit_Time
-        ]
-    );
-
-    return rows[0][0];
+    return rows;
 };
 
 module.exports = {
-    getAll,
-    getById,
-    getByFlat,
-    create,
-    update,
-    exitVisitor
+    execute
 };
