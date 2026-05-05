@@ -2,134 +2,69 @@ const express = require("express");
 const router = express.Router();
 const controller = require("../controllers/userController");
 
+
+/* ======================= TAG ======================= */
 /**
  * @swagger
  * tags:
- *   name: User
- *   description: User management APIs
+ *   name: User Master
+ *   description: Authentication & user management APIs
  */
 
 
-/* ======================= GET ALL ======================= */
+/* ======================= REGISTER ======================= */
 /**
  * @swagger
- * /User/GetAllUser:
- *   get:
- *     summary: Get all users
- *     tags: [User]
- *     responses:
- *       200:
- *         description: User list retrieved successfully
+ * /User/Register:
+ *   post:
+ *     summary: Create new user
+ *     tags: [User Master]
  */
-router.get("/User/GetAllUser", controller.getAll);
+router.post("/User/Register", controller.insert);
+
+
+/* ======================= LOGIN ======================= */
+/**
+ * @swagger
+ * /User/Login:
+ *   post:
+ *     summary: User login
+ *     tags: [User Master]
+ */
+router.post("/User/Login", controller.login);
 
 
 /* ======================= GET BY ID ======================= */
 /**
  * @swagger
- * /User/GetUserById/{id}:
+ * /User/GetById/{id}:
  *   get:
- *     summary: Get user by ID
- *     tags: [User]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: User details retrieved
+ *     summary: Get user by id
+ *     tags: [User Master]
  */
-router.get("/User/GetUserById/:id", controller.getById);
+router.get("/User/GetById/:id", controller.getById);
 
 
-/* ======================= CREATE ======================= */
+/* ======================= GET ALL ======================= */
 /**
  * @swagger
- * /User/CreateUser:
+ * /User/GetAll:
+ *   get:
+ *     summary: Get all users
+ *     tags: [User Master]
+ */
+router.get("/User/GetAll", controller.getAll);
+
+
+/* ======================= STATUS ======================= */
+/**
+ * @swagger
+ * /User/UpdateStatus:
  *   post:
- *     summary: Create user
- *     tags: [User]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               Full_Name:
- *                 type: string
- *               Email:
- *                 type: string
- *               Mobile:
- *                 type: string
- *               Password_Hash:
- *                 type: string
- *               Role:
- *                 type: string
- *               Is_Active:
- *                 type: boolean
- *     responses:
- *       200:
- *         description: User created successfully
+ *     summary: Activate / Deactivate user
+ *     tags: [User Master]
  */
-router.post("/User/CreateUser", controller.create);
-
-
-/* ======================= UPDATE ======================= */
-/**
- * @swagger
- * /User/UpdateUser:
- *   put:
- *     summary: Update user
- *     tags: [User]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               F_User_Id:
- *                 type: integer
- *               Full_Name:
- *                 type: string
- *               Email:
- *                 type: string
- *               Mobile:
- *                 type: string
- *               Password_Hash:
- *                 type: string
- *               Role:
- *                 type: string
- *               Is_Active:
- *                 type: boolean
- *     responses:
- *       200:
- *         description: User updated successfully
- */
-router.put("/User/UpdateUser", controller.update);
-
-
-/* ======================= DELETE ======================= */
-/**
- * @swagger
- * /User/DeleteUser/{id}:
- *   delete:
- *     summary: Delete user
- *     tags: [User]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: User deleted successfully
- */
-router.delete("/User/DeleteUser/:id", controller.remove);
+router.post("/User/UpdateStatus", controller.updateStatus);
 
 
 module.exports = router;

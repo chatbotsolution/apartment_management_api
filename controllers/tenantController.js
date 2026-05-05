@@ -1,124 +1,161 @@
-const tenantService = require("../services/tenant.service");
+const service = require("../services/tenant.service");
 const APIResponse = require("../utils/response");
 const asyncHandler = require("../middlewares/async.middleware");
-const fs = require("fs");
-const path = require("path");
 
-/* ======================= GET ALL ======================= */
-const getAll = asyncHandler(async (req, res) => {
-    const data = await tenantService.getAll();
-    return APIResponse.send(res, APIResponse.emptyOr404(data));
+
+/* ======================= INSERT ======================= */
+const insert = asyncHandler(async (req, res) => {
+    const b = req.body;
+
+    const result = await service.execute(
+        "INSERT",
+        null,
+        b.flatId,
+        b.ownerId,
+        b.firstName,
+        b.lastName,
+        b.email,
+        b.phone,
+        b.alternatePhone,
+        b.aadhaarNumber,
+        b.dateOfBirth,
+        b.genderId,
+        b.occupation,
+        b.employerName,
+        b.totalOccupants,
+        b.leaseStart,
+        b.leaseEnd,
+        b.monthlyRent,
+        b.securityDeposit,
+        b.rentDueDay,
+        b.isActive,
+        b.permanentAddress,
+        b.emergencyContactName,
+        b.emergencyContactPhone,
+        b.profilePhotoUrl,
+        b.agreementDocUrl,
+        b.policeVerification,
+        b.society
+    );
+
+    return APIResponse.send(res, APIResponse.successResponse("Tenant created", result));
 });
+
+
+/* ======================= UPDATE ======================= */
+const update = asyncHandler(async (req, res) => {
+    const b = req.body;
+
+    const result = await service.execute(
+        "UPDATE",
+        b.tenantId,
+        b.flatId,
+        b.ownerId,
+        b.firstName,
+        b.lastName,
+        b.email,
+        b.phone,
+        b.alternatePhone,
+        b.aadhaarNumber,
+        b.dateOfBirth,
+        b.genderId,
+        b.occupation,
+        b.employerName,
+        b.totalOccupants,
+        b.leaseStart,
+        b.leaseEnd,
+        b.monthlyRent,
+        b.securityDeposit,
+        b.rentDueDay,
+        b.isActive,
+        b.permanentAddress,
+        b.emergencyContactName,
+        b.emergencyContactPhone,
+        b.profilePhotoUrl,
+        b.agreementDocUrl,
+        b.policeVerification,
+        b.society
+    );
+
+    return APIResponse.send(res, APIResponse.successResponse("Tenant updated", result));
+});
+
+
+/* ======================= DELETE ======================= */
+const remove = asyncHandler(async (req, res) => {
+    const { tenantId } = req.body;
+
+    const result = await service.execute("DELETE", tenantId);
+
+    return APIResponse.send(res, APIResponse.successResponse("Tenant deactivated", result));
+});
+
 
 /* ======================= GET BY ID ======================= */
 const getById = asyncHandler(async (req, res) => {
     const id = parseInt(req.params.id);
-    const data = await tenantService.getById(id);
-    return APIResponse.send(res, APIResponse.emptyOr404(data));
+
+    const data = await service.execute("GET_BY_ID", id);
+
+    return APIResponse.send(res, APIResponse.emptyOr404(data?.[0]));
 });
 
-/* ======================= CREATE ======================= */
-const create = asyncHandler(async (req, res) => {
 
-    const files = req.files || {};
+/* ======================= GET ALL ======================= */
+const getAll = asyncHandler(async (req, res) => {
+    const society = parseInt(req.query.society);
 
-    const saveFile = (file) => {
-        if (!file) return null;
+    const data = await service.execute("GET_ALL", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, society);
 
-        const fileName = Date.now() + "-" + file.originalname;
-        const uploadPath = path.join(__dirname, "../uploads/tenant");
-
-        if (!fs.existsSync(uploadPath)) {
-            fs.mkdirSync(uploadPath, { recursive: true });
-        }
-
-        const filePath = path.join(uploadPath, fileName);
-        fs.writeFileSync(filePath, file.buffer);
-
-        return fileName;
-    };
-
-    const payload = {
-        ...req.body,
-
-        Aadhaar_Document: saveFile(files.Aadhaar_Document?.[0]),
-        PAN_Document: saveFile(files.PAN_Document?.[0]),
-        Passport_Document: saveFile(files.Passport_Document?.[0]),
-        Profile_Photo: saveFile(files.Profile_Photo?.[0]),
-    };
-
-    const result = await tenantService.create(payload);
-
-    return APIResponse.send(res, APIResponse.successResponse(result));
-});
-/* ======================= UPDATE ======================= */
-const update = asyncHandler(async (req, res) => {
-
-    const files = req.files || {};
-
-    const saveFile = (file, oldFile) => {
-        if (!file) return oldFile; // keep old file
-
-        const fileName = Date.now() + "-" + file.originalname;
-        const uploadPath = path.join(__dirname, "../uploads/tenant");
-
-        if (!fs.existsSync(uploadPath)) {
-            fs.mkdirSync(uploadPath, { recursive: true });
-        }
-
-        const filePath = path.join(uploadPath, fileName);
-
-        fs.writeFileSync(filePath, file.buffer);
-
-        return fileName;
-    };
-
-    const payload = {
-        ...req.body,
-
-        Aadhaar_Document: saveFile(files.Aadhaar_Document?.[0], req.body.Aadhaar_Document),
-        PAN_Document: saveFile(files.PAN_Document?.[0], req.body.PAN_Document),
-        Passport_Document: saveFile(files.Passport_Document?.[0], req.body.Passport_Document),
-        Profile_Photo: saveFile(files.Profile_Photo?.[0], req.body.Profile_Photo),
-    };
-
-    const result = await tenantService.update(payload);
-
-    return APIResponse.send(res, APIResponse.successResponse(result));
+    return APIResponse.send(res, APIResponse.successResponse("Fetched", data?.[0]));
 });
 
-/* ======================= STATUS CHANGE ======================= */
-const changeStatus = asyncHandler(async (req, res) => {
 
-    const { Tenant_Id, Is_Active, Updated_By } = req.params;
+/* ======================= SEARCH ======================= */
+const search = asyncHandler(async (req, res) => {
+    const society = parseInt(req.query.society);
+    const keyword = req.query.keyword || "";
 
-    const result = await tenantService.changeStatus({
-        Tenant_Id: parseInt(Tenant_Id),
-        Is_Active: Is_Active === "true" || Is_Active === true,
-        Updated_By: parseInt(Updated_By)
-    });
+    const data = await service.execute(
+        "SEARCH",
+        null,
+        null,
+        null,
+        keyword,
+        keyword,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        society
+    );
 
-    return APIResponse.send(res, APIResponse.successResponse(result));
+    return APIResponse.send(res, APIResponse.successResponse("Search results", data?.[0]));
 });
 
-/* ======================= DELETE ======================= */
-const remove = asyncHandler(async (req, res) => {
-
-    const { Tenant_Id, Updated_By } = req.params;
-
-    const result = await tenantService.remove({
-        Tenant_Id: parseInt(Tenant_Id),
-        Updated_By: parseInt(Updated_By)
-    });
-
-    return APIResponse.send(res, APIResponse.successResponse(result));
-});
 
 module.exports = {
-    getAll,
-    getById,
-    create,
+    insert,
     update,
-    changeStatus,
-    remove
+    remove,
+    getById,
+    getAll,
+    search
 };

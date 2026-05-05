@@ -2,144 +2,71 @@ const express = require("express");
 const router = express.Router();
 const controller = require("../controllers/parkingController");
 
-/**
- * @swagger
- * tags:
- *   name: Parking 
- */
 
-/* ======================= GET ALL ======================= */
+/* ======================= ASSIGN ======================= */
 /**
  * @swagger
- * /Parking/GetAllParking:
- *   get:
- *     summary: Get all parking records
- *     tags: [Parking]
- *     responses:
- *       200:
- *         description: Parking list
- */
-router.get("/Parking/GetAllParking", controller.getAll);
-
-/* ======================= GET BY ID ======================= */
-/**
- * @swagger
- * /Parking/GetParkingById/{id}:
- *   get:
- *     summary: Get parking by ID
- *     tags: [Parking]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Parking details
- */
-router.get("/Parking/GetParkingById/:id", controller.getById);
-
-/* ======================= GET BY FLAT ======================= */
-/**
- * @swagger
- * /Parking/GetParkingByFlat/{flatId}:
- *   get:
- *     summary: Get parking by Flat ID
- *     tags: [Parking]
- *     parameters:
- *       - in: path
- *         name: flatId
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Parking list for a flat
- */
-router.get("/Parking/GetParkingByFlat/:flatId", controller.getByFlat);
-
-/* ======================= CREATE ======================= */
-/**
- * @swagger
- * /Parking/CreateParking:
+ * /Parking/Assign:
  *   post:
- *     summary: Create parking
- *     tags: [Parking]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               Flat_Id:
- *                 type: integer
- *               Vehicle_Number:
- *                 type: string
- *               Vehicle_Type:
- *                 type: string
- *               parkingId:
- *                 type: integer
- *               createdBy:
- *                 type: integer
- *     responses:
- *       200:
- *         description: Parking created successfully
+ *     summary: Assign parking slot
+ *     tags: [Parking Allotment]
  */
-router.post("/Parking/CreateParking", controller.create);
+router.post("/Parking/Assign", controller.assign);
+
 
 /* ======================= UPDATE ======================= */
 /**
  * @swagger
- * /Parking/UpdateParking:
+ * /Parking/Update:
  *   put:
- *     summary: Update parking
- *     tags: [Parking]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               ParkingAllot_Id:
- *                 type: integer
- *               Flat_Id:
- *                 type: integer
- *               Vehicle_Number:
- *                 type: string
- *               Vehicle_Type:
- *                 type: string
- *               parkingId:
- *                 type: integer
- *               isActive:
- *                 type: integer
- *               updatedBy:
- *                 type: integer
- *     responses:
- *       200:
- *         description: Parking updated successfully
+ *     summary: Update parking allotment
+ *     tags: [Parking Allotment]
  */
-router.put("/Parking/UpdateParking", controller.update);
+router.put("/Parking/Update", controller.update);
 
-/* ======================= DELETE ======================= */
+
+/* ======================= RELEASE ======================= */
 /**
  * @swagger
- * /Parking/DeleteParking/{id}:
- *   delete:
- *     summary: Delete parking
- *     tags: [Parking]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Parking deleted successfully
+ * /Parking/Release:
+ *   post:
+ *     summary: Release parking slot
+ *     tags: [Parking Allotment]
  */
-router.delete("/Parking/DeleteParking/:id", controller.remove);
+router.post("/Parking/Release", controller.release);
+
+
+/* ======================= GET BY ID ======================= */
+/**
+ * @swagger
+ * /Parking/GetById/{id}:
+ *   get:
+ *     summary: Get parking allotment by id
+ *     tags: [Parking Allotment]
+ */
+router.get("/Parking/GetById/:id", controller.getById);
+
+
+/* ======================= GET ALL ======================= */
+/**
+ * @swagger
+ * /Parking/GetAll:
+ *   get:
+ *     summary: Get all active parking allotments
+ *     tags: [Parking Allotment]
+ */
+router.get("/Parking/GetAll", controller.getAll);
+
+
+/* ======================= HISTORY ======================= */
+/**
+ * @swagger
+ * /Parking/GetHistory:
+ *   get:
+ *     summary: Get parking history by slot
+ *     tags: [Parking Allotment]
+ */
+router.get("/Parking/GetHistory", controller.getHistoryBySlot);
+
 
 module.exports = router;

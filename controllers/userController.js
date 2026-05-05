@@ -1,37 +1,89 @@
-const userService = require("../services/user.service");
+const service = require("../services/user.service");
 const APIResponse = require("../utils/response");
 const asyncHandler = require("../middlewares/async.middleware");
 
-// GET ALL
-const getAll = asyncHandler(async (req, res) => {
-    const data = await userService.getAll();
-    return APIResponse.send(res, APIResponse.emptyOr404(data));
+
+/* ======================= REGISTER USER ======================= */
+const insert = asyncHandler(async (req, res) => {
+    const b = req.body;
+
+    const result = await service.execute(
+        "INSERT",
+        null,
+        b.ownerId,
+        b.tenantId,
+        b.staffId,
+        b.username,
+        b.passwordHash,
+        b.roleId,
+        b.isActive
+    );
+
+    return APIResponse.send(res, APIResponse.successResponse("User created", result));
 });
 
-// GET BY ID
+
+/* ======================= LOGIN ======================= */
+const login = asyncHandler(async (req, res) => {
+    const { username, passwordHash } = req.body;
+
+    const result = await service.execute(
+        "LOGIN",
+        null,
+        null,
+        null,
+        null,
+        username,
+        passwordHash
+    );
+
+    return APIResponse.send(res, APIResponse.successResponse("Login success", result?.[0]));
+});
+
+
+/* ======================= GET BY ID ======================= */
 const getById = asyncHandler(async (req, res) => {
     const id = parseInt(req.params.id);
-    const data = await userService.getById(id);
-    return APIResponse.send(res, APIResponse.emptyOr404(data));
+
+    const data = await service.execute("GET_BY_ID", id);
+
+    return APIResponse.send(res, APIResponse.emptyOr404(data?.[0]));
 });
 
-// CREATE
-const create = asyncHandler(async (req, res) => {
-    const result = await userService.create(req.body);
-    return APIResponse.send(res, APIResponse.successResponse(result));
+
+/* ======================= GET ALL ======================= */
+const getAll = asyncHandler(async (req, res) => {
+
+    const data = await service.execute("GET_ALL");
+
+    return APIResponse.send(res, APIResponse.successResponse("Fetched users", data?.[0]));
 });
 
-// UPDATE
-const update = asyncHandler(async (req, res) => {
-    const result = await userService.update(req.body);
-    return APIResponse.send(res, APIResponse.successResponse(result));
+
+/* ======================= STATUS UPDATE ======================= */
+const updateStatus = asyncHandler(async (req, res) => {
+    const { userId, isActive } = req.body;
+
+    const result = await service.execute(
+        "STATUS",
+        userId,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        isActive
+    );
+
+    return APIResponse.send(res, APIResponse.successResponse("Status updated", result));
 });
 
-// DELETE
-const remove = asyncHandler(async (req, res) => {
-    const id = parseInt(req.params.id);
-    const result = await userService.delete(id);
-    return APIResponse.send(res, APIResponse.successResponse(result));
-});
 
-module.exports = { getAll, getById, create, update, remove };
+module.exports = {
+    insert,
+    login,
+    getById,
+    getAll,
+    updateStatus
+};

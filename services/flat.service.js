@@ -1,122 +1,110 @@
 const db = require("../config/db");
 
-// GET ALL
-const getAll = async () => {
+/* ======================= GET ALL ======================= */
+const getAll = async (societyId) => {
     const [rows] = await db.query(
-        "CALL SP_Flats(?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
-        ["GET_ALL"]
+        "CALL sp_flat('GET_ALL', NULL, NULL, ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
+        [societyId]
     );
     return rows[0];
 };
 
-// GET BY ID
+
+/* ======================= GET BY ID ======================= */
 const getById = async (id) => {
     const [rows] = await db.query(
-        "CALL SP_Flats(?, ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
-        ["GET_BY_ID", id]
+        "CALL sp_flat('GET_BY_ID', ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
+        [id]
     );
-    return rows[0][0];
-};
-// GET BY BLOCK
-const getByBlock = async (blockId) => {
-    const [rows] = await db.query(
-        "CALL SP_Flats(?, NULL, ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
-        ["GET_BY_BLOCK", blockId]
-    );
-    return rows[0]; // Returns array of flats in that block
-};
-
-// GET AVAILABLE PARKING
-const getAvailableParking = async () => {
-    const [rows] = await db.query(
-        "CALL SP_Flats(?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
-        ["GET_AVAILABLE"]
-    );
-
     return rows[0];
 };
 
-// INSERT
+
+/* ======================= CREATE ======================= */
 const create = async (data) => {
     const {
+        Floor_Id,
         Block_Id,
         Flat_Number,
-        Floor_Number,
         Flat_Type,
-        Super_Builtup_Area,
-        BuiltUp_Area,
-        Carpet_Area,
-        Occup_Status,
-        isRent,
-        Parking,
-        parkingId
+        Area_Sqft,
+        Bedrooms,
+        Bathrooms,
+        Balconies,
+        Facing_Id,
+        Status_Id,
+        Is_Corner_Flat,
+        Monthly_Maintenance
     } = data;
 
     const [rows] = await db.query(
-        "CALL SP_Flats(?, NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "CALL sp_flat('INSERT', NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         [
-            "INSERT",
+            Floor_Id,
             Block_Id,
             Flat_Number,
-            Floor_Number,
             Flat_Type,
-            Super_Builtup_Area,
-            BuiltUp_Area,
-            Carpet_Area,
-            Occup_Status,
-            isRent,
-            Parking,
-            parkingId
+            Area_Sqft,
+            Bedrooms,
+            Bathrooms,
+            Balconies,
+            Facing_Id,
+            Status_Id,
+            Is_Corner_Flat,
+            Monthly_Maintenance
         ]
     );
 
-    return rows[0][0];
+    return rows[0][0] || { Message: "Insert failed" };
 };
 
-// UPDATE
+
+/* ======================= UPDATE ======================= */
 const update = async (data) => {
     const {
         Flat_Id,
+        Floor_Id,
         Block_Id,
         Flat_Number,
-        Floor_Number,
         Flat_Type,
-        Super_Builtup_Area,
-        BuiltUp_Area,
-        Carpet_Area,
-        Occup_Status,
-        isRent,
-        Parking,
-        parkingId
+        Area_Sqft,
+        Bedrooms,
+        Bathrooms,
+        Balconies,
+        Facing_Id,
+        Status_Id,
+        Is_Corner_Flat,
+        Monthly_Maintenance
     } = data;
 
     const [rows] = await db.query(
-        "CALL SP_Flats(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "CALL sp_flat('UPDATE', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         [
-            "UPDATE",
             Flat_Id,
+            Floor_Id,
             Block_Id,
             Flat_Number,
-            Floor_Number,
             Flat_Type,
-            Super_Builtup_Area,
-            BuiltUp_Area,
-            Carpet_Area,
-            Occup_Status,
-            isRent,
-            Parking,
-            parkingId
+            Area_Sqft,
+            Bedrooms,
+            Bathrooms,
+            Balconies,
+            Facing_Id,
+            Status_Id,
+            Is_Corner_Flat,
+            Monthly_Maintenance
         ]
     );
 
     return rows[0][0];
 };
 
-// DELETE
+
+/* ======================= DELETE ======================= */
 const remove = async (id) => {
     const [rows] = await db.query(
-        "CALL SP_Flats(?, ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
-        ["DELETE", id]
+        "CALL sp_flat('DELETE', ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
+        [id]
     );
     return rows[0][0];
 };
@@ -124,9 +112,7 @@ const remove = async (id) => {
 module.exports = {
     getAll,
     getById,
-    getByBlock,
-    getAvailableParking,
     create,
     update,
-    delete: remove
+    remove
 };

@@ -2,128 +2,65 @@ const express = require("express");
 const router = express.Router();
 const controller = require("../controllers/noticeController");
 
-/**
- * @swagger
- * tags:
- *   name: Notice Master
- */
-
 
 /* ======================= GET ALL ======================= */
 /**
  * @swagger
- * /NoticeMaster/GetAllNotice:
+ * /Notice/GetAll:
  *   get:
- *     summary: Get all notices
- *     tags: [Notice Master]
- *     responses:
- *       200:
- *         description: Notice list
+ *     summary: Get all notices by society
+ *     tags: [Notice]
+ *     parameters:
+ *       - in: query
+ *         name: society_id
+ *         required: true
+ *         schema:
+ *           type: integer
  */
-router.get("/NoticeMaster/GetAllNotice", controller.getAll);
+router.get("/Notice/GetAll", controller.getAll);
 
 
 /* ======================= GET BY ID ======================= */
 /**
  * @swagger
- * /NoticeMaster/GetNoticeById/{id}:
+ * /Notice/GetById/{id}:
  *   get:
  *     summary: Get notice by ID
- *     tags: [Notice Master]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Notice details
+ *     tags: [Notice]
  */
-router.get("/NoticeMaster/GetNoticeById/:id", controller.getById);
+router.get("/Notice/GetById/:id", controller.getById);
 
 
 /* ======================= CREATE ======================= */
 /**
  * @swagger
- * /NoticeMaster/CreateNotice:
+ * /Notice/Create:
  *   post:
  *     summary: Create notice
- *     tags: [Notice Master]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               Title:
- *                 type: string
- *               Description:
- *                 type: string
- *               Posted_By:
- *                 type: integer
- *               Posted_On:
- *                 type: string
- *               Expiry_Date:
- *                 type: string
- *     responses:
- *       200:
- *         description: Notice created successfully
+ *     tags: [Notice]
  */
-router.post("/NoticeMaster/CreateNotice", controller.create);
+router.post("/Notice/Create", controller.create);
 
 
 /* ======================= UPDATE ======================= */
 /**
  * @swagger
- * /NoticeMaster/UpdateNotice:
+ * /Notice/Update:
  *   put:
  *     summary: Update notice
- *     tags: [Notice Master]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               Notice_Id:
- *                 type: integer
- *               Title:
- *                 type: string
- *               Description:
- *                 type: string
- *               Posted_By:
- *                 type: integer
- *               Posted_On:
- *                 type: string
- *               Expiry_Date:
- *                 type: string
- *     responses:
- *       200:
- *         description: Notice updated successfully
+ *     tags: [Notice]
  */
-router.put("/NoticeMaster/UpdateNotice", controller.update);
+router.put("/Notice/Update", controller.update);
 
 
 /* ======================= DELETE ======================= */
 /**
  * @swagger
- * /NoticeMaster/DeleteNotice/{id}:
+ * /Notice/Delete/{id}:
  *   delete:
  *     summary: Delete notice
- *     tags: [Notice Master]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Notice deleted successfully
+ *     tags: [Notice]
  */
-router.delete("/NoticeMaster/DeleteNotice/:id", controller.remove);
+router.delete("/Notice/Delete/:id", controller.remove);
 
 module.exports = router;

@@ -2,53 +2,22 @@ const express = require("express");
 const router = express.Router();
 const controller = require("../controllers/societyController");
 
+
+/* ======================= TAG ======================= */
 /**
  * @swagger
  * tags:
  *   name: Society Master
+ *   description: Society management APIs
  */
 
 
-/* ======================= GET ALL ======================= */
+/* ======================= INSERT ======================= */
 /**
  * @swagger
- * /SocietyMaster/GetAllSociety:
- *   get:
- *     summary: Get all societies
- *     tags: [Society Master]
- *     responses:
- *       200:
- *         description: Society list
- */
-router.get("/SocietyMaster/GetAllSociety", controller.getAll);
-
-
-/* ======================= GET BY ID ======================= */
-/**
- * @swagger
- * /SocietyMaster/GetSocietyById/{id}:
- *   get:
- *     summary: Get society by ID
- *     tags: [Society Master]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Society details
- */
-router.get("/SocietyMaster/GetSocietyById/:id", controller.getById);
-
-
-/* ======================= CREATE ======================= */
-/**
- * @swagger
- * /SocietyMaster/CreateSociety:
+ * /Society/Insert:
  *   post:
- *     summary: Create society
+ *     summary: Create new society
  *     tags: [Society Master]
  *     requestBody:
  *       required: true
@@ -57,31 +26,41 @@ router.get("/SocietyMaster/GetSocietyById/:id", controller.getById);
  *           schema:
  *             type: object
  *             properties:
- *               Society_Name:
+ *               name:
  *                 type: string
- *               Address:
+ *               address:
  *                 type: string
- *               City:
- *                 type: string
- *               State:
- *                 type: string
- *               Pincode:
- *                 type: string
- *               Created_By:
+ *               city:
  *                 type: integer
- *     responses:
- *       200:
- *         description: Society created successfully
+ *               state:
+ *                 type: integer
+ *               pincode:
+ *                 type: string
+ *               registrationNo:
+ *                 type: string
+ *               establishedDate:
+ *                 type: string
+ *                 format: date
+ *               contactEmail:
+ *                 type: string
+ *               contactPhone:
+ *                 type: string
+ *               totalBlocks:
+ *                 type: integer
+ *               totalUnits:
+ *                 type: integer
+ *               website:
+ *                 type: string
  */
-router.post("/SocietyMaster/CreateSociety", controller.create);
+router.post("/Society/Insert", controller.insert);
 
 
 /* ======================= UPDATE ======================= */
 /**
  * @swagger
- * /SocietyMaster/UpdateSociety:
+ * /Society/Update:
  *   put:
- *     summary: Update society
+ *     summary: Update society details
  *     tags: [Society Master]
  *     requestBody:
  *       required: true
@@ -90,33 +69,63 @@ router.post("/SocietyMaster/CreateSociety", controller.create);
  *           schema:
  *             type: object
  *             properties:
- *               Society_Id:
+ *               societyId:
  *                 type: integer
- *               Society_Name:
+ *               name:
  *                 type: string
- *               Address:
+ *               address:
  *                 type: string
- *               City:
- *                 type: string
- *               State:
- *                 type: string
- *               Pincode:
- *                 type: string
- *               Created_By:
+ *               city:
  *                 type: integer
- *     responses:
- *       200:
- *         description: Society updated successfully
+ *               state:
+ *                 type: integer
+ *               pincode:
+ *                 type: string
+ *               registrationNo:
+ *                 type: string
+ *               establishedDate:
+ *                 type: string
+ *                 format: date
+ *               contactEmail:
+ *                 type: string
+ *               contactPhone:
+ *                 type: string
+ *               totalBlocks:
+ *                 type: integer
+ *               totalUnits:
+ *                 type: integer
+ *               website:
+ *                 type: string
  */
-router.put("/SocietyMaster/UpdateSociety", controller.update);
+router.put("/Society/Update", controller.update);
 
 
-/* ======================= DELETE ======================= */
+/* ======================= DELETE (SOFT) ======================= */
 /**
  * @swagger
- * /SocietyMaster/DeleteSociety/{id}:
- *   delete:
- *     summary: Delete society
+ * /Society/Delete:
+ *   post:
+ *     summary: Soft delete society
+ *     tags: [Society Master]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               societyId:
+ *                 type: integer
+ */
+router.post("/Society/Delete", controller.remove);
+
+
+/* ======================= GET BY ID ======================= */
+/**
+ * @swagger
+ * /Society/GetById/{id}:
+ *   get:
+ *     summary: Get society by id
  *     tags: [Society Master]
  *     parameters:
  *       - in: path
@@ -124,10 +133,19 @@ router.put("/SocietyMaster/UpdateSociety", controller.update);
  *         required: true
  *         schema:
  *           type: integer
- *     responses:
- *       200:
- *         description: Society deleted successfully
  */
-router.delete("/SocietyMaster/DeleteSociety/:id", controller.remove);
+router.get("/Society/GetById/:id", controller.getById);
+
+
+/* ======================= GET ALL ======================= */
+/**
+ * @swagger
+ * /Society/GetAll:
+ *   get:
+ *     summary: Get all active societies
+ *     tags: [Society Master]
+ */
+router.get("/Society/GetAll", controller.getAll);
+
 
 module.exports = router;

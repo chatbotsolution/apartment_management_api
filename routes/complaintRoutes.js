@@ -1,133 +1,75 @@
 const express = require("express");
 const router = express.Router();
-const controller = require("../controllers/complaintController");
-
-/**
- * @swagger
- * tags:
- *   name: User Requests
- *   description: Management of user complaints and service requests
- */
+const controller = require("../controllers/complaint.controller");
 
 /* ======================= GET ALL ======================= */
 /**
  * @swagger
- * /Complaints/GetAllComplaints:
+ * /Complaint/GetAll:
  *   get:
- *     summary: Get all user requests
- *     tags: [User Requests]
- *     responses:
- *       200:
- *         description: List of complaints/requests
+ *     summary: Get all complaints
+ *     tags: [Complaint]
  */
-router.get("/Complaints/GetAllComplaints", controller.getAll);
+router.get("/Complaint/GetAll", controller.getAll);
 
 /* ======================= GET BY ID ======================= */
 /**
  * @swagger
- * /Complaints/GetComplaintById/{id}:
+ * /Complaint/GetById/{id}:
  *   get:
- *     summary: Get request by ID
- *     tags: [User Requests]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Request details
+ *     summary: Get complaint by ID
+ *     tags: [Complaint]
  */
-router.get("/Complaints/GetComplaintById/:id", controller.getById);
+router.get("/Complaint/GetById/:id", controller.getById);
 
 /* ======================= CREATE ======================= */
 /**
  * @swagger
- * /Complaints/RegisterComplaint:
+ * /Complaint/Create:
  *   post:
- *     summary: Register a new complaint/request
- *     tags: [User Requests]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               Flat_Id:
- *                 type: integer
- *               User_Id:
- *                 type: integer
- *               complaintTypeId:
- *                 type: integer
- *               Description:
- *                 type: string
- *               Priority:
- *                 type: string
- *               req_type:
- *                 type: string
- *               req_Id:
- *                 type: string
- *     responses:
- *       200:
- *         description: Request submitted successfully
+ *     summary: Create complaint
+ *     tags: [Complaint]
  */
-router.post("/Complaints/RegisterComplaint", controller.create);
+router.post("/Complaint/Create", controller.create);
 
 /* ======================= UPDATE ======================= */
 /**
  * @swagger
- * /Complaints/UpdateComplaint:
+ * /Complaint/Update:
  *   put:
- *     summary: Update complaint/request
- *     tags: [User Requests]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               Complaint_Id:
- *                 type: integer
- *               Flat_Id:
- *                 type: integer
- *               complaintTypeId:
- *                 type: integer
- *               Description:
- *                 type: string
- *               Status:
- *                 type: string
- *               Priority:
- *                 type: string
- *               req_type:
- *                 type: string
- *               req_Id:
- *                 type: string
- *     responses:
- *       200:
- *         description: Request updated successfully
+ *     summary: Update complaint
+ *     tags: [Complaint]
  */
-router.put("/Complaints/UpdateComplaint", controller.update);
+router.put("/Complaint/Update", controller.update);
 
-/* ======================= DELETE ======================= */
+/* ======================= ASSIGN ======================= */
 /**
  * @swagger
- * /Complaints/DeleteComplaint/{id}:
- *   delete:
- *     summary: Delete request
- *     tags: [User Requests]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Request deleted successfully
+ * /Complaint/Assign:
+ *   patch:
+ *     summary: Assign complaint to staff
+ *     tags: [Complaint]
  */
-router.delete("/Complaints/DeleteComplaint/:id", controller.remove);
+router.patch("/Complaint/Assign", controller.assign);
+
+/* ======================= RESOLVE ======================= */
+/**
+ * @swagger
+ * /Complaint/Resolve:
+ *   patch:
+ *     summary: Resolve complaint
+ *     tags: [Complaint]
+ */
+router.patch("/Complaint/Resolve", controller.resolve);
+
+/* ======================= RATE ======================= */
+/**
+ * @swagger
+ * /Complaint/Rate:
+ *   patch:
+ *     summary: Rate complaint
+ *     tags: [Complaint]
+ */
+router.patch("/Complaint/Rate", controller.rate);
 
 module.exports = router;

@@ -1,48 +1,47 @@
-const floorService = require("../services/floor.service");
+const service = require("../services/floor.service");
 const APIResponse = require("../utils/response");
 const asyncHandler = require("../middlewares/async.middleware");
 
-// ================= GET ALL =================
+
+/* ======================= GET ALL ======================= */
 const getAll = asyncHandler(async (req, res) => {
-    const data = await floorService.getAll();
-    return APIResponse.send(res, APIResponse.emptyOr404(data));
-});
+    const societyId = parseInt(req.query.society_id);
 
-// ================= GET BY ID =================
-const getById = asyncHandler(async (req, res) => {
-    const id = parseInt(req.params.id);
-    const data = await floorService.getById(id);
-    return APIResponse.send(res, APIResponse.emptyOr404(data));
-});
-
-// ================= CREATE =================
-const create = asyncHandler(async (req, res) => {
-    req.body.Created_By = req.body.Created_By || 1;
-
-    const result = await floorService.create(req.body);
-
-    if (result.Floor_Id === 0) {
-        return APIResponse.send(res, APIResponse.badRequestResponse(result));
+    if (!societyId) {
+        return APIResponse.send(res, APIResponse.badRequestResponse("society_id required"));
     }
 
+    const data = await service.getAll(societyId);
+    return APIResponse.send(res, APIResponse.successResponse(data));
+});
+
+
+/* ======================= GET BY ID ======================= */
+const getById = asyncHandler(async (req, res) => {
+    const id = parseInt(req.params.id);
+    const data = await service.getById(id);
+    return APIResponse.send(res, APIResponse.successResponse(data));
+});
+
+
+/* ======================= CREATE ======================= */
+const create = asyncHandler(async (req, res) => {
+    const result = await service.create(req.body);
     return APIResponse.send(res, APIResponse.successResponse(result));
 });
 
-// ================= UPDATE =================
+
+/* ======================= UPDATE ======================= */
 const update = asyncHandler(async (req, res) => {
-    req.body.Updated_By = req.body.Updated_By || 1;
-
-    const result = await floorService.update(req.body);
-
+    const result = await service.update(req.body);
     return APIResponse.send(res, APIResponse.successResponse(result));
 });
 
-// ================= DELETE =================
+
+/* ======================= DELETE ======================= */
 const remove = asyncHandler(async (req, res) => {
     const id = parseInt(req.params.id);
-
-    const result = await floorService.delete(id);
-
+    const result = await service.remove(id);
     return APIResponse.send(res, APIResponse.successResponse(result));
 });
 

@@ -1,21 +1,20 @@
 const db = require("../config/db");
 
-
 /* ======================= GET ALL ======================= */
-const getAll = async () => {
+const getAll = async (societyId) => {
     const [rows] = await db.query(
-        "CALL SP_Amenities(NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, ?, NULL, NULL)",
-        ["GET"]
+        "CALL sp_amenity('GET_ALL', NULL, ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
+        [societyId]
     );
     return rows[0];
 };
 
 
 /* ======================= GET BY ID ======================= */
-const getById = async (id) => {
+const getById = async (id, societyId) => {
     const [rows] = await db.query(
-        "CALL SP_Amenities(?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, ?, NULL, NULL)",
-        [id, "GET"]
+        "CALL sp_amenity('GET_BY_ID', ?, ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
+        [id, societyId]
     );
     return rows[0];
 };
@@ -24,30 +23,43 @@ const getById = async (id) => {
 /* ======================= CREATE ======================= */
 const create = async (data) => {
     const {
-        Amenities_Name,
-        Description,
-        Amount,
-        IsChargeable,
-        Society_Id,
-        CreatedBy
+        society_id,
+        name,
+        category,
+        description,
+        location,
+        capacity,
+        open_time,
+        close_time,
+        is_bookable,
+        booking_fee,
+        advance_booking_days,
+        is_active,
+        contact_person,
+        contact_phone
     } = data;
 
     const [rows] = await db.query(
-        "CALL SP_Amenities(NULL, ?, ?, ?, ?, ?, NULL, ?, NOW(), ?, NULL, NULL)",
+        `CALL sp_amenity(
+            'INSERT', NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+        )`,
         [
-            Amenities_Name,
-            Description,
-            Amount,
-            IsChargeable,
-            Society_Id,
-            CreatedBy,
-            "INSERT"
+            society_id,
+            name,
+            category,
+            description,
+            location,
+            capacity,
+            open_time,
+            close_time,
+            is_bookable,
+            booking_fee,
+            advance_booking_days,
+            is_active ?? 1,
+            contact_person,
+            contact_phone
         ]
     );
-
-    if (!rows || !rows[0] || !rows[0][0]) {
-        return { AmenitiesId: 0, Message: "Insert failed" };
-    }
 
     return rows[0][0];
 };
@@ -56,26 +68,43 @@ const create = async (data) => {
 /* ======================= UPDATE ======================= */
 const update = async (data) => {
     const {
-        AmenitiesId,
-        Amenities_Name,
-        Description,
-        Amount,
-        IsChargeable,
-        Society_Id,
-        Updated_By
+        amenity_id,
+        society_id,
+        name,
+        category,
+        description,
+        location,
+        capacity,
+        open_time,
+        close_time,
+        is_bookable,
+        booking_fee,
+        advance_booking_days,
+        is_active,
+        contact_person,
+        contact_phone
     } = data;
 
     const [rows] = await db.query(
-        "CALL SP_Amenities(?, ?, ?, ?, ?, ?, NULL, NULL, NULL, ?, ?, NOW())",
+        `CALL sp_amenity(
+            'UPDATE', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+        )`,
         [
-            AmenitiesId,
-            Amenities_Name,
-            Description,
-            Amount,
-            IsChargeable,
-            Society_Id,
-            "UPDATE",
-            Updated_By
+            amenity_id,
+            society_id,
+            name,
+            category,
+            description,
+            location,
+            capacity,
+            open_time,
+            close_time,
+            is_bookable,
+            booking_fee,
+            advance_booking_days,
+            is_active,
+            contact_person,
+            contact_phone
         ]
     );
 
@@ -83,24 +112,12 @@ const update = async (data) => {
 };
 
 
-/* ======================= STATUS CHANGE ======================= */
-const changeStatus = async (data) => {
-    const { AmenitiesId, IsActive, Updated_By } = data;
-
+/* ======================= DELETE ======================= */
+const remove = async (amenity_id, society_id) => {
     const [rows] = await db.query(
-        "CALL SP_Amenities(?, NULL, NULL, NULL, NULL, NULL, ?, NULL, NULL, ?, ?, NULL)",
-        [
-            AmenitiesId,     // 1st
-            IsActive,        // 7th
-            "STATUS_CHNG",   // 10th (P_Action)
-            Updated_By       // 11th
-        ]
+        "CALL sp_amenity('DELETE', ?, ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
+        [amenity_id, society_id]
     );
-
-    if (!rows || !rows[0] || !rows[0][0]) {
-        return { Message: "Status change failed" };
-    }
-
     return rows[0][0];
 };
 
@@ -110,5 +127,5 @@ module.exports = {
     getById,
     create,
     update,
-    changeStatus
+    remove
 };

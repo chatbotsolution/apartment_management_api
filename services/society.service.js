@@ -1,81 +1,46 @@
 const db = require("../config/db");
 
-const getAll = async () => {
-    const [rows] = await db.query(
-        "CALL SP_Society(?, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
-        ["GET_ALL"]
-    );
-    return rows[0];
-};
+/* ======================= EXECUTE SP ======================= */
+const execute = async (
+    action,
+    societyId = null,
+    name = null,
+    address = null,
+    city = null,
+    state = null,
+    pincode = null,
+    registrationNo = null,
+    establishedDate = null,
+    contactEmail = null,
+    contactPhone = null,
+    totalBlocks = null,
+    totalUnits = null,
+    website = null
+) => {
 
-const getById = async (id) => {
     const [rows] = await db.query(
-        "CALL SP_Society(?, ?, NULL, NULL, NULL, NULL, NULL, NULL)",
-        ["GET_BY_ID", id]
-    );
-    return rows[0];
-};
-
-const create = async (data) => {
-    const { Society_Name, Address, City, State, Pincode, Created_By } = data;
-
-    const [rows] = await db.query(
-        "CALL SP_Society(?, NULL, ?, ?, ?, ?, ?, ?)",
+        "CALL sp_society(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         [
-            "INSERT",
-            Society_Name,
-            Address,
-            City,
-            State,
-            Pincode,
-            Created_By
+            action,
+            societyId,
+            name,
+            address,
+            city,
+            state,
+            pincode,
+            registrationNo,
+            establishedDate,
+            contactEmail,
+            contactPhone,
+            totalBlocks,
+            totalUnits,
+            website
         ]
     );
 
-    if (!rows || !rows[0] || !rows[0][0]) {
-        return { message: "Insert failed or no response from DB" };
-    }
-
-    return rows[0][0];
-};
-
-const update = async (data) => {
-    const { Society_Id, Society_Name, Address, City, State, Pincode, Created_By } = data;
-
-    const [rows] = await db.query(
-        "CALL SP_Society(?, ?, ?, ?, ?, ?, ?, ?)",
-        [
-            "UPDATE",
-            Society_Id,
-            Society_Name,
-            Address,
-            City,
-            State,
-            Pincode,
-            Created_By
-        ]
-    );
-
-    if (!rows || !rows[0] || !rows[0][0]) {
-        return { message: "Update failed or no response from DB" };
-    }
-
-    return rows[0][0];
-};
-
-const remove = async (id) => {
-    const [rows] = await db.query(
-        "CALL SP_Society(?, ?, NULL, NULL, NULL, NULL, NULL, NULL)",
-        ["DELETE", id]
-    );
-
-    return rows[0][0];
+    return rows;
 };
 
 module.exports = {
-    getAll,
-    getById,
-    create,
-    update,
-    delete: remove
+    execute
 };
