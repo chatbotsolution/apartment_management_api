@@ -28,7 +28,11 @@ const execute = async (
         ]
     );
 
-    return rows;
+    if (!rows || !rows[0]) {
+        return [];
+    }
+
+    return rows[0];
 };
 
 module.exports = {
