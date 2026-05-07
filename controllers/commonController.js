@@ -16,7 +16,9 @@ const byAction = (action, requireSociety = false) =>
             );
         }
 
-        const data = await service.getByAction(action, societyId);
+        // ✅ FIXED: Calling the correct function from your service!
+        const data = await service.getDropdown(action, societyId); 
+        
         return APIResponse.send(res, {
             statusCode: 200,
             success: true,
@@ -45,6 +47,7 @@ const vehicleType = getLookupByGroup("vehicle_type");
 const priority = getLookupByGroup("priority");
 const role = getLookupByGroup("role");
 const paymentMode = getLookupByGroup("payment_mode");
+const shiftTiming = getLookupByGroup("shift_timing");
 const parkingSlotType = getLookupByGroup("parking_slot_type");
 const parkingSlotStatus = getLookupByGroup("parking_slot_status");
 const maintenanceStatus = getLookupByGroup("maintenance_status");
@@ -99,6 +102,7 @@ module.exports = {
     priority,
     role,
     paymentMode,
+    shiftTiming,
     parkingSlotType,
     parkingSlotStatus,
     maintenanceStatus,

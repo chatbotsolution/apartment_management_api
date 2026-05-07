@@ -237,6 +237,52 @@ router.get("/Dropdown/PaymentMode", controller.paymentMode);
 
 /**
  * @swagger
+ * /Dropdown/PaymentMode:
+ *   get:
+ *     summary: Get Payment Mode dropdown
+ *     description: Returns lookup values for group `PaymentMode`.
+ *     tags: [Dropdown Master]
+ *     responses:
+ *       200:
+ *         description: List of payment modes
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/DropdownResponse'
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+router.get("/Dropdown/PaymentMode", controller.paymentMode);
+
+/**
+ * @swagger
+ * /Dropdown/ShiftTiming:
+ *   get:
+ *     summary: Get Shift Timing dropdown
+ *     description: Returns lookup values for group `ShiftTiming`.
+ *     tags: [Dropdown Master]
+ *     responses:
+ *       200:
+ *         description: List of shift timings
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/DropdownResponse'
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+router.get("/Dropdown/ShiftTiming", controller.shiftTiming);
+
+/**
+ * @swagger
  * /Dropdown/ParkingSlotType:
  *   get:
  *     summary: Get Parking Slot Type dropdown
