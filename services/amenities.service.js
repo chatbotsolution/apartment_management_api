@@ -61,6 +61,10 @@ const create = async (data) => {
         ]
     );
 
+    if (!rows || !rows[0] || rows[0].length === 0) {
+        return null;
+    }
+
     return rows[0][0];
 };
 

@@ -161,6 +161,9 @@ router.put("/AmenitiesMaster/UpdateAmenities", controller.update);
  *       200:
  *         description: Deleted successfully
  */
-router.delete("/AmenitiesMaster/DeleteAmenities/:id", controller.remove);
+router.delete(
+    "/AmenitiesMaster/DeleteAmenities/:amenity_id/:society_id",
+    controller.deleteAmenity
+);
 
 module.exports = router;

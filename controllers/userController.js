@@ -1,11 +1,13 @@
 const service = require("../services/user.service");
 const APIResponse = require("../utils/response");
 const asyncHandler = require("../middlewares/async.middleware");
+const bcrypt = require("bcrypt");
 
 
 /* ======================= REGISTER USER ======================= */
 const insert = asyncHandler(async (req, res) => {
     const b = req.body;
+    const hashedPassword = await bcrypt.hash(b.passwordHash, 10);
 
     const result = await service.execute(
         "INSERT",
@@ -14,19 +16,34 @@ const insert = asyncHandler(async (req, res) => {
         b.tenantId,
         b.staffId,
         b.username,
-        b.passwordHash,
+        hashedPassword,
         b.roleId,
         b.isActive
     );
 
-    return APIResponse.send(res, APIResponse.successResponse("User created", result));
+    return APIResponse.send(
+        res,
+        APIResponse.successResponse("User created successfully", result)
+    );
 });
 
 
 /* ======================= LOGIN ======================= */
-const login = asyncHandler(async (req, res) => {
-    const { username, passwordHash } = req.body;
 
+const login = asyncHandler(async (req, res) => {
+    const { username, password } = req.body;
+
+    console.log("BODY:", req.body);
+
+    // Validation
+    if (!username || !password) {
+        return APIResponse.send(
+            res,
+            APIResponse.errorResponse("Username and password required")
+        );
+    }
+
+    // Call SP
     const result = await service.execute(
         "LOGIN",
         null,
@@ -34,12 +51,44 @@ const login = asyncHandler(async (req, res) => {
         null,
         null,
         username,
-        passwordHash
+        null
     );
 
-    return APIResponse.send(res, APIResponse.successResponse("Login success", result?.[0]));
-});
+    if (!result || result.length === 0) {
+        return APIResponse.send(
+            res,
+            APIResponse.errorResponse("Invalid username or password")
+        );
+    }
 
+    const user = result[0];
+
+    // 🔴 IMPORTANT: make sure password_hash exists
+    if (!user.password_hash) {
+        return APIResponse.send(
+            res,
+            APIResponse.errorResponse("Password not found in DB")
+        );
+    }
+
+    // Compare password
+    const isMatch = await bcrypt.compare(password, user.password_hash);
+
+    if (!isMatch) {
+        return APIResponse.send(
+            res,
+            APIResponse.errorResponse("Invalid username or password")
+        );
+    }
+
+    // Remove password before sending response
+    delete user.password_hash;
+
+    return APIResponse.send(
+        res,
+        APIResponse.successResponse("Login success", user)
+    );
+});
 
 /* ======================= GET BY ID ======================= */
 const getById = asyncHandler(async (req, res) => {
@@ -47,7 +96,11 @@ const getById = asyncHandler(async (req, res) => {
 
     const data = await service.execute("GET_BY_ID", id);
 
-    return APIResponse.send(res, APIResponse.emptyOr404(data?.[0]));
+    if (!data || data.length === 0) {
+        return APIResponse.send(res, APIResponse.emptyOr404(null));
+    }
+
+    return APIResponse.send(res, APIResponse.successResponse("User found", data[0]));
 });
 
 
@@ -56,7 +109,10 @@ const getAll = asyncHandler(async (req, res) => {
 
     const data = await service.execute("GET_ALL");
 
-    return APIResponse.send(res, APIResponse.successResponse("Fetched users", data?.[0]));
+    return APIResponse.send(
+        res,
+        APIResponse.successResponse("Fetched users", data || [])
+    );
 });
 
 
@@ -76,7 +132,10 @@ const updateStatus = asyncHandler(async (req, res) => {
         isActive
     );
 
-    return APIResponse.send(res, APIResponse.successResponse("Status updated", result));
+    return APIResponse.send(
+        res,
+        APIResponse.successResponse("Status updated successfully", result)
+    );
 });
 
 
