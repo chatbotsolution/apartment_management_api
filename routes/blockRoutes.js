@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const controller = require("../controllers/block.controller");
+const controller = require("../controllers/blockController");
 
 
 /**
@@ -24,6 +24,9 @@ const controller = require("../controllers/block.controller");
  *         required: true
  *         schema:
  *           type: integer
+ *     responses:
+ *       200:
+ *         description: Block list fetched successfully
  */
 router.get("/Block/GetAll", controller.getAll);
 
@@ -35,6 +38,15 @@ router.get("/Block/GetAll", controller.getAll);
  *   get:
  *     summary: Get block by ID
  *     tags: [Block Master]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Block fetched successfully
  */
 router.get("/Block/GetById/:id", controller.getById);
 
@@ -46,6 +58,34 @@ router.get("/Block/GetById/:id", controller.getById);
  *   post:
  *     summary: Create block
  *     tags: [Block Master]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               society_id:
+ *                 type: integer
+ *               block_name:
+ *                 type: string
+ *               block_code:
+ *                 type: string
+ *               total_floors:
+ *                 type: integer
+ *               total_flats:
+ *                 type: integer
+ *               block_type_id:
+ *                 type: integer
+ *               year_built:
+ *                 type: integer
+ *               lift_count:
+ *                 type: integer
+ *               is_active:
+ *                 type: integer
+ *     responses:
+ *       200:
+ *         description: Block created successfully
  */
 router.post("/Block/Create", controller.create);
 
@@ -57,6 +97,36 @@ router.post("/Block/Create", controller.create);
  *   put:
  *     summary: Update block
  *     tags: [Block Master]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               block_id:
+ *                 type: integer
+ *               society_id:
+ *                 type: integer
+ *               block_name:
+ *                 type: string
+ *               block_code:
+ *                 type: string
+ *               total_floors:
+ *                 type: integer
+ *               total_flats:
+ *                 type: integer
+ *               block_type_id:
+ *                 type: integer
+ *               year_built:
+ *                 type: integer
+ *               lift_count:
+ *                 type: integer
+ *               is_active:
+ *                 type: integer
+ *     responses:
+ *       200:
+ *         description: Block updated successfully
  */
 router.put("/Block/Update", controller.update);
 
@@ -68,6 +138,15 @@ router.put("/Block/Update", controller.update);
  *   delete:
  *     summary: Delete block
  *     tags: [Block Master]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Block deleted successfully
  */
 router.delete("/Block/Delete/:id", controller.remove);
 
