@@ -5,9 +5,10 @@ const asyncHandler = require("../middlewares/async.middleware");
 
 /* ======================= INSERT ======================= */
 const insert = asyncHandler(async (req, res) => {
+
     const body = req.body;
 
-    const result = await service.execute(
+    await service.execute(
         "INSERT",
         null,
         body.name,
@@ -24,15 +25,19 @@ const insert = asyncHandler(async (req, res) => {
         body.website
     );
 
-    return APIResponse.send(res, APIResponse.successResponse("Society created successfully", result));
+    return APIResponse.send(
+        res,
+        APIResponse.successResponse(null)
+    );
 });
 
 
 /* ======================= UPDATE ======================= */
 const update = asyncHandler(async (req, res) => {
+
     const body = req.body;
 
-    const result = await service.execute(
+    await service.execute(
         "UPDATE",
         body.societyId,
         body.name,
@@ -49,43 +54,94 @@ const update = asyncHandler(async (req, res) => {
         body.website
     );
 
-    return APIResponse.send(res, APIResponse.successResponse("Society updated successfully", result));
+    return APIResponse.send(
+        res,
+        APIResponse.successResponse(null)
+    );
 });
 
 
 /* ======================= DELETE (SOFT) ======================= */
 const remove = asyncHandler(async (req, res) => {
+
     const { societyId } = req.body;
 
-    const result = await service.execute("DELETE", societyId);
+    await service.execute(
+        "DELETE",
+        societyId
+    );
 
-    return APIResponse.send(res, APIResponse.successResponse("Society deleted successfully", result));
+    return APIResponse.send(
+        res,
+        APIResponse.successResponse(null)
+    );
 });
 
 
 /* ======================= GET BY ID ======================= */
 const getById = asyncHandler(async (req, res) => {
+
     const id = parseInt(req.params.id);
 
-    const data = await service.execute("GET_BY_ID", id);
+    const data = await service.execute(
+        "GET_BY_ID",
+        id
+    );
 
-    return APIResponse.send(res, APIResponse.emptyOr404(data?.[0]));
+    return APIResponse.send(
+        res,
+        APIResponse.emptyOr404(data?.[0])
+    );
 });
 
 
 /* ======================= GET ALL ======================= */
 const getAll = asyncHandler(async (req, res) => {
 
-    const data = await service.execute("GET_ALL");
+    const data = await service.execute(
+        "GET_ALL"
+    );
 
-    return APIResponse.send(res, APIResponse.successResponse("Fetched successfully", data?.[0]));
+    return APIResponse.send(
+        res,
+        APIResponse.emptyOr404(data?.[0])
+    );
+});
+const getStates = asyncHandler(async (req, res) => {
+    const data = await service.getStates();
+    return APIResponse.send(res, {
+        statusCode: 200,
+        success: true,
+        message: "Data fetched successfully",
+        data: data
+    });
 });
 
+const getDistrictsByState = asyncHandler(async (req, res) => {
+    const stateId = req.query.state_id ? parseInt(req.query.state_id) : null;
+
+    if (!stateId) {
+        return APIResponse.send(
+            res,
+            APIResponse.badRequestResponse("state_id is required")
+        );
+    }
+
+    const data = await service.getDistrictsByState(stateId);
+    return APIResponse.send(res, {
+        statusCode: 200,
+        success: true,
+        message: "Data fetched successfully",
+        data: data
+    });
+});
 
 module.exports = {
     insert,
     update,
     remove,
     getById,
-    getAll
+    getAll,
+    getStates,
+    getDistrictsByState
 };
