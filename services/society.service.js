@@ -41,23 +41,38 @@ const execute = async (
 
     return rows;
 };
-const getStates = async () => {
+/* ======================= GET ALL COUNTRY ======================= */
+const getCountries = async () => {
     const [rows] = await db.query(
-        `CALL SP_Common('GET_STATE', NULL, NULL, NULL, NULL, NULL)`
+        `CALL SP_Common('GET_COUNTRY', NULL, NULL, NULL, NULL, NULL, NULL)`
     );
+
     return rows[0];
 };
 
+/* ======================= GET STATE LIST BY COUNTRY ======================= */
+const getStates = async (countryId) => {
+    const [rows] = await db.query(
+        `CALL SP_Common('GET_STATE_BY_COUNTRY', NULL, NULL, NULL, NULL, NULL, ?)`,
+        [countryId]
+    );
+
+    return rows[0];
+};
+
+/* ======================= GET DISTRICT LIST BY STATE ======================= */
 const getDistrictsByState = async (stateId) => {
     const [rows] = await db.query(
-        `CALL SP_Common('GET_DISTRICT_BY_STATE', NULL, NULL, NULL, NULL, ?)`,
+        `CALL SP_Common('GET_DISTRICT_BY_STATE', NULL, NULL, NULL, NULL, ?, NULL)`,
         [stateId]
     );
+
     return rows[0];
 };
 
 module.exports = {
     execute,
-     getStates,
+    getCountries,
+    getStates,
     getDistrictsByState
 };

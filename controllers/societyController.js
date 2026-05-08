@@ -107,12 +107,38 @@ const getAll = asyncHandler(async (req, res) => {
         APIResponse.emptyOr404(data?.[0])
     );
 });
-const getStates = asyncHandler(async (req, res) => {
-    const data = await service.getStates();
+
+const getCountries = asyncHandler(async (req, res) => {
+
+    const data = await service.getCountries();
+
     return APIResponse.send(res, {
         statusCode: 200,
         success: true,
-        message: "Data fetched successfully",
+        message: "Country list fetched successfully",
+        data: data
+    });
+});
+
+const getStates = asyncHandler(async (req, res) => {
+
+    const countryId = req.query.country_id
+        ? parseInt(req.query.country_id)
+        : null;
+
+    if (!countryId) {
+        return APIResponse.send(
+            res,
+            APIResponse.badRequestResponse("country_id is required")
+        );
+    }
+
+    const data = await service.getStates(countryId);
+
+    return APIResponse.send(res, {
+        statusCode: 200,
+        success: true,
+        message: "State list fetched successfully",
         data: data
     });
 });
@@ -142,6 +168,7 @@ module.exports = {
     remove,
     getById,
     getAll,
+    getCountries,
     getStates,
     getDistrictsByState
 };
