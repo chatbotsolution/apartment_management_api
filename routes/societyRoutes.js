@@ -161,16 +161,73 @@ router.get("/Society/GetById/:id", controller.getById);
  */
 router.get("/Society/GetAll", controller.getAll);
 
+/* ======================= COUNTRY LIST ======================= */
+/**
+ * @swagger
+ * /Dropdown/Country:
+ *   get:
+ *     summary: Get Country list
+ *     description: Returns all active countries from country_master via SP_Common (GET_COUNTRY).
+ *     tags: [Dropdown Master]
+ *     responses:
+ *       200:
+ *         description: Country list fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         example: 1
+ *                       name:
+ *                         type: string
+ *                         example: India
+ *                       code:
+ *                         type: string
+ *                         example: IN
+ *                       Currency_Name:
+ *                         type: string
+ *                         example: Rupee
+ *                       Currency_Code:
+ *                         type: string
+ *                         example: INR
+ *                       ISD_Code:
+ *                         type: string
+ *                         example: +91
+ *       500:
+ *         description: Internal server error
+ */
+router.get("/Dropdown/Country", controller.getCountries);
+
+
+/* ======================= STATE LIST BY COUNTRY ======================= */
 /**
  * @swagger
  * /Dropdown/State:
  *   get:
- *     summary: Get State list
- *     description: Returns all active states from state_master via SP_Common (GET_STATE).
+ *     summary: Get State list by Country
+ *     description: Returns all active states from state_master via SP_Common (GET_STATE_BY_COUNTRY).
  *     tags: [Dropdown Master]
+ *     parameters:
+ *       - in: query
+ *         name: country_id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *         description: Country Id to fetch state list.
  *     responses:
  *       200:
- *         description: List of states
+ *         description: State list fetched successfully
  *         content:
  *           application/json:
  *             schema:
@@ -193,21 +250,24 @@ router.get("/Society/GetAll", controller.getAll);
  *                       code:
  *                         type: string
  *                         example: MH
+ *                       Country_Id:
+ *                         type: integer
+ *                         example: 1
+ *       400:
+ *         description: country_id is required
  *       500:
  *         description: Internal server error
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
  */
 router.get("/Dropdown/State", controller.getStates);
 
+
+/* ======================= DISTRICT LIST BY STATE ======================= */
 /**
  * @swagger
  * /Dropdown/District:
  *   get:
  *     summary: Get District list by State
- *     description: Returns all active districts under a given state_id from district_master via SP_Common (GET_DISTRICT_BY_STATE).
+ *     description: Returns all active districts from district_master via SP_Common (GET_DISTRICT_BY_STATE).
  *     tags: [Dropdown Master]
  *     parameters:
  *       - in: query
@@ -216,10 +276,10 @@ router.get("/Dropdown/State", controller.getStates);
  *         schema:
  *           type: integer
  *           example: 1
- *         description: The ID of the state to fetch districts for.
+ *         description: State Id to fetch district list.
  *     responses:
  *       200:
- *         description: List of districts for the given state
+ *         description: District list fetched successfully
  *         content:
  *           application/json:
  *             schema:
@@ -235,7 +295,7 @@ router.get("/Dropdown/State", controller.getStates);
  *                     properties:
  *                       id:
  *                         type: integer
- *                         example: 5
+ *                         example: 1
  *                       name:
  *                         type: string
  *                         example: Pune
@@ -246,20 +306,9 @@ router.get("/Dropdown/State", controller.getStates);
  *                         type: integer
  *                         example: 1
  *       400:
- *         description: Missing state_id
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- *             example:
- *               success: false
- *               message: state_id is required
+ *         description: state_id is required
  *       500:
  *         description: Internal server error
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
  */
 router.get("/Dropdown/District", controller.getDistrictsByState);
 
