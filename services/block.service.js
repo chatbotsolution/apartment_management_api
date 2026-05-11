@@ -1,27 +1,33 @@
 const db = require("../config/db");
 
+
 /* ======================= GET ALL ======================= */
 const getAll = async (society_id) => {
+
     const [rows] = await db.query(
-        "CALL sp_block('GET_ALL', NULL, ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
+        "CALL sp_block('GET_ALL', NULL, ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
         [society_id]
     );
+
     return rows[0];
 };
 
 
 /* ======================= GET BY ID ======================= */
 const getById = async (id) => {
+
     const [rows] = await db.query(
-        "CALL sp_block('GET_BY_ID', ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
+        "CALL sp_block('GET_BY_ID', ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
         [id]
     );
+
     return rows[0];
 };
 
 
 /* ======================= CREATE ======================= */
 const create = async (data) => {
+
     const {
         society_id,
         block_name,
@@ -30,11 +36,12 @@ const create = async (data) => {
         total_flats,
         block_type_id,
         year_built,
-        lift_count
+        lift_count,
+        is_active
     } = data;
 
     const [rows] = await db.query(
-        "CALL sp_block('INSERT', NULL, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "CALL sp_block('INSERT', NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         [
             society_id,
             block_name,
@@ -43,16 +50,18 @@ const create = async (data) => {
             total_flats,
             block_type_id,
             year_built,
-            lift_count
+            lift_count,
+            is_active || 1
         ]
     );
 
-    return rows[0]?.[0] || { message: "Insert failed" };
+    return rows[0];
 };
 
 
 /* ======================= UPDATE ======================= */
 const update = async (data) => {
+
     const {
         block_id,
         society_id,
@@ -62,11 +71,12 @@ const update = async (data) => {
         total_flats,
         block_type_id,
         year_built,
-        lift_count
+        lift_count,
+        is_active
     } = data;
 
     const [rows] = await db.query(
-        "CALL sp_block('UPDATE', ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "CALL sp_block('UPDATE', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         [
             block_id,
             society_id,
@@ -76,22 +86,24 @@ const update = async (data) => {
             total_flats,
             block_type_id,
             year_built,
-            lift_count
+            lift_count,
+            is_active || 1
         ]
     );
 
-    return rows[0]?.[0] || { message: "Update failed" };
+    return rows[0];
 };
 
 
 /* ======================= DELETE ======================= */
 const remove = async (id) => {
+
     const [rows] = await db.query(
-        "CALL sp_block('DELETE', ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
+        "CALL sp_block('DELETE', ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
         [id]
     );
 
-    return rows[0]?.[0] || { message: "Delete failed" };
+    return rows[0];
 };
 
 
