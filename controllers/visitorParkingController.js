@@ -5,40 +5,66 @@ const asyncHandler = require("../middlewares/async.middleware");
 
 /* ======================= ASSIGN SLOT ======================= */
 const assign = asyncHandler(async (req, res) => {
-    const b = req.body;
 
-    const result = await service.execute(
+    const body = req.body;
+
+    await service.execute(
         "ASSIGN",
-        b.visitorId,
-        b.slotId,
-        b.vehicleNumber,
-        b.vehicleType,
-        b.statusId
+        null,
+        body.visitorId,
+        body.slotId,
+        body.vehicleNumber,
+        body.vehicleType,
+        body.statusId
     );
 
     return APIResponse.send(
         res,
-        APIResponse.successResponse("Parking slot assigned", result)
+        APIResponse.successResponse(null)
+    );
+});
+
+
+/* ======================= UPDATE ======================= */
+const update = asyncHandler(async (req, res) => {
+
+    const body = req.body;
+
+    await service.execute(
+        "UPDATE",
+        body.visitorParkingId,
+        null,
+        null,
+        body.vehicleNumber,
+        body.vehicleType,
+        body.statusId
+    );
+
+    return APIResponse.send(
+        res,
+        APIResponse.successResponse(null)
     );
 });
 
 
 /* ======================= RELEASE SLOT ======================= */
 const release = asyncHandler(async (req, res) => {
-    const b = req.body;
 
-    const result = await service.execute(
+    const body = req.body;
+
+    await service.execute(
         "RELEASE",
-        b.visitorId,
-        b.slotId,
+        body.visitorParkingId,
+        null,
+        body.slotId,
         null,
         null,
-        b.statusId
+        body.statusId
     );
 
     return APIResponse.send(
         res,
-        APIResponse.successResponse("Parking slot released", result)
+        APIResponse.successResponse(null)
     );
 });
 
@@ -46,19 +72,49 @@ const release = asyncHandler(async (req, res) => {
 /* ======================= GET ACTIVE ======================= */
 const getActive = asyncHandler(async (req, res) => {
 
-    const result = await service.execute(
-        "GET_ACTIVE"
+    const data = await service.execute("GET_ACTIVE");
+
+    return APIResponse.send(
+        res,
+        APIResponse.emptyOr404(data?.[0])
+    );
+});
+
+
+/* ======================= GET BY ID ======================= */
+const getById = asyncHandler(async (req, res) => {
+
+    const id = parseInt(req.params.id);
+
+    const data = await service.execute(
+        "GET_BY_ID",
+        id
     );
 
     return APIResponse.send(
         res,
-        APIResponse.successResponse("Active visitor parking", result?.[0])
+        APIResponse.emptyOr404(data?.[0])
+    );
+});
+
+
+/* ======================= GET HISTORY ======================= */
+const getHistory = asyncHandler(async (req, res) => {
+
+    const data = await service.execute("GET_HISTORY");
+
+    return APIResponse.send(
+        res,
+        APIResponse.emptyOr404(data?.[0])
     );
 });
 
 
 module.exports = {
     assign,
+    update,
     release,
-    getActive
+    getActive,
+    getById,
+    getHistory
 };

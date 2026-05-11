@@ -5,76 +5,67 @@ const asyncHandler = require("../middlewares/async.middleware");
 
 /* ======================= INSERT ======================= */
 const insert = asyncHandler(async (req, res) => {
-    const {
-        societyId,
-        slotNumber,
-        level,
-        slotTypeId,
-        isCovered,
-        hasCharger,
-        statusId,
-        monthlyCharge,
-        notes
-    } = req.body;
 
-    const result = await service.execute(
+    const body = req.body;
+
+    await service.execute(
         "INSERT",
         null,
-        societyId,
-        slotNumber,
-        level,
-        slotTypeId,
-        isCovered,
-        hasCharger,
-        statusId,
-        monthlyCharge,
-        notes
+        body.societyId,
+        body.slotNumber,
+        body.level,
+        body.slotTypeId,
+        body.isCovered,
+        body.isOccupied,
+        body.hasCharger,
+        body.statusId,
+        body.monthlyCharge,
+        body.notes
     );
 
-    return APIResponse.send(res, APIResponse.successResponse("Slot created successfully", result));
+    return APIResponse.send(
+        res,
+        APIResponse.successResponse(null)
+    );
 });
 
 
 /* ======================= UPDATE ======================= */
 const update = asyncHandler(async (req, res) => {
-    const {
-        slotId,
-        societyId,
-        slotNumber,
-        level,
-        slotTypeId,
-        isCovered,
-        hasCharger,
-        statusId,
-        monthlyCharge,
-        notes
-    } = req.body;
 
-    const result = await service.execute(
+    const body = req.body;
+
+    await service.execute(
         "UPDATE",
-        slotId,
-        societyId,
-        slotNumber,
-        level,
-        slotTypeId,
-        isCovered,
-        hasCharger,
-        statusId,
-        monthlyCharge,
-        notes
+        body.slotId,
+        body.societyId,
+        body.slotNumber,
+        body.level,
+        body.slotTypeId,
+        body.isCovered,
+        body.isOccupied,
+        body.hasCharger,
+        body.statusId,
+        body.monthlyCharge,
+        body.notes
     );
 
-    return APIResponse.send(res, APIResponse.successResponse("Slot updated successfully", result));
+    return APIResponse.send(
+        res,
+        APIResponse.successResponse(null)
+    );
 });
 
 
 /* ======================= DELETE (SOFT) ======================= */
 const remove = asyncHandler(async (req, res) => {
+
     const { slotId, statusId } = req.body;
 
-    const result = await service.execute(
+    await service.execute(
         "DELETE",
         slotId,
+        null,
         null,
         null,
         null,
@@ -84,37 +75,86 @@ const remove = asyncHandler(async (req, res) => {
         statusId
     );
 
-    return APIResponse.send(res, APIResponse.successResponse("Slot status updated", result));
+    return APIResponse.send(
+        res,
+        APIResponse.successResponse(null)
+    );
+});
+
+
+/* ======================= UPDATE OCCUPANCY ======================= */
+const updateOccupancy = asyncHandler(async (req, res) => {
+
+    const { slotId, isOccupied } = req.body;
+
+    await service.execute(
+        "UPDATE_OCCUPANCY",
+        slotId,
+        null,
+        null,
+        null,
+        null,
+        null,
+        isOccupied
+    );
+
+    return APIResponse.send(
+        res,
+        APIResponse.successResponse(null)
+    );
 });
 
 
 /* ======================= GET BY ID ======================= */
 const getById = asyncHandler(async (req, res) => {
+
     const id = parseInt(req.params.id);
 
-    const data = await service.execute("GET_BY_ID", id);
+    const data = await service.execute(
+        "GET_BY_ID",
+        id
+    );
 
-    return APIResponse.send(res, APIResponse.emptyOr404(data?.[0]));
+    return APIResponse.send(
+        res,
+        APIResponse.emptyOr404(data?.[0])
+    );
 });
 
 
 /* ======================= GET ALL ======================= */
 const getAll = asyncHandler(async (req, res) => {
+
     const societyId = parseInt(req.query.society_id);
 
-    const data = await service.execute("GET_ALL", null, societyId);
+    const data = await service.execute(
+        "GET_ALL",
+        null,
+        societyId
+    );
 
-    return APIResponse.send(res, APIResponse.successResponse("Fetched successfully", data?.[0]));
+    return APIResponse.send(
+        res,
+        APIResponse.emptyOr404(data?.[0])
+    );
 });
 
 
 /* ======================= GET AVAILABLE ======================= */
 const getAvailable = asyncHandler(async (req, res) => {
+
     const societyId = parseInt(req.query.society_id);
 
-    const data = await service.execute("GET_AVAILABLE", null, societyId);
+    const data = await service.execute(
+        "GET_AVAILABLE",
+        null,
+        societyId
+    );
 
-    return APIResponse.send(res, APIResponse.successResponse("Available slots fetched", data?.[0]));
+    return APIResponse.send(
+        res,
+        APIResponse.emptyOr404(data?.[0])
+    );
 });
 
 
@@ -122,6 +162,7 @@ module.exports = {
     insert,
     update,
     remove,
+    updateOccupancy,
     getById,
     getAll,
     getAvailable

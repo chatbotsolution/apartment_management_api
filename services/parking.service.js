@@ -1,5 +1,6 @@
 const db = require("../config/db");
 
+
 /* ======================= EXECUTE SP ======================= */
 const execute = async (
     action,
@@ -20,7 +21,7 @@ const execute = async (
 ) => {
 
     const [rows] = await db.query(
-        "CALL sp_parking_allotment(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        "CALL sp_parking_allotment(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         [
             action,
             allotmentId,

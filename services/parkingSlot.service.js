@@ -1,5 +1,6 @@
 const db = require("../config/db");
 
+
 /* ======================= EXECUTE SP ======================= */
 const execute = async (
     action,
@@ -9,6 +10,7 @@ const execute = async (
     level = null,
     slotTypeId = null,
     isCovered = null,
+    isOccupied = null,
     hasCharger = null,
     statusId = null,
     monthlyCharge = null,
@@ -16,7 +18,7 @@ const execute = async (
 ) => {
 
     const [rows] = await db.query(
-        "CALL sp_parking_slot(?,?,?,?,?,?,?,?,?,?,?)",
+        "CALL sp_parking_slot(?,?,?,?,?,?,?,?,?,?,?,?)",
         [
             action,
             slotId,
@@ -25,6 +27,7 @@ const execute = async (
             level,
             slotTypeId,
             isCovered,
+            isOccupied,
             hasCharger,
             statusId,
             monthlyCharge,
