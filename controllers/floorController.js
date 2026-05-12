@@ -5,45 +5,92 @@ const asyncHandler = require("../middlewares/async.middleware");
 
 /* ======================= GET ALL ======================= */
 const getAll = asyncHandler(async (req, res) => {
-    const societyId = parseInt(req.query.society_id);
 
-    if (!societyId) {
-        return APIResponse.send(res, APIResponse.badRequestResponse("society_id required"));
+    const society_id = parseInt(req.query.society_id);
+
+    if (!society_id) {
+        return APIResponse.send(
+            res,
+            APIResponse.badRequestResponse("society_id required")
+        );
     }
 
-    const data = await service.getAll(societyId);
-    return APIResponse.send(res, APIResponse.successResponse(data));
+    const data = await service.getAll(society_id);
+
+    return APIResponse.send(
+        res,
+        APIResponse.successResponse(data)
+    );
 });
 
 
 /* ======================= GET BY ID ======================= */
 const getById = asyncHandler(async (req, res) => {
+
     const id = parseInt(req.params.id);
-    const data = await service.getById(id);
-    return APIResponse.send(res, APIResponse.successResponse(data));
+    const society_id = parseInt(req.query.society_id);
+
+    if (!society_id) {
+        return APIResponse.send(
+            res,
+            APIResponse.badRequestResponse("society_id required")
+        );
+    }
+
+    const data = await service.getById(id, society_id);
+
+    return APIResponse.send(
+        res,
+        APIResponse.emptyOr404(data)
+    );
 });
 
 
 /* ======================= CREATE ======================= */
 const create = asyncHandler(async (req, res) => {
+
     const result = await service.create(req.body);
-    return APIResponse.send(res, APIResponse.successResponse(result));
+
+    return APIResponse.send(
+        res,
+        APIResponse.successResponse(result)
+    );
 });
 
 
 /* ======================= UPDATE ======================= */
 const update = asyncHandler(async (req, res) => {
+
     const result = await service.update(req.body);
-    return APIResponse.send(res, APIResponse.successResponse(result));
+
+    return APIResponse.send(
+        res,
+        APIResponse.successResponse(result)
+    );
 });
 
 
 /* ======================= DELETE ======================= */
 const remove = asyncHandler(async (req, res) => {
+
     const id = parseInt(req.params.id);
-    const result = await service.remove(id);
-    return APIResponse.send(res, APIResponse.successResponse(result));
+    const society_id = parseInt(req.query.society_id);
+
+    if (!society_id) {
+        return APIResponse.send(
+            res,
+            APIResponse.badRequestResponse("society_id required")
+        );
+    }
+
+    const result = await service.remove(id, society_id);
+
+    return APIResponse.send(
+        res,
+        APIResponse.successResponse(result)
+    );
 });
+
 
 module.exports = {
     getAll,
