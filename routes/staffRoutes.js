@@ -60,6 +60,18 @@ const upload = require("../middlewares/upload.middleware");
  *                 type: number
  *               shift_timing:
  *                 type: string
+ *               country_id:
+ *                 type: integer
+ *                 description: ID of the selected country
+ *               state_id:
+ *                 type: integer
+ *                 description: ID of the selected state
+ *               district_id:
+ *                 type: integer
+ *                 description: ID of the selected district
+ *               postal_code:
+ *                 type: string
+ *                 description: Postal or Zip code
  *               address:
  *                 type: string
  *               emergency_contact:
@@ -137,6 +149,18 @@ router.post("/Staff/Insert", upload.single("photo_url"), controller.insert);
  *                 type: number
  *               shift_timing:
  *                 type: string
+ *               country_id:
+ *                 type: integer
+ *                 description: ID of the selected country
+ *               state_id:
+ *                 type: integer
+ *                 description: ID of the selected state
+ *               district_id:
+ *                 type: integer
+ *                 description: ID of the selected district
+ *               postal_code:
+ *                 type: string
+ *                 description: Postal or Zip code
  *               address:
  *                 type: string
  *               emergency_contact:
