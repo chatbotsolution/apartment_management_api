@@ -1,81 +1,95 @@
 const db = require("../config/db");
 
+
 /* ======================= GET ALL ======================= */
-const getAll = async (societyId) => {
+const getAll = async (society_id) => {
+
     const [rows] = await db.query(
         "CALL sp_floor('GET_ALL', NULL, NULL, NULL, NULL, NULL, ?)",
-        [societyId]
+        [society_id]
     );
+
     return rows[0];
 };
 
 
 /* ======================= GET BY ID ======================= */
-const getById = async (id) => {
+const getById = async (id, society_id) => {
+
     const [rows] = await db.query(
-        "CALL sp_floor('GET_BY_ID', ?, NULL, NULL, NULL, NULL, NULL)",
-        [id]
+        "CALL sp_floor('GET_BY_ID', ?, NULL, NULL, NULL, NULL, ?)",
+        [id, society_id]
     );
+
     return rows[0];
 };
 
 
 /* ======================= CREATE ======================= */
 const create = async (data) => {
+
     const {
-        Block_Id,
-        Floor_Number,
-        Floor_Label,
-        Total_Flats
+        block_id,
+        floor_number,
+        floor_label,
+        total_flats,
+        society_id
     } = data;
 
     const [rows] = await db.query(
-        "CALL sp_floor('INSERT', NULL, ?, ?, ?, ?, NULL)",
+        "CALL sp_floor('INSERT', NULL, ?, ?, ?, ?, ?)",
         [
-            Block_Id,
-            Floor_Number,
-            Floor_Label,
-            Total_Flats
+            block_id,
+            floor_number,
+            floor_label,
+            total_flats,
+            society_id
         ]
     );
 
-    return rows[0][0] || { Message: "Insert failed" };
+    return rows[0];
 };
 
 
 /* ======================= UPDATE ======================= */
 const update = async (data) => {
+
     const {
-        Floor_Id,
-        Block_Id,
-        Floor_Number,
-        Floor_Label,
-        Total_Flats
+        floor_id,
+        block_id,
+        floor_number,
+        floor_label,
+        total_flats,
+        society_id
     } = data;
 
     const [rows] = await db.query(
-        "CALL sp_floor('UPDATE', ?, ?, ?, ?, ?, NULL)",
+        "CALL sp_floor('UPDATE', ?, ?, ?, ?, ?, ?)",
         [
-            Floor_Id,
-            Block_Id,
-            Floor_Number,
-            Floor_Label,
-            Total_Flats
+            floor_id,
+            block_id,
+            floor_number,
+            floor_label,
+            total_flats,
+            society_id
         ]
     );
 
-    return rows[0][0];
+    return rows[0];
 };
 
 
 /* ======================= DELETE ======================= */
-const remove = async (id) => {
+const remove = async (id, society_id) => {
+
     const [rows] = await db.query(
-        "CALL sp_floor('DELETE', ?, NULL, NULL, NULL, NULL, NULL)",
-        [id]
+        "CALL sp_floor('DELETE', ?, NULL, NULL, NULL, NULL, ?)",
+        [id, society_id]
     );
-    return rows[0][0];
+
+    return rows[0];
 };
+
 
 module.exports = {
     getAll,
