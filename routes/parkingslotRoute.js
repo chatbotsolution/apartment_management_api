@@ -3,13 +3,52 @@ const router = express.Router();
 const controller = require("../controllers/parkingslotController");
 
 
+/**
+ * @swagger
+ * tags:
+ *   name: Parking Slot
+ *   description: Parking slot management APIs
+ */
+
+
 /* ======================= INSERT ======================= */
 /**
  * @swagger
  * /ParkingSlot/Insert:
  *   post:
- *     summary: Create parking slot
+ *     summary: Create new parking slot
  *     tags: [Parking Slot]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               societyId:
+ *                 type: integer
+ *               slotNumber:
+ *                 type: string
+ *               level:
+ *                 type: string
+ *               slotTypeId:
+ *                 type: integer
+ *               isCovered:
+ *                 type: boolean
+ *               isOccupied:
+ *                 type: boolean
+ *               hasCharger:
+ *                 type: boolean
+ *               statusId:
+ *                 type: integer
+ *               monthlyCharge:
+ *                 type: number
+ *                 format: float
+ *               notes:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Parking slot created successfully
  */
 router.post("/ParkingSlot/Insert", controller.insert);
 
@@ -19,8 +58,41 @@ router.post("/ParkingSlot/Insert", controller.insert);
  * @swagger
  * /ParkingSlot/Update:
  *   put:
- *     summary: Update parking slot
+ *     summary: Update parking slot details
  *     tags: [Parking Slot]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               slotId:
+ *                 type: integer
+ *               societyId:
+ *                 type: integer
+ *               slotNumber:
+ *                 type: string
+ *               level:
+ *                 type: string
+ *               slotTypeId:
+ *                 type: integer
+ *               isCovered:
+ *                 type: boolean
+ *               isOccupied:
+ *                 type: boolean
+ *               hasCharger:
+ *                 type: boolean
+ *               statusId:
+ *                 type: integer
+ *               monthlyCharge:
+ *                 type: number
+ *                 format: float
+ *               notes:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Parking slot updated successfully
  */
 router.put("/ParkingSlot/Update", controller.update);
 
@@ -30,10 +102,49 @@ router.put("/ParkingSlot/Update", controller.update);
  * @swagger
  * /ParkingSlot/Delete:
  *   post:
- *     summary: Soft delete / update status
+ *     summary: Soft delete parking slot
  *     tags: [Parking Slot]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               slotId:
+ *                 type: integer
+ *               statusId:
+ *                 type: integer
+ *     responses:
+ *       200:
+ *         description: Parking slot deleted successfully
  */
 router.post("/ParkingSlot/Delete", controller.remove);
+
+
+/* ======================= UPDATE OCCUPANCY ======================= */
+/**
+ * @swagger
+ * /ParkingSlot/UpdateOccupancy:
+ *   post:
+ *     summary: Update parking slot occupancy
+ *     tags: [Parking Slot]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               slotId:
+ *                 type: integer
+ *               isOccupied:
+ *                 type: boolean
+ *     responses:
+ *       200:
+ *         description: Occupancy updated successfully
+ */
+router.post("/ParkingSlot/UpdateOccupancy", controller.updateOccupancy);
 
 
 /* ======================= GET BY ID ======================= */
@@ -41,8 +152,17 @@ router.post("/ParkingSlot/Delete", controller.remove);
  * @swagger
  * /ParkingSlot/GetById/{id}:
  *   get:
- *     summary: Get slot by id
+ *     summary: Get parking slot by ID
  *     tags: [Parking Slot]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Parking slot details fetched successfully
  */
 router.get("/ParkingSlot/GetById/:id", controller.getById);
 
@@ -52,8 +172,17 @@ router.get("/ParkingSlot/GetById/:id", controller.getById);
  * @swagger
  * /ParkingSlot/GetAll:
  *   get:
- *     summary: Get all slots by society
+ *     summary: Get all parking slots by society
  *     tags: [Parking Slot]
+ *     parameters:
+ *       - in: query
+ *         name: society_id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Parking slot list fetched successfully
  */
 router.get("/ParkingSlot/GetAll", controller.getAll);
 
@@ -63,8 +192,17 @@ router.get("/ParkingSlot/GetAll", controller.getAll);
  * @swagger
  * /ParkingSlot/GetAvailable:
  *   get:
- *     summary: Get available slots
+ *     summary: Get available parking slots by society
  *     tags: [Parking Slot]
+ *     parameters:
+ *       - in: query
+ *         name: society_id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Available parking slot list fetched successfully
  */
 router.get("/ParkingSlot/GetAvailable", controller.getAvailable);
 
