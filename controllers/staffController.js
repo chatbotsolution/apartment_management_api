@@ -22,7 +22,10 @@ const insert = asyncHandler(async (req, res) => {
         "INSERT", null, body.society_id || null, body.first_name, body.last_name,
         body.designation, body.department, body.phone, body.email, body.aadhaar_number,
         body.date_of_birth, body.gender_id, body.joining_date, body.leaving_date, 
-        body.status_id, body.salary, body.shift_timing, body.address, body.emergency_contact, photoUrl
+        body.status_id, body.salary, body.shift_timing, 
+        // 👉 NEW: Passed the 4 location/postal variables exactly in the expected order
+        body.country_id, body.state_id, body.district_id, body.postal_code, 
+        body.address, body.emergency_contact, photoUrl
     );
 
     // ✅ ROBUST ID EXTRACTION
@@ -33,7 +36,6 @@ const insert = asyncHandler(async (req, res) => {
 
     if (!newStaffId) {
         console.error("DEBUG: MySQL staffResult Structure:", JSON.stringify(staffResult));
-        // 👉 FIXED: Use the 'new' keyword to create an instance directly
         return APIResponse.send(res, new APIResponse(
             500, false, "Staff created, but failed to retrieve new ID. User account not created.", staffResult
         ));
@@ -48,18 +50,15 @@ const insert = asyncHandler(async (req, res) => {
         await usersService.execute(
             "INSERT", null, null, null, newStaffId, 
             body.username || body.email, hashedPassword, 
-            // 👉 FIXED: Changed default from 1 to 92 to match your master_lookup active status
             body.role_id || 3, body.status_id !== undefined ? body.status_id : 92 
         );
     } catch (userError) {
         console.error("User Creation Failed:", userError.message);
-        // 👉 FIXED: Use the 'new' keyword for a custom 201 response
         return APIResponse.send(res, new APIResponse(
             201, true, "Staff created successfully, but User account failed: " + userError.message, { staff_id: newStaffId }
         ));
     }
 
-    // 👉 FIXED: Passed data first, message second
     return APIResponse.send(res, APIResponse.successResponse({ staff_id: newStaffId }, "Staff and User account created successfully"));
 });
 
@@ -79,10 +78,12 @@ const update = asyncHandler(async (req, res) => {
         "UPDATE", body.staff_id, body.society_id, body.first_name, body.last_name,
         body.designation, body.department, body.phone, body.email, body.aadhaar_number,
         body.date_of_birth, body.gender_id, body.joining_date, body.leaving_date,
-        body.status_id, body.salary, body.shift_timing, body.address, body.emergency_contact, photoUrl
+        body.status_id, body.salary, body.shift_timing, 
+        // 👉 NEW: Passed the 4 location/postal variables exactly in the expected order
+        body.country_id, body.state_id, body.district_id, body.postal_code, 
+        body.address, body.emergency_contact, photoUrl
     );
 
-    // 👉 FIXED: Passed data first, message second
     return APIResponse.send(res, APIResponse.successResponse(result, "Staff updated successfully"));
 });
 
@@ -91,11 +92,10 @@ const updateStatus = asyncHandler(async (req, res) => {
     const { staff_id, status_id } = req.body;
 
     if (!staff_id || status_id === undefined) {
-        // Fallback to basic 400 if developer forgets payload
         return APIResponse.send(res, APIResponse.badRequestResponse("Staff ID and Status are required"));
     }
 
-    // 👉 NEW: Pass "UPDATE_STATUS", staff_id, then 12 nulls to skip to the 15th parameter (statusId)
+    // Passes 12 nulls to correctly align status_id with the 15th parameter
     const result = await staffService.execute(
         "UPDATE_STATUS", 
         staff_id, 
@@ -111,7 +111,6 @@ const remove = asyncHandler(async (req, res) => {
     const staffId = req.params.id || req.body.staff_id;
     const result = await staffService.execute("DELETE", staffId);
 
-    // 👉 FIXED: Passed data first, message second
     return APIResponse.send(res, APIResponse.successResponse(result, "Staff deactivated successfully"));
 });
 
@@ -120,7 +119,6 @@ const getById = asyncHandler(async (req, res) => {
     const id = parseInt(req.params.id);
     const data = await staffService.execute("GET_BY_ID", id);
 
-    // This was already perfect
     return APIResponse.send(res, APIResponse.emptyOr404(data?.[0]));
 });
 
@@ -129,7 +127,6 @@ const getAll = asyncHandler(async (req, res) => {
     const societyId = parseInt(req.query.society_id) || null;
     const data = await staffService.execute("GET_ALL", null, societyId);
 
-    // 👉 FIXED: Passed data first, message second
     return APIResponse.send(res, APIResponse.successResponse(data?.[0], "Fetched successfully"));
 });
 
@@ -140,14 +137,13 @@ const search = asyncHandler(async (req, res) => {
 
     const data = await staffService.execute("SEARCH", null, societyId, keyword);
 
-    // 👉 FIXED: Passed data first, message second
     return APIResponse.send(res, APIResponse.successResponse(data?.[0], "Search results"));
 });
 
 module.exports = {
     insert,
     update,
-    updateStatus, // 👉 ADDED: Exported the new function!
+    updateStatus, 
     remove,
     getById,
     getAll,

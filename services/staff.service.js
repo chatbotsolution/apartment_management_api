@@ -19,13 +19,20 @@ const execute = async (
     statusId = null,
     salary = null,
     shiftTiming = null,
+    
+    // 👉 NEW: Location parameters added here
+    countryId = null,
+    stateId = null,
+    districtId = null,
+    postalCode = null,
+    
     address = null,
     emergencyContact = null,
     photoUrl = null
 ) => {
     const [rows] = await db.query(
-        // Added the 20th question mark here 👇
-        "CALL sp_staff(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        // 👉 UPDATED: Now contains exactly 24 question marks
+        "CALL sp_staff(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         [
             action,
             staffId,
@@ -44,6 +51,10 @@ const execute = async (
             statusId,
             salary,
             shiftTiming,
+            countryId,
+            stateId,
+            districtId,
+            postalCode,
             address,
             emergencyContact,
             photoUrl
