@@ -1,82 +1,84 @@
 const db = require("../config/db");
 
-/* ======================= GET ALL ======================= */
-const getAll = async () => {
-    const [rows] = await db.query(
-        "CALL sp_designation('GET_ALL', NULL, NULL, NULL, NULL, NULL)"
-    );
-    return rows[0];
-};
-
-/* ======================= GET BY ID ======================= */
-const getById = async (id) => {
-    const [rows] = await db.query(
-        "CALL sp_designation('GET_BY_ID', ?, NULL, NULL, NULL, NULL)",
-        [id]
-    );
-    return rows[0];
-};
-
 /* ======================= CREATE ======================= */
-const create = async (data) => {
-    const {
-        department_id,
-        designation_name,
-        description,
-        is_active
-    } = data;
-
-    const [rows] = await db.query(
-        "CALL sp_designation('INSERT', NULL, ?, ?, ?, ?)",
+const createDesignation = async (data) => {
+    return await db.query(
+        "CALL sp_designation(?, ?, ?, ?, ?, ?)",
         [
-            department_id,
-            designation_name,
-            description,
-            is_active
+            "INSERT",
+            0,
+            data.department_id,
+            data.designation_name,
+            data.description,
+            null
         ]
     );
-
-    return rows[0][0];
 };
 
 /* ======================= UPDATE ======================= */
-const update = async (data) => {
-    const {
-        designation_id,
-        department_id,
-        designation_name,
-        description,
-        is_active
-    } = data;
-
-    const [rows] = await db.query(
-        "CALL sp_designation('UPDATE', ?, ?, ?, ?, ?)",
+const updateDesignation = async (data) => {
+    return await db.query(
+        "CALL sp_designation(?, ?, ?, ?, ?, ?)",
         [
-            designation_id,
-            department_id,
-            designation_name,
-            description,
-            is_active
+            "UPDATE",
+            data.designation_id,
+            data.department_id,
+            data.designation_name,
+            data.description,
+            null
         ]
     );
-
-    return rows[0][0];
 };
 
-/* ======================= DELETE (SOFT) ======================= */
-const remove = async (id) => {
-    const [rows] = await db.query(
-        "CALL sp_designation('DELETE', ?, NULL, NULL, NULL, NULL)",
-        [id]
+/* ======================= DELETE ======================= */
+const deleteDesignation = async (designation_id) => {
+    return await db.query(
+        "CALL sp_designation(?, ?, ?, ?, ?, ?)",
+        [
+            "DELETE",
+            designation_id,
+            null,
+            null,
+            null,
+            null
+        ]
     );
+};
 
-    return rows[0][0];
+/* ======================= GET BY ID ======================= */
+const getDesignationById = async (designation_id) => {
+    return await db.query(
+        "CALL sp_designation(?, ?, ?, ?, ?, ?)",
+        [
+            "GET_BY_ID",
+            designation_id,
+            null,
+            null,
+            null,
+            null
+        ]
+    );
+};
+
+/* ======================= GET ALL ======================= */
+const getAllDesignations = async () => {
+    return await db.query(
+        "CALL sp_designation(?, ?, ?, ?, ?, ?)",
+        [
+            "GET_ALL",
+            null,
+            null,
+            null,
+            null,
+            null
+        ]
+    );
 };
 
 module.exports = {
-    getAll,
-    getById,
-    create,
-    update,
-    remove
+    createDesignation,
+    updateDesignation,
+    deleteDesignation,
+    getDesignationById,
+    getAllDesignations
 };
