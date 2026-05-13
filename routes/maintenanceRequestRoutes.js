@@ -2,80 +2,79 @@ const express = require("express");
 const router = express.Router();
 const controller = require("../controllers/maintenanceRequestController");
 
-
-/* ======================= TAG ======================= */
 /**
  * @swagger
  * tags:
  *   name: Maintenance Request
- *   description: Society maintenance management APIs
+ *   description: Society maintenance ticketing and staff assignment APIs
  */
 
+/* ======================= POST ROUTES ======================= */
 
-/* ======================= CREATE ======================= */
 /**
  * @swagger
- * /Maintenance/Create:
+ * /MaintenanceRequest/Create:
  *   post:
- *     summary: Create maintenance request
+ *     summary: Raise a new maintenance request (Ticket)
  *     tags: [Maintenance Request]
  */
-router.post("/Maintenance/Create", controller.create);
+router.post("/MaintenanceRequest/Create", controller.create);
 
-
-/* ======================= UPDATE ======================= */
 /**
  * @swagger
- * /Maintenance/Update:
+ * /MaintenanceRequest/Assign:
+ *   post:
+ *     summary: Assign a staff member and schedule a time for the request
+ *     tags: [Maintenance Request]
+ */
+router.post("/MaintenanceRequest/Assign", controller.assign);
+
+/**
+ * @swagger
+ * /MaintenanceRequest/Complete:
+ *   post:
+ *     summary: Close a ticket, record actual costs, and upload "after" photos
+ *     tags: [Maintenance Request]
+ */
+router.post("/MaintenanceRequest/Complete", controller.complete);
+
+
+/* ======================= PUT ROUTES ======================= */
+
+/**
+ * @swagger
+ * /MaintenanceRequest/Update:
  *   put:
- *     summary: Update maintenance request
+ *     summary: Update basic ticket info (Title, Description, Priority)
  *     tags: [Maintenance Request]
  */
-router.put("/Maintenance/Update", controller.update);
+router.put("/MaintenanceRequest/Update", controller.update);
 
 
-/* ======================= ASSIGN ======================= */
+/* ======================= GET ROUTES ======================= */
+
 /**
  * @swagger
- * /Maintenance/Assign:
- *   post:
- *     summary: Assign staff to request
- *     tags: [Maintenance Request]
- */
-router.post("/Maintenance/Assign", controller.assign);
-
-
-/* ======================= COMPLETE ======================= */
-/**
- * @swagger
- * /Maintenance/Complete:
- *   post:
- *     summary: Complete maintenance request
- *     tags: [Maintenance Request]
- */
-router.post("/Maintenance/Complete", controller.complete);
-
-
-/* ======================= GET BY ID ======================= */
-/**
- * @swagger
- * /Maintenance/GetById/{id}:
+ * /MaintenanceRequest/GetById/{id}:
  *   get:
- *     summary: Get request by id
+ *     summary: Fetch full details of a specific request
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
  *     tags: [Maintenance Request]
  */
-router.get("/Maintenance/GetById/:id", controller.getById);
+router.get("/MaintenanceRequest/GetById/:id", controller.getById);
 
-
-/* ======================= GET ALL ======================= */
 /**
  * @swagger
- * /Maintenance/GetAll:
+ * /MaintenanceRequest/GetAll:
  *   get:
- *     summary: Get all maintenance requests
+ *     summary: Fetch all maintenance requests (Staff/Admin view)
  *     tags: [Maintenance Request]
  */
-router.get("/Maintenance/GetAll", controller.getAll);
-
+router.get("/MaintenanceRequest/GetAll", controller.getAll);
 
 module.exports = router;

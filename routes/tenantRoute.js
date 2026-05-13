@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const controller = require("../controllers/tenantController");
-
+const upload = require("../middlewares/upload.middleware");
 
 /* ======================= TAG ======================= */
 /**
@@ -10,7 +10,6 @@ const controller = require("../controllers/tenantController");
  *   name: Tenant Master
  *   description: Tenant management APIs
  */
-
 
 /* ======================= INSERT ======================= */
 /**
@@ -22,68 +21,106 @@ const controller = require("../controllers/tenantController");
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
- *               flatId:
+ *               society_id:
  *                 type: integer
- *               ownerId:
+ *               block_id:
  *                 type: integer
- *               firstName:
+ *               flat_id:
+ *                 type: integer
+ *               owner_id:
+ *                 type: integer
+ *               first_name:
  *                 type: string
- *               lastName:
+ *               last_name:
  *                 type: string
  *               email:
  *                 type: string
  *               phone:
  *                 type: string
- *               alternatePhone:
+ *               alternate_phone:
  *                 type: string
- *               aadhaarNumber:
+ *               aadhaar_number:
  *                 type: string
- *               dateOfBirth:
+ *               date_of_birth:
  *                 type: string
  *                 format: date
- *               genderId:
+ *               gender_id:
  *                 type: integer
  *               occupation:
- *                 type: integer
- *               employerName:
  *                 type: string
- *               totalOccupants:
+ *               employer_name:
+ *                 type: string
+ *               total_occupants:
  *                 type: integer
- *               leaseStart:
+ *               lease_start:
  *                 type: string
  *                 format: date
- *               leaseEnd:
+ *               lease_end:
  *                 type: string
  *                 format: date
- *               monthlyRent:
+ *               monthly_rent:
  *                 type: number
- *               securityDeposit:
+ *               security_deposit:
  *                 type: number
- *               rentDueDay:
+ *               rent_due_day:
  *                 type: integer
- *               isActive:
- *                 type: boolean
- *               permanentAddress:
- *                 type: string
- *               emergencyContactName:
- *                 type: string
- *               emergencyContactPhone:
- *                 type: string
- *               profilePhotoUrl:
- *                 type: string
- *               agreementDocUrl:
- *                 type: string
- *               policeVerification:
- *                 type: boolean
- *               society:
+ *               is_active:
  *                 type: integer
+ *               address:
+ *                 type: string
+ *               country_id:
+ *                 type: integer
+ *               state_id:
+ *                 type: integer
+ *               district_id:
+ *                 type: integer
+ *               postal_code:
+ *                 type: string
+ *               emergency_contact_name:
+ *                 type: string
+ *               emergency_contact_phone:
+ *                 type: string
+ *               police_verification:
+ *                 type: string
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               role_id:
+ *                 type: integer
+ *               profile_photo_url:
+ *                 type: string
+ *                 format: binary
+ *               agreement_doc_url:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       200:
+ *         description: Tenant created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Tenant and User account created successfully
+ *                 data:
+ *                   type: object
+ *       400:
+ *         description: Bad Request
+ *       500:
+ *         description: Internal Server Error
  */
-router.post("/Tenant/Insert", controller.insert);
-
+// 👉 FIXED: upload.single() reverted to upload.any() to handle both photo and agreement document safely
+router.post("/Tenant/Insert", upload.any(), controller.insert);
 
 /* ======================= UPDATE ======================= */
 /**
@@ -92,9 +129,145 @@ router.post("/Tenant/Insert", controller.insert);
  *   put:
  *     summary: Update tenant details
  *     tags: [Tenant Master]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               tenant_id:
+ *                 type: integer
+ *               society_id:
+ *                 type: integer
+ *               block_id:
+ *                 type: integer
+ *               flat_id:
+ *                 type: integer
+ *               owner_id:
+ *                 type: integer
+ *               first_name:
+ *                 type: string
+ *               last_name:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *               alternate_phone:
+ *                 type: string
+ *               aadhaar_number:
+ *                 type: string
+ *               date_of_birth:
+ *                 type: string
+ *                 format: date
+ *               gender_id:
+ *                 type: integer
+ *               occupation:
+ *                 type: string
+ *               employer_name:
+ *                 type: string
+ *               total_occupants:
+ *                 type: integer
+ *               lease_start:
+ *                 type: string
+ *                 format: date
+ *               lease_end:
+ *                 type: string
+ *                 format: date
+ *               monthly_rent:
+ *                 type: number
+ *               security_deposit:
+ *                 type: number
+ *               rent_due_day:
+ *                 type: integer
+ *               is_active:
+ *                 type: integer
+ *               address:
+ *                 type: string
+ *               country_id:
+ *                 type: integer
+ *               state_id:
+ *                 type: integer
+ *               district_id:
+ *                 type: integer
+ *               postal_code:
+ *                 type: string
+ *               emergency_contact_name:
+ *                 type: string
+ *               emergency_contact_phone:
+ *                 type: string
+ *               police_verification:
+ *                 type: string
+ *               profile_photo_url:
+ *                 type: string
+ *                 format: binary
+ *               agreement_doc_url:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       200:
+ *         description: Tenant updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Tenant updated successfully
+ *                 data:
+ *                   type: object
+ *       400:
+ *         description: Bad Request
+ *       500:
+ *         description: Internal Server Error
  */
-router.put("/Tenant/Update", controller.update);
+router.put("/Tenant/Update", upload.any(), controller.update);
 
+/* ======================= UPDATE STATUS ======================= */
+/**
+ * @swagger
+ * /Tenant/UpdateStatus:
+ *   put:
+ *     summary: Update tenant account status (Active/Inactive)
+ *     tags: [Tenant Master]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               tenant_id:
+ *                 type: integer
+ *               is_active:
+ *                 type: integer
+ *     responses:
+ *       200:
+ *         description: Status updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Status updated successfully
+ *                 data:
+ *                   type: object
+ *       400:
+ *         description: Bad Request
+ *       500:
+ *         description: Internal Server Error
+ */
+router.put("/Tenant/UpdateStatus", controller.updateStatus);
 
 /* ======================= DELETE ======================= */
 /**
@@ -110,11 +283,30 @@ router.put("/Tenant/Update", controller.update);
  *           schema:
  *             type: object
  *             properties:
- *               tenantId:
+ *               tenant_id:
  *                 type: integer
+ *     responses:
+ *       200:
+ *         description: Tenant deleted/deactivated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Tenant deactivated successfully
+ *                 data:
+ *                   type: object
+ *       400:
+ *         description: Bad Request
+ *       500:
+ *         description: Internal Server Error
  */
 router.post("/Tenant/Delete", controller.remove);
-
 
 /* ======================= GET BY ID ======================= */
 /**
@@ -129,9 +321,25 @@ router.post("/Tenant/Delete", controller.remove);
  *         required: true
  *         schema:
  *           type: integer
+ *     responses:
+ *       200:
+ *         description: Data fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: object
+ *       404:
+ *         description: Tenant not found
+ *       500:
+ *         description: Internal Server Error
  */
 router.get("/Tenant/GetById/:id", controller.getById);
-
 
 /* ======================= GET ALL ======================= */
 /**
@@ -142,13 +350,32 @@ router.get("/Tenant/GetById/:id", controller.getById);
  *     tags: [Tenant Master]
  *     parameters:
  *       - in: query
- *         name: society
- *         required: true
+ *         name: society_id
+ *         required: false
  *         schema:
  *           type: integer
+ *     responses:
+ *       200:
+ *         description: List of tenants fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Fetched successfully
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *       500:
+ *         description: Internal Server Error
  */
 router.get("/Tenant/GetAll", controller.getAll);
-
 
 /* ======================= SEARCH ======================= */
 /**
@@ -159,16 +386,35 @@ router.get("/Tenant/GetAll", controller.getAll);
  *     tags: [Tenant Master]
  *     parameters:
  *       - in: query
- *         name: society
- *         required: true
+ *         name: society_id
+ *         required: false
  *         schema:
  *           type: integer
  *       - in: query
  *         name: keyword
  *         schema:
  *           type: string
+ *     responses:
+ *       200:
+ *         description: Search results
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Search results
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *       500:
+ *         description: Internal Server Error
  */
 router.get("/Tenant/Search", controller.search);
-
 
 module.exports = router;

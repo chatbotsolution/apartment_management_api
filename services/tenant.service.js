@@ -29,11 +29,17 @@ const execute = async (
     photo = null,
     agreement = null,
     police = null,
-    society = null
+    society = null,
+    blockId = null,    // 29
+    countryId = null,  // 30
+    stateId = null,    // 31
+    districtId = null, // 32
+    postalCode = null  // 33
 ) => {
 
+    // EXACTLY 33 question marks here
     const [rows] = await db.query(
-        "CALL sp_tenant(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        "CALL sp_tenant(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         [
             action,
             tenantId,
@@ -62,7 +68,12 @@ const execute = async (
             photo,
             agreement,
             police,
-            society
+            society,
+            blockId,
+            countryId,
+            stateId,
+            districtId,
+            postalCode
         ]
     );
 

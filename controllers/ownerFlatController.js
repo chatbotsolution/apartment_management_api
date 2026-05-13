@@ -5,6 +5,7 @@ const asyncHandler = require("../middlewares/async.middleware");
 
 /* ======================= ASSIGN ======================= */
 const assign = asyncHandler(async (req, res) => {
+
     const {
         ownerId,
         flatId,
@@ -24,12 +25,16 @@ const assign = asyncHandler(async (req, res) => {
         isResiding
     );
 
-    return APIResponse.send(res, APIResponse.successResponse("Assigned successfully", result));
+    return APIResponse.send(
+        res,
+        APIResponse.successResponse("Assigned successfully", result)
+    );
 });
 
 
 /* ======================= UPDATE ======================= */
 const update = asyncHandler(async (req, res) => {
+
     const {
         ownerFlatId,
         ownerId,
@@ -51,12 +56,16 @@ const update = asyncHandler(async (req, res) => {
         isResiding
     );
 
-    return APIResponse.send(res, APIResponse.successResponse("Updated successfully", result));
+    return APIResponse.send(
+        res,
+        APIResponse.successResponse("Updated successfully", result)
+    );
 });
 
 
 /* ======================= TRANSFER ======================= */
 const transfer = asyncHandler(async (req, res) => {
+
     const {
         ownerId,
         flatId,
@@ -75,12 +84,16 @@ const transfer = asyncHandler(async (req, res) => {
         isResiding
     );
 
-    return APIResponse.send(res, APIResponse.successResponse("Transferred successfully", result));
+    return APIResponse.send(
+        res,
+        APIResponse.successResponse("Transferred successfully", result)
+    );
 });
 
 
 /* ======================= GET CURRENT BY FLAT ======================= */
 const getCurrentByFlat = asyncHandler(async (req, res) => {
+
     const flatId = parseInt(req.query.flat_id);
 
     const data = await service.execute(
@@ -90,12 +103,16 @@ const getCurrentByFlat = asyncHandler(async (req, res) => {
         flatId
     );
 
-    return APIResponse.send(res, APIResponse.emptyOr404(data?.[0]));
+    return APIResponse.send(
+        res,
+        APIResponse.emptyOr404(data)
+    );
 });
 
 
 /* ======================= GET HISTORY BY FLAT ======================= */
 const getHistoryByFlat = asyncHandler(async (req, res) => {
+
     const flatId = parseInt(req.query.flat_id);
 
     const data = await service.execute(
@@ -105,12 +122,16 @@ const getHistoryByFlat = asyncHandler(async (req, res) => {
         flatId
     );
 
-    return APIResponse.send(res, APIResponse.successResponse("History fetched", data?.[0]));
+    return APIResponse.send(
+        res,
+        APIResponse.successResponse("History fetched", data)
+    );
 });
 
 
 /* ======================= GET BY OWNER ======================= */
 const getByOwner = asyncHandler(async (req, res) => {
+
     const ownerId = parseInt(req.query.owner_id);
 
     const data = await service.execute(
@@ -120,7 +141,10 @@ const getByOwner = asyncHandler(async (req, res) => {
         null
     );
 
-    return APIResponse.send(res, APIResponse.successResponse("Fetched successfully", data?.[0]));
+    return APIResponse.send(
+        res,
+        APIResponse.successResponse("Fetched successfully", data)
+    );
 });
 
 
