@@ -106,7 +106,7 @@ const getById = asyncHandler(async (req, res) => {
 /* ======================= GET ALL (BY FLAT) ======================= */
 const getAll = asyncHandler(async (req, res) => {
     // If flatId isn't provided, default it to 0
-    const flatId = req.query.flatId ? parseInt(req.query.flatId) : 0;
+    const flatId = req.query.flatId ? parseInt(req.query.flatId) : null;
 
     // Call service with the flatId (0 means fetch all)
     const data = await service.execute("GET_ALL", null, flatId);

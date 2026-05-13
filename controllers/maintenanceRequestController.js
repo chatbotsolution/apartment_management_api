@@ -1,60 +1,80 @@
+const fs = require("fs");
+const path = require("path");
 const service = require("../services/maintenanceRequest.service.js");
 const APIResponse = require("../utils/response");
 const asyncHandler = require("../middlewares/async.middleware");
 
 /* ======================= CREATE REQUEST ======================= */
 const create = asyncHandler(async (req, res) => {
-    const b = req.body;
+    const b = req.body || {};
+    let beforePhoto = b.beforePhotoUrl || null; 
 
-    // DEBUGGING: This will print to your terminal so you can see if flatId is miss
+    // 2. If a file was uploaded, save it to disk and get the new URL
+    if (req.file) {
+        const filename = `maintenance_before_${Date.now()}${path.extname(req.file.originalname)}`;
+        const savePath = path.join(process.cwd(), "public", "uploads", filename);
+        fs.writeFileSync(savePath, req.file.buffer);
+        beforePhoto = `/uploads/${filename}`;
+    }
 
-    // EXACTLY 16 PARAMETERS - Do not add or remove any!
     const result = await service.execute(
-        "INSERT",           // 1. p_action (MUST BE EXACTLY "INSERT")
-        null,               // 2. p_fee_id
-        b.flatId,           // 3. p_flat_id
-        b.ownerId || null,  // 4. p_owner_id
-        b.amount,           // 5. p_amount
-        b.penaltyAmount || 0, // 6. p_penalty_amount
-        b.monthYear,        // 7. p_month_year
-        b.dueDate,          // 8. p_due_date
-        null,               // 9. p_paid_date
-        b.statusId || 1,    // 10. p_status_id
-        null,               // 11. p_payment_mode_id
-        null,               // 12. p_transaction_ref
-        null,               // 13. p_receipt_number
-        b.notes || "",      // 14. p_notes
-        b.createdBy || 1,   // 15. p_created_by
-        b.updatedBy || 1    // 16. p_updated_by
+        "INSERT",           // 1. action
+        null,               // 2. requestId
+        b.flatId,           // 3. flatId
+        b.ownerId || null,  // 4. ownerId
+        b.tenantId || null, // 5. tenantId
+        b.title,            // 6. title
+        b.description,      // 7. description
+        b.categoryId,       // 8. categoryId
+        b.priorityId,       // 9. priorityId
+        b.statusId || 70,   // 10. statusId (e.g., 1 = Open)
+        null,               // 11. assignedStaffId
+        null,               // 12. scheduledAt
+        null,               // 13. completedAt
+        b.estimatedCost || null, // 14. estimatedCost
+        null,               // 15. actualCost
+        null,               // 16. costBorneById
+        null,               // 17. remarks
+        beforePhoto,        // 18. beforePhotoUrl (✅ FIXED: Using the extracted variable)
+        null                // 19. afterPhotoUrl
     );
 
-    return APIResponse.send(res, APIResponse.successResponse("Bill generated successfully", result));
+    return APIResponse.send(res, APIResponse.successResponse("Maintenance request created successfully", result));
 });
 
 /* ======================= UPDATE BASIC INFO ======================= */
 const update = asyncHandler(async (req, res) => {
-    const b = req.body;
+    const b = req.body || {};
+    let beforePhoto = b.beforePhotoUrl || null; 
+
+    // 2. If a file was uploaded, save it to disk and get the new URL
+    if (req.file) {
+        const filename = `maintenance_before_${Date.now()}${path.extname(req.file.originalname)}`;
+        const savePath = path.join(process.cwd(), "public", "uploads", filename);
+        fs.writeFileSync(savePath, req.file.buffer);
+        beforePhoto = `/uploads/${filename}`;
+    }
 
     const result = await service.execute(
-        "UPDATE",
-        b.requestId,        // p_request_id
-        null,               // p_flat_id
-        null,               // p_owner_id
-        null,               // p_tenant_id
-        b.title,            // p_title
-        b.description,      // p_description
-        b.categoryId,       // p_category_id
-        b.priorityId,       // p_priority_id
-        b.statusId,         // p_status_id
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        b.beforePhotoUrl,
-        null
+        "UPDATE",           // 1. action
+        b.requestId,        // 2. requestId
+        null,               // 3. flatId
+        null,               // 4. ownerId
+        null,               // 5. tenantId
+        b.title,            // 6. title
+        b.description,      // 7. description
+        b.categoryId,       // 8. categoryId
+        b.priorityId,       // 9. priorityId
+        b.statusId,         // 10. statusId
+        null,               // 11. assignedStaffId
+        null,               // 12. scheduledAt
+        null,               // 13. completedAt
+        b.estimatedCost || null, // 14. estimatedCost
+        null,               // 15. actualCost
+        null,               // 16. costBorneById
+        null,               // 17. remarks
+        beforePhoto,        // 18. beforePhotoUrl (✅ FIXED: Using the extracted variable)
+        null                // 19. afterPhotoUrl
     );
 
     return APIResponse.send(res, APIResponse.successResponse("Maintenance request updated", result));
@@ -62,16 +82,28 @@ const update = asyncHandler(async (req, res) => {
 
 /* ======================= ASSIGN STAFF ======================= */
 const assign = asyncHandler(async (req, res) => {
-    const b = req.body;
+    const b = req.body || {};
 
     const result = await service.execute(
-        "ASSIGN",
-        b.requestId,        // p_request_id
-        null, null, null, null, null, null, null,
-        b.statusId,         // p_status_id
-        b.assignedStaffId,  // p_assigned_staff_id
-        b.scheduledAt,      // p_scheduled_at
-        null, null, null, null, null, null, null // Fill remaining to reach 19
+        "ASSIGN",           // 1. action
+        b.requestId,        // 2. requestId
+        null,               // 3. flatId
+        null,               // 4. ownerId
+        null,               // 5. tenantId
+        null,               // 6. title
+        null,               // 7. description
+        null,               // 8. categoryId
+        null,               // 9. priorityId
+        b.statusId,         // 10. statusId
+        b.assignedStaffId,  // 11. assignedStaffId
+        b.scheduledAt,      // 12. scheduledAt
+        null,               // 13. completedAt
+        b.estimatedCost || null, // 14. estimatedCost
+        null,               // 15. actualCost
+        null,               // 16. costBorneById
+        null,               // 17. remarks
+        null,               // 18. beforePhotoUrl
+        null                // 19. afterPhotoUrl
     );
 
     return APIResponse.send(res, APIResponse.successResponse("Staff assigned", result));
@@ -79,22 +111,37 @@ const assign = asyncHandler(async (req, res) => {
 
 /* ======================= COMPLETE REQUEST ======================= */
 const complete = asyncHandler(async (req, res) => {
-    const b = req.body;
+    const b = req.body || {};
+    let afterPhoto = b.afterPhotoUrl || null;
+
+    // 2. If a file was uploaded, save it to disk and get the new URL
+    if (req.file) {
+        const filename = `maintenance_after_${Date.now()}${path.extname(req.file.originalname)}`;
+        const savePath = path.join(process.cwd(), "public", "uploads", filename);
+        fs.writeFileSync(savePath, req.file.buffer);
+        afterPhoto = `/uploads/${filename}`;
+    }
 
     const result = await service.execute(
-        "COMPLETE",
-        b.requestId,        // p_request_id
-        null, null, null, null, null, null, null,
-        b.statusId,         // p_status_id
-        null,               // p_assigned_staff_id
-        null,               // p_scheduled_at
-        b.completedAt,      // p_completed_at (Stored Procedure uses NOW() if null)
-        null,               // p_estimated_cost
-        b.actualCost,       // p_actual_cost
-        b.costBorneById,    // p_cost_borne_by_id
-        b.remarks,          // p_remarks
-        null,               // p_before_photo_url
-        b.afterPhotoUrl     // p_after_photo_url
+        "COMPLETE",         // 1. action
+        b.requestId,        // 2. requestId
+        null,               // 3. flatId
+        null,               // 4. ownerId
+        null,               // 5. tenantId
+        null,               // 6. title
+        null,               // 7. description
+        null,               // 8. categoryId
+        null,               // 9. priorityId
+        b.statusId,         // 10. statusId
+        null,               // 11. assignedStaffId
+        null,               // 12. scheduledAt
+        b.completedAt,      // 13. completedAt
+        null,               // 14. estimatedCost
+        b.actualCost,       // 15. actualCost
+        b.costBorneById,    // 16. costBorneById
+        b.remarks,          // 17. remarks
+        null,               // 18. beforePhotoUrl
+        afterPhoto          // 19. afterPhotoUrl (✅ FIXED: Using the extracted variable)
     );
 
     return APIResponse.send(res, APIResponse.successResponse("Request completed", result));
@@ -106,7 +153,6 @@ const getById = asyncHandler(async (req, res) => {
 
     const data = await service.execute("GET_BY_ID", id);
     
-    // Extracting single record from SP result [ [rows], meta ]
     const record = (data && data[0] && data[0][0]) ? data[0][0] : null;
 
     return APIResponse.send(res, APIResponse.emptyOr404(record));
@@ -114,8 +160,15 @@ const getById = asyncHandler(async (req, res) => {
 
 /* ======================= GET ALL ======================= */
 const getAll = asyncHandler(async (req, res) => {
-    // Note: p_request_id is 2nd parameter, action is 1st.
-    const data = await service.execute("GET_ALL", null);
+    const limit = req.query.limit ? parseInt(req.query.limit) : null;
+    const offset = req.query.offset ? parseInt(req.query.offset) : null;
+
+    const data = await service.execute(
+        "GET_ALL", 
+        null, null, null, null, null, null, null, null, null, 
+        null, null, null, null, null, null, null, null, null, 
+        limit, offset
+    );
 
     return APIResponse.send(res, APIResponse.successResponse("Maintenance requests", data?.[0] || []));
 });

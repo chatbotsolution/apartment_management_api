@@ -23,17 +23,19 @@ const execute = async (
     costBorneById = null,
     remarks = null,
     beforePhotoUrl = null,
-    afterPhotoUrl = null
+    afterPhotoUrl = null,
+    limit = null,   // <-- NEW PARAMETER
+    offset = null   // <-- NEW PARAMETER
 ) => {
     try {
-        // Calling sp_maintenance_request with exactly 19 parameters
+        // Calling sp_maintenance_request with exactly 21 parameters
         const [rows] = await db.query(
             `CALL sp_maintenance_request(
                 ?, ?, ?, ?, ?, 
                 ?, ?, ?, ?, ?, 
                 ?, ?, ?, ?, ?, 
-                ?, ?, ?, ?
-            )`,
+                ?, ?, ?, ?, ?, ? 
+            )`, // <-- Added two more '?' here (Total: 21)
             [
                 action,             // 1
                 requestId,          // 2
@@ -53,7 +55,9 @@ const execute = async (
                 costBorneById,      // 16
                 remarks,            // 17
                 beforePhotoUrl,     // 18
-                afterPhotoUrl       // 19
+                afterPhotoUrl,      // 19
+                limit,              // 20 <-- NEW
+                offset              // 21 <-- NEW
             ]
         );
 
