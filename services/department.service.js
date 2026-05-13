@@ -1,60 +1,79 @@
 const db = require("../config/db");
 
-/* ======================= GET ALL ======================= */
-const getAll = async () => {
-    const [rows] = await db.query(
-        "CALL sp_department('GET_ALL', NULL, NULL, NULL, NULL)"
-    );
-    return rows[0];
-};
-
-/* ======================= GET BY ID ======================= */
-const getById = async (id) => {
-    const [rows] = await db.query(
-        "CALL sp_department('GET_BY_ID', ?, NULL, NULL, NULL)",
-        [id]
-    );
-    return rows[0];
-};
-
 /* ======================= CREATE ======================= */
-const create = async (data) => {
-    const { department_name, description, is_active } = data;
-
-    const [rows] = await db.query(
-        "CALL sp_department('INSERT', NULL, ?, ?, ?)",
-        [department_name, description, is_active]
+const createDepartment = async (data) => {
+    return await db.query(
+        "CALL sp_department(?, ?, ?, ?, ?)",
+        [
+            "INSERT",
+            0,
+            data.department_name,
+            data.description,
+            null
+        ]
     );
-
-    return rows[0][0];
 };
 
 /* ======================= UPDATE ======================= */
-const update = async (data) => {
-    const { department_id, department_name, description, is_active } = data;
-
-    const [rows] = await db.query(
-        "CALL sp_department('UPDATE', ?, ?, ?, ?)",
-        [department_id, department_name, description, is_active]
+const updateDepartment = async (data) => {
+    return await db.query(
+        "CALL sp_department(?, ?, ?, ?, ?)",
+        [
+            "UPDATE",
+            data.department_id,
+            data.department_name,
+            data.description,
+            null
+        ]
     );
-
-    return rows[0][0];
 };
 
-/* ======================= DELETE (SOFT) ======================= */
-const remove = async (id) => {
-    const [rows] = await db.query(
-        "CALL sp_department('DELETE', ?, NULL, NULL, NULL)",
-        [id]
+/* ======================= DELETE ======================= */
+const deleteDepartment = async (department_id) => {
+    return await db.query(
+        "CALL sp_department(?, ?, ?, ?, ?)",
+        [
+            "DELETE",
+            department_id,
+            null,
+            null,
+            null
+        ]
     );
+};
 
-    return rows[0][0];
+/* ======================= GET BY ID ======================= */
+const getDepartmentById = async (department_id) => {
+    return await db.query(
+        "CALL sp_department(?, ?, ?, ?, ?)",
+        [
+            "GET_BY_ID",
+            department_id,
+            null,
+            null,
+            null
+        ]
+    );
+};
+
+/* ======================= GET ALL ======================= */
+const getAllDepartments = async () => {
+    return await db.query(
+        "CALL sp_department(?, ?, ?, ?, ?)",
+        [
+            "GET_ALL",
+            null,
+            null,
+            null,
+            null
+        ]
+    );
 };
 
 module.exports = {
-    getAll,
-    getById,
-    create,
-    update,
-    remove
+    createDepartment,
+    updateDepartment,
+    deleteDepartment,
+    getDepartmentById,
+    getAllDepartments
 };

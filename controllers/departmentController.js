@@ -1,43 +1,162 @@
 const service = require("../services/department.service");
-const APIResponse = require("../utils/response");
-const asyncHandler = require("../middlewares/async.middleware");
-
-/* ======================= GET ALL ======================= */
-const getAll = asyncHandler(async (req, res) => {
-    const data = await service.getAll();
-    return APIResponse.send(res, APIResponse.emptyOr404(data));
-});
-
-/* ======================= GET BY ID ======================= */
-const getById = asyncHandler(async (req, res) => {
-    const id = parseInt(req.params.id);
-    const data = await service.getById(id);
-    return APIResponse.send(res, APIResponse.emptyOr404(data));
-});
-
 /* ======================= CREATE ======================= */
-const create = asyncHandler(async (req, res) => {
-    const result = await service.create(req.body);
-    return APIResponse.send(res, APIResponse.successResponse(result));
-});
+const createDepartment = async (req, res) => {
+    try {
 
+        const [result] = await service.createDepartment(req.body);
+
+        return res.status(200).json({
+            statusCode: 200,
+            success: true,
+            message: "Success",
+            data: [
+                {
+                    department_id: result[0][0].department_id,
+                    message: "Department created successfully"
+                }
+            ],
+            timestamp: new Date().toISOString()
+        });
+
+    } catch (error) {
+
+        return res.status(500).json({
+            statusCode: 500,
+            success: false,
+            message: error.message,
+            data: null,
+            timestamp: new Date().toISOString()
+        });
+    }
+};
 /* ======================= UPDATE ======================= */
-const update = asyncHandler(async (req, res) => {
-    const result = await service.update(req.body);
-    return APIResponse.send(res, APIResponse.successResponse(result));
-});
+const updateDepartment = async (req, res) => {
+    try {
+
+        await service.updateDepartment(req.body);
+
+        return res.status(200).json({
+            statusCode: 200,
+            success: true,
+            message: "Success",
+            data: [
+                {
+                    department_id: req.body.department_id,
+                    message: "Department updated successfully"
+                }
+            ],
+            timestamp: new Date().toISOString()
+        });
+
+    } catch (error) {
+
+        return res.status(500).json({
+            statusCode: 500,
+            success: false,
+            message: error.message,
+            data: null,
+            timestamp: new Date().toISOString()
+        });
+    }
+};
 
 /* ======================= DELETE ======================= */
-const remove = asyncHandler(async (req, res) => {
-    const id = parseInt(req.params.id);
-    const result = await service.remove(id);
-    return APIResponse.send(res, APIResponse.successResponse(result));
-});
+const deleteDepartment = async (req, res) => {
+    try {
+
+        const { id } = req.params;
+
+        await service.deleteDepartment(id);
+
+        return res.status(200).json({
+            statusCode: 200,
+            success: true,
+            message: "Department deleted successfully",
+            data: null,
+            timestamp: new Date().toISOString()
+        });
+
+    } catch (error) {
+
+        return res.status(500).json({
+            statusCode: 500,
+            success: false,
+            message: error.message,
+            data: null,
+            timestamp: new Date().toISOString()
+        });
+    }
+};
+
+/* ======================= GET BY ID ======================= */
+const getDepartmentById = async (req, res) => {
+    try {
+
+        const { id } = req.params;
+
+        const [result] = await service.getDepartmentById(id);
+
+        if (!result[0] || result[0].length === 0) {
+
+            return res.status(404).json({
+                statusCode: 404,
+                success: false,
+                message: "Data not found",
+                data: null,
+                timestamp: new Date().toISOString()
+            });
+        }
+
+        return res.status(200).json({
+            statusCode: 200,
+            success: true,
+            message: "Department fetched successfully",
+            data: result[0][0],
+            timestamp: new Date().toISOString()
+        });
+
+    } catch (error) {
+
+        return res.status(500).json({
+            statusCode: 500,
+            success: false,
+            message: error.message,
+            data: null,
+            timestamp: new Date().toISOString()
+        });
+    }
+};
+
+/* ======================= GET ALL ======================= */
+const getAllDepartments = async (req, res) => {
+    try {
+
+        const [result] = await service.getAllDepartments();
+
+        return res.status(200).json({
+            statusCode: 200,
+            success: true,
+            message: "Department list fetched successfully",
+            data: result[0],
+            timestamp: new Date().toISOString()
+        });
+
+    } catch (error) {
+
+        return res.status(500).json({
+            statusCode: 500,
+            success: false,
+            message: error.message,
+            data: null,
+            timestamp: new Date().toISOString()
+        });
+    }
+};
 
 module.exports = {
-    getAll,
-    getById,
-    create,
-    update,
-    remove
+    createDepartment,
+    updateDepartment,
+    deleteDepartment,
+    getDepartmentById,
+    getAllDepartments
 };
