@@ -26,7 +26,8 @@ const execute = async (
         ]
     );
 
-    return rows;
+    // Return actual result set
+    return rows[0];
 };
 
 module.exports = {
