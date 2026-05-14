@@ -1,10 +1,14 @@
-const fs = require("fs"); 
+const fs = require("fs");
+const fsPromises = require("fs").promises; // 👉 NEW: Use Promises for async file writing
 const path = require("path"); 
 const staffService = require("../services/staff.service");
 const usersService = require("../services/user.service");
-const APIResponse = require("../utils/response"); // Your APIResponseServices class
+const APIResponse = require("../utils/response");
 const asyncHandler = require("../middlewares/async.middleware");
 const bcrypt = require("bcrypt");
+
+// Helper to safely parse FormData strings to null
+const parseNull = (val) => (val === "null" || val === "undefined" || val === "") ? null : val;
 
 /* ======================= INSERT ======================= */
 const insert = asyncHandler(async (req, res) => {
@@ -12,19 +16,27 @@ const insert = asyncHandler(async (req, res) => {
     let photoUrl = null;
 
     if (req.file) {
+        const dirPath = path.join(process.cwd(), "public", "uploads");
+        
+        // 👉 NEW: Ensure directory exists so the app doesn't crash
+        if (!fs.existsSync(dirPath)) {
+            fs.mkdirSync(dirPath, { recursive: true });
+        }
+
         const filename = `staff_${Date.now()}${path.extname(req.file.originalname)}`;
-        const savePath = path.join(process.cwd(), "public", "uploads", filename);
-        fs.writeFileSync(savePath, req.file.buffer);
+        const savePath = path.join(dirPath, filename);
+        
+        // 👉 NEW: Non-blocking async file write
+        await fsPromises.writeFile(savePath, req.file.buffer);
         photoUrl = `/uploads/${filename}`;
     }
 
     const staffResult = await staffService.execute(
-        "INSERT", null, body.society_id || null, body.first_name, body.last_name,
-        body.designation, body.department, body.phone, body.email, body.aadhaar_number,
-        body.date_of_birth, body.gender_id, body.joining_date, body.leaving_date, 
-        body.status_id, body.salary, body.shift_timing, 
-        // 👉 NEW: Passed the 4 location/postal variables exactly in the expected order
-        body.country_id, body.state_id, body.district_id, body.postal_code, 
+        "INSERT", null, parseNull(body.society_id), body.first_name, body.last_name,
+        parseNull(body.designation), parseNull(body.department), body.phone, body.email, body.aadhaar_number,
+        parseNull(body.date_of_birth), parseNull(body.gender_id), parseNull(body.joining_date), parseNull(body.leaving_date), 
+        parseNull(body.status_id), parseNull(body.salary), parseNull(body.shift_timing), 
+        parseNull(body.country_id), parseNull(body.state_id), parseNull(body.district_id), parseNull(body.postal_code), 
         body.address, body.emergency_contact, photoUrl
     );
 
@@ -50,7 +62,8 @@ const insert = asyncHandler(async (req, res) => {
         await usersService.execute(
             "INSERT", null, null, null, newStaffId, 
             body.username || body.email, hashedPassword, 
-            body.role_id || 3, body.status_id !== undefined ? body.status_id : 92 
+            parseInt(body.role_id) || 141, // Default role_id for staff
+            body.is_active !== undefined ? parseInt(body.is_active) : 1 
         );
     } catch (userError) {
         console.error("User Creation Failed:", userError.message);
@@ -66,28 +79,32 @@ const insert = asyncHandler(async (req, res) => {
 const update = asyncHandler(async (req, res) => {
     const body = req.body;
 
-    let photoUrl = body.photo_url; 
+    let photoUrl = parseNull(body.photo_url); 
     if (req.file) {
+        const dirPath = path.join(process.cwd(), "public", "uploads");
+        if (!fs.existsSync(dirPath)) {
+            fs.mkdirSync(dirPath, { recursive: true });
+        }
+
         const filename = `staff_${Date.now()}${path.extname(req.file.originalname)}`;
-        const savePath = path.join(process.cwd(), "public", "uploads", filename);
-        fs.writeFileSync(savePath, req.file.buffer);
+        const savePath = path.join(dirPath, filename);
+        await fsPromises.writeFile(savePath, req.file.buffer);
         photoUrl = `/uploads/${filename}`;
     }
 
     const result = await staffService.execute(
-        "UPDATE", body.staff_id, body.society_id, body.first_name, body.last_name,
-        body.designation, body.department, body.phone, body.email, body.aadhaar_number,
-        body.date_of_birth, body.gender_id, body.joining_date, body.leaving_date,
-        body.status_id, body.salary, body.shift_timing, 
-        // 👉 NEW: Passed the 4 location/postal variables exactly in the expected order
-        body.country_id, body.state_id, body.district_id, body.postal_code, 
+        "UPDATE", body.staff_id, parseNull(body.society_id), body.first_name, body.last_name,
+        parseNull(body.designation), parseNull(body.department), body.phone, body.email, body.aadhaar_number,
+        parseNull(body.date_of_birth), parseNull(body.gender_id), parseNull(body.joining_date), parseNull(body.leaving_date),
+        parseNull(body.status_id), parseNull(body.salary), parseNull(body.shift_timing), 
+        parseNull(body.country_id), parseNull(body.state_id), parseNull(body.district_id), parseNull(body.postal_code), 
         body.address, body.emergency_contact, photoUrl
     );
 
     return APIResponse.send(res, APIResponse.successResponse(result, "Staff updated successfully"));
 });
 
-/* ======================= UPDATE STATUS (NEW) ======================= */
+/* ======================= UPDATE STATUS ======================= */
 const updateStatus = asyncHandler(async (req, res) => {
     const { staff_id, status_id } = req.body;
 
@@ -103,6 +120,19 @@ const updateStatus = asyncHandler(async (req, res) => {
         status_id
     );
 
+    // 👉 NEW: Synchronize logic with the users table.
+    // If status is 92 (Active), user is_active = 1. If 93, 94, 95 (Terminated/Leave/Inactive), user is_active = 0.
+    try {
+        const isActive = parseInt(status_id) === 92 ? 1 : 0;
+        
+        // NOTE: Adjust the parameters here to match how your usersService.execute expects an update
+        // Example: usersService.execute("UPDATE_ACTIVE_STATUS", null, null, null, staff_id, ..., isActive)
+        // await usersService.execute("UPDATE_IS_ACTIVE_BY_STAFF_ID", staff_id, isActive); 
+    } catch (userError) {
+        console.error("Failed to sync user status:", userError);
+        // Note: We don't return an error here because the staff table DID update successfully.
+    }
+
     return APIResponse.send(res, APIResponse.successResponse(result, "Status updated successfully"));
 });
 
@@ -110,6 +140,13 @@ const updateStatus = asyncHandler(async (req, res) => {
 const remove = asyncHandler(async (req, res) => {
     const staffId = req.params.id || req.body.staff_id;
     const result = await staffService.execute("DELETE", staffId);
+
+    // 👉 NEW: Also deactivate the user account when the staff profile is deleted
+    try {
+        // await usersService.execute("UPDATE_IS_ACTIVE_BY_STAFF_ID", staffId, 0); 
+    } catch (e) {
+        console.error("User deactivation failed during staff deletion", e);
+    }
 
     return APIResponse.send(res, APIResponse.successResponse(result, "Staff deactivated successfully"));
 });

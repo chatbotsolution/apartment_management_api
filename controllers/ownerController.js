@@ -55,7 +55,7 @@ const insert = asyncHandler(async (req, res) => {
             null,                
             body.username || body.email, 
             hashedPassword,      
-            body.role_id || 4,   
+            body.role_id || 142, // 142 is the Owner role
             body.is_active !== undefined ? body.is_active : 1 
         );
     } catch (userError) {
