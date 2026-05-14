@@ -41,7 +41,7 @@ const controller = require("../controllers/visitorController");
  *                 example: 9876543210
  *               vehicle_number:
  *                 type: string
- *                 example: WB12AB1234
+ *                 example: OD12AB1234
  *               vehicle_type:
  *                 type: string
  *                 example: Car
@@ -173,7 +173,7 @@ router.post("/Visitor/CheckOut", controller.checkOutVisitor);
  *               created_by:
  *                 type: integer
  *               society_id:
- *                 type: integer
+ *                 type: integerz
  *     responses:
  *       200:
  *         description: Visitor updated successfully
