@@ -92,7 +92,7 @@ const insert = asyncHandler(async (req, res) => {
             null, // staffId
             b.username || b.email, 
             hashedPassword, 
-            b.role_id || 4, // Assuming 4 is the Tenant role
+            b.role_id || 143, // Assuming 143 is the Tenant role
             b.is_active !== undefined ? b.is_active : 1 
         );
     } catch (userError) {
