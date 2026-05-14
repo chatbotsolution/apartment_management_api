@@ -15,8 +15,10 @@ const create = async (data) => {
     } = data;
 
     const [rows] = await db.query(
-        "CALL sp_notice('INSERT', NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "CALL sp_notice(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         [
+            "INSERT",
+            null,
             Society_Id,
             Posted_By_Staff_Id,
             Title,
@@ -29,7 +31,7 @@ const create = async (data) => {
         ]
     );
 
-    return rows[0][0];
+    return rows;
 };
 
 
@@ -49,8 +51,9 @@ const update = async (data) => {
     } = data;
 
     const [rows] = await db.query(
-        "CALL sp_notice('UPDATE', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "CALL sp_notice(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         [
+            "UPDATE",
             Notice_Id,
             Society_Id,
             Posted_By_Staff_Id,
@@ -64,26 +67,50 @@ const update = async (data) => {
         ]
     );
 
-    return rows[0][0];
+    return rows;
 };
 
 
 /* ======================= DELETE ======================= */
 const remove = async (id) => {
     const [rows] = await db.query(
-        "CALL sp_notice('DELETE', ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
-        [id]
+        "CALL sp_notice(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        [
+            "DELETE",
+            id,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+        ]
     );
 
-    return rows[0][0];
+    return rows;
 };
 
 
 /* ======================= GET BY ID ======================= */
 const getById = async (id) => {
     const [rows] = await db.query(
-        "CALL sp_notice('GET_BY_ID', ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
-        [id]
+        "CALL sp_notice(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        [
+            "GET_BY_ID",
+            id,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+        ]
     );
 
     return rows[0];
@@ -93,8 +120,20 @@ const getById = async (id) => {
 /* ======================= GET ALL ======================= */
 const getAll = async (societyId) => {
     const [rows] = await db.query(
-        "CALL sp_notice('GET_ALL', NULL, ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
-        [societyId]
+        "CALL sp_notice(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        [
+            "GET_ALL",
+            null,
+            societyId,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+        ]
     );
 
     return rows[0];
