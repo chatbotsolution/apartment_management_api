@@ -82,6 +82,7 @@ const staff = byAction("STAFF");
 const parkingSlot = byAction("PARKING_SLOT");
 const vehicle = byAction("VEHICLE");
 const amenity = byAction("AMENITY");
+const visitor = byAction("VISITOR");
 
 /* ======================= ALL LOOKUPS ======================= */
 const getAllLookups = asyncHandler(async (req, res) => {
@@ -136,6 +137,7 @@ module.exports = {
     parkingSlot,
     vehicle,
     amenity,
+    visitor,
 
     // common
     getAllLookups

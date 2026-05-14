@@ -1014,6 +1014,29 @@ router.get("/Dropdown/Vehicle", controller.vehicle);
  */
 router.get("/Dropdown/Amenity", controller.amenity);
 
+/**
+ * @swagger
+ * /Dropdown/Visitor:
+ *   get:
+ *     summary: Get Visitor list
+ *     description: Returns all visitors via sp_dropdown_master (VISITOR).
+ *     tags: [Dropdown Master]
+ *     responses:
+ *       200:
+ *         description: List of visitors
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/DropdownResponseBasic'
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+router.get("/Dropdown/Visitor", controller.visitor);
+
 
 /* ======================= ALL LOOKUPS ======================= */
 
