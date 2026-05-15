@@ -41,7 +41,30 @@ const getById = asyncHandler(async (req, res) => {
 /* ======================= CREATE ======================= */
 const create = asyncHandler(async (req, res) => {
 
-    const result = await service.create(req.body);
+    // Explicitly destructure to prevent over-posting
+    const {
+        floor_id,
+        block_id,
+        flat_number,
+        bhk_type_id,
+        balconies,
+        facing_id,
+        status_id,
+        is_corner_flat
+    } = req.body;
+
+    const payload = {
+        floor_id,
+        block_id,
+        flat_number,
+        bhk_type_id,
+        balconies,
+        facing_id,
+        status_id,
+        is_corner_flat
+    };
+
+    const result = await service.create(payload);
 
     return APIResponse.send(
         res,
@@ -53,7 +76,32 @@ const create = asyncHandler(async (req, res) => {
 /* ======================= UPDATE ======================= */
 const update = asyncHandler(async (req, res) => {
 
-    const result = await service.update(req.body);
+    // Explicitly destructure to prevent over-posting
+    const {
+        flat_id,
+        floor_id,
+        block_id,
+        flat_number,
+        bhk_type_id,
+        balconies,
+        facing_id,
+        status_id,
+        is_corner_flat
+    } = req.body;
+
+    const payload = {
+        flat_id,
+        floor_id,
+        block_id,
+        flat_number,
+        bhk_type_id,
+        balconies,
+        facing_id,
+        status_id,
+        is_corner_flat
+    };
+
+    const result = await service.update(payload);
 
     return APIResponse.send(
         res,

@@ -57,7 +57,7 @@ const login = asyncHandler(async (req, res) => {
     if (!result || result.length === 0) {
         return APIResponse.send(
             res,
-            APIResponse.errorResponse("Invalid username or password")
+            APIResponse.errorResponse("Invalid Email or password")
         );
     }
 
@@ -77,7 +77,7 @@ const login = asyncHandler(async (req, res) => {
     if (!isMatch) {
         return APIResponse.send(
             res,
-            APIResponse.errorResponse("Invalid username or password")
+            APIResponse.errorResponse("Invalid Email or password")
         );
     }
 
