@@ -18,7 +18,8 @@ const insert = asyncHandler(async (req, res) => {
         b.username,
         hashedPassword,
         b.roleId,
-        b.isActive
+        b.isActive,
+        b.orgId
     );
 
     return APIResponse.send(
@@ -63,7 +64,7 @@ const login = asyncHandler(async (req, res) => {
 
     const user = result[0];
 
-    // 🔴 IMPORTANT: make sure password_hash exists
+    //  IMPORTANT: make sure password_hash exists
     if (!user.password_hash) {
         return APIResponse.send(
             res,

@@ -62,15 +62,19 @@ router.post("/User/Login", controller.login);
  *               - username
  *               - passwordHash
  *               - roleId
+ *               - orgId    
  *             properties:
  *               ownerId:
  *                 type: integer
+ *                 nullable: true
  *                 example: 1
  *               tenantId:
  *                 type: integer
+ *                 nullable: true
  *                 example: null
  *               staffId:
  *                 type: integer
+ *                 nullable: true
  *                 example: null
  *               username:
  *                 type: string
@@ -84,6 +88,9 @@ router.post("/User/Login", controller.login);
  *               isActive:
  *                 type: boolean
  *                 example: true
+ *               orgId:                
+ *                 type: integer
+ *                 example: 1
  *     responses:
  *       200:
  *         description: User created successfully

@@ -10,11 +10,12 @@ const execute = async (
     username = null,
     passwordHash = null,
     roleId = null,
-    isActive = null
+    isActive = null,
+    orgId = null
 ) => {
 
     const [rows] = await db.query(
-        "CALL sp_user(?,?,?,?,?,?,?,?,?)",
+        "CALL sp_user(?,?,?,?,?,?,?,?,?,?)",
         [
             action,
             userId,
@@ -24,7 +25,8 @@ const execute = async (
             username,
             passwordHash,
             roleId,
-            isActive
+            isActive,
+            orgId
         ]
     );
 
