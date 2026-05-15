@@ -21,10 +21,10 @@ const insert = asyncHandler(async (req, res) => {
         body.contactEmail,
         body.contactPhone,
         body.totalBlocks,
-        body.totalUnits,
-        body.website
+        body.website,
+        body.orgId,
+        body.societyTypeId
     );
-
     return APIResponse.send(
         res,
         APIResponse.successResponse(null)
@@ -50,8 +50,9 @@ const update = asyncHandler(async (req, res) => {
         body.contactEmail,
         body.contactPhone,
         body.totalBlocks,
-        body.totalUnits,
-        body.website
+        body.website,
+        body.orgId,
+        body.societyTypeId
     );
 
     return APIResponse.send(

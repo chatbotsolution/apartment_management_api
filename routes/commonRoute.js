@@ -1081,5 +1081,29 @@ router.get("/Dropdown/Visitor", controller.visitor);
  */
 router.get("/Dropdown/All", controller.getAllLookups);
 
+/* ======================= SOCIETY TYPE DROPDOWNS ======================= */
+/**
+ * @swagger
+ * /Dropdown/SocietyType:
+ *   get:
+ *     summary: Get Society Type dropdown
+ *     description: Returns lookup values for group `society_type` (Apartment, Duplex).
+ *     tags: [Dropdown Master]
+ *     responses:
+ *       200:
+ *         description: List of society types
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/DropdownResponse'
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+router.get("/Dropdown/SocietyType", controller.societyType);
+
 
 module.exports = router;
