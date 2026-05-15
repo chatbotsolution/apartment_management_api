@@ -2,14 +2,12 @@ const express = require("express");
 const router = express.Router();
 const controller = require("../controllers/flatController");
 
-
 /**
  * @swagger
  * tags:
  *   name: Flat Master
  *   description: Flat management APIs
  */
-
 
 /* ======================= GET ALL ======================= */
 /**
@@ -30,7 +28,6 @@ const controller = require("../controllers/flatController");
  */
 router.get("/Flat/GetAll", controller.getAll);
 
-
 /* ======================= GET BY ID ======================= */
 /**
  * @swagger
@@ -49,7 +46,6 @@ router.get("/Flat/GetAll", controller.getAll);
  *         description: Flat fetched successfully
  */
 router.get("/Flat/GetById/:id", controller.getById);
-
 
 /* ======================= CREATE ======================= */
 /**
@@ -71,13 +67,7 @@ router.get("/Flat/GetById/:id", controller.getById);
  *                 type: integer
  *               flat_number:
  *                 type: string
- *               flat_type:
- *                 type: integer
- *               area_sqft:
- *                 type: number
- *               bedrooms:
- *                 type: integer
- *               bathrooms:
+ *               bhk_type_id:
  *                 type: integer
  *               balconies:
  *                 type: integer
@@ -87,14 +77,11 @@ router.get("/Flat/GetById/:id", controller.getById);
  *                 type: integer
  *               is_corner_flat:
  *                 type: boolean
- *               monthly_maintenance:
- *                 type: number
  *     responses:
  *       200:
  *         description: Flat created successfully
  */
 router.post("/Flat/Create", controller.create);
-
 
 /* ======================= UPDATE ======================= */
 /**
@@ -118,13 +105,7 @@ router.post("/Flat/Create", controller.create);
  *                 type: integer
  *               flat_number:
  *                 type: string
- *               flat_type:
- *                 type: integer
- *               area_sqft:
- *                 type: number
- *               bedrooms:
- *                 type: integer
- *               bathrooms:
+ *               bhk_type_id:
  *                 type: integer
  *               balconies:
  *                 type: integer
@@ -134,14 +115,11 @@ router.post("/Flat/Create", controller.create);
  *                 type: integer
  *               is_corner_flat:
  *                 type: boolean
- *               monthly_maintenance:
- *                 type: number
  *     responses:
  *       200:
  *         description: Flat updated successfully
  */
 router.put("/Flat/Update", controller.update);
-
 
 /* ======================= DELETE ======================= */
 /**
@@ -161,6 +139,5 @@ router.put("/Flat/Update", controller.update);
  *         description: Flat deleted successfully
  */
 router.delete("/Flat/Delete/:id", controller.remove);
-
 
 module.exports = router;
