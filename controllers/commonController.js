@@ -17,8 +17,8 @@ const byAction = (action, requireSociety = false) =>
         }
 
         // ✅ FIXED: Calling the correct function from your service!
-        const data = await service.getDropdown(action, societyId); 
-        
+        const data = await service.getDropdown(action, societyId);
+
         return APIResponse.send(res, {
             statusCode: 200,
             success: true,
@@ -95,6 +95,17 @@ const getAllLookups = asyncHandler(async (req, res) => {
     });
 });
 
+/* ======================= SOCIETY TYPE DROPDOWNS ======================= */
+const societyType = asyncHandler(async (req, res) => {
+    const data = await service.getSocietyType();
+
+    return APIResponse.send(res, {
+        statusCode: 200,
+        success: true,
+        message: "Society Type fetched successfully",
+        data: data
+    });
+});
 /* ======================= EXPORT ======================= */
 module.exports = {
     // lookup group APIs
@@ -140,5 +151,8 @@ module.exports = {
     visitor,
 
     // common
-    getAllLookups
+    getAllLookups,
+    
+    //Individual
+    societyType
 };

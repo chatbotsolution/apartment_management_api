@@ -15,12 +15,13 @@ const execute = async (
     contactEmail = null,
     contactPhone = null,
     totalBlocks = null,
-    totalUnits = null,
-    website = null
+    website = null,
+    orgId = null,
+    societyTypeId = null
 ) => {
 
     const [rows] = await db.query(
-        "CALL sp_society(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        "CALL sp_society(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         [
             action,
             societyId,
@@ -34,8 +35,9 @@ const execute = async (
             contactEmail,
             contactPhone,
             totalBlocks,
-            totalUnits,
-            website
+            website,
+            orgId,
+            societyTypeId
         ]
     );
 

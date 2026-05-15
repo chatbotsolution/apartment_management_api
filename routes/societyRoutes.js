@@ -46,10 +46,12 @@ const controller = require("../controllers/societyController");
  *                 type: string
  *               totalBlocks:
  *                 type: integer
- *               totalUnits:
- *                 type: integer
  *               website:
  *                 type: string
+ *               orgId:
+ *                 type: integer
+ *               societyTypeId:
+ *                 type: integer
  *     responses:
  *       200:
  *         description: Society created successfully
@@ -94,10 +96,12 @@ router.post("/Society/Insert", controller.insert);
  *                 type: string
  *               totalBlocks:
  *                 type: integer
- *               totalUnits:
- *                 type: integer
  *               website:
  *                 type: string
+ *               orgId:
+ *                 type: integer
+ *               societyTypeId:
+ *                 type: integer
  *     responses:
  *       200:
  *         description: Society updated successfully

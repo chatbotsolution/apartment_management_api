@@ -30,8 +30,19 @@ const getDropdown = async (action, societyId = null) => {
     return rows[0] || [];
 };
 
+/* ======================= SOCIETY TYPE DROPDOWNS ======================= */
+const getSocietyType = async () => {
+    const [rows] = await db.query(
+        "CALL sp_dropdown_master(?,?,?)",
+        ["SOCIETY_TYPE", null, null]
+    );
+
+    return rows[0] || [];
+};
+
 module.exports = {
     getLookupByGroup,
     getAllLookups,
-    getDropdown
+    getDropdown,
+    getSocietyType
 };
