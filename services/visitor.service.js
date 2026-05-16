@@ -100,7 +100,7 @@ const getTodayVisitors = async (society_id) => {
             null,
             null, null, null, null, null, null,
             null, null, null, null, null, null, null, null,
-            society_id
+            society_id // Handled by FIND_IN_SET in SP
         ]
     );
 };
@@ -114,21 +114,22 @@ const getActiveVisitors = async (society_id) => {
             null,
             null, null, null, null, null, null,
             null, null, null, null, null, null, null, null,
-            society_id
+            society_id // Handled by FIND_IN_SET in SP
         ]
     );
 };
 
 /* ======================= HISTORY BY FLAT ======================= */
-const getVisitorHistoryByFlat = async (flat_id) => {
+const getVisitorHistoryByFlat = async (flat_id, society_id) => {
     return await db.query(
         "CALL sp_visitor(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         [
             "GET_HISTORY_BY_FLAT",
             null,
-            flat_id,
+            flat_id, // Assigned to p_host_flat_id
             null, null, null, null, null,
-            null, null, null, null, null, null, null, null, null
+            null, null, null, null, null, null, null, null, 
+            society_id // Passed cleanly as a string ("1"), comma string ("1,2,3"), or null
         ]
     );
 };

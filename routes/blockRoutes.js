@@ -16,14 +16,16 @@ const controller = require("../controllers/blockController");
  * @swagger
  * /Block/GetAll:
  *   get:
- *     summary: Get all blocks by society
+ *     summary: Get all blocks by single or multiple societies
  *     tags: [Block Master]
  *     parameters:
  *       - in: query
  *         name: society_id
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
+ *           example: "26,25"
+ *         description: Pass a single society ID (e.g., 25) or a comma-separated list of IDs (e.g., 26,25)
  *     responses:
  *       200:
  *         description: Block list fetched successfully

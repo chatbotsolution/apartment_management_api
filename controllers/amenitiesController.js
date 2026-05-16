@@ -7,14 +7,13 @@ const getAll = asyncHandler(async (req, res) => {
     // 1. Extract from query
     const { society_id } = req.query;
 
-    // 2. Convert to integer or null (to support the "Optional" DB logic)
-    const safeSocietyId = society_id ? parseInt(society_id) : null;
+    // 2. Safely cast to string or null (DO NOT parseInt to support comma strings like '25,26')
+    const safeSocietyId = society_id ? String(society_id).trim() : null;
 
-    // 3. Remove the "badRequestResponse" check since it's now optional
+    // 3. Forward the string/null array scope to your service wrapper
     const data = await amenityService.getAll(safeSocietyId);
     
-    // 4. Use emptyOr404 or just successResponse
-    // For a "Get All", usually an empty array [] is better than a 404.
+    // 4. Send API Response
     return APIResponse.send(res, APIResponse.successResponse(data));
 });
 

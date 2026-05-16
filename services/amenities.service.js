@@ -21,13 +21,16 @@ const extractMetadata = (result) => {
 
 /* ======================= GET ALL ======================= */
 const getAll = async (societyId) => {
-    const safeSocietyId = societyId ? parseInt(societyId) : null;
+    // Keep as a string format to seamlessly protect your comma-delimited parameters
+    const safeSocietyId = societyId ? String(societyId) : null;
+    
     const [rows] = await db.query(
         "CALL sp_amenity('GET_ALL', NULL, ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
         [safeSocietyId]
     );
-    // Returns an array of amenity objects
-    return rows[0];
+    
+    // Returns the data table array payload extracted from the database procedure row context
+    return rows[0] || [];
 };
 
 /* ======================= GET BY ID ======================= */
