@@ -33,9 +33,6 @@ const insert = asyncHandler(async (req, res) => {
 
 const login = asyncHandler(async (req, res) => {
     const { username, password } = req.body;
-
-    console.log("BODY:", req.body);
-
     // Validation
     if (!username || !password) {
         return APIResponse.send(
@@ -54,7 +51,7 @@ const login = asyncHandler(async (req, res) => {
         username,
         null
     );
-
+console.log("BODY:", req.body);
     if (!result || result.length === 0) {
         return APIResponse.send(
             res,
@@ -74,6 +71,7 @@ const login = asyncHandler(async (req, res) => {
 
     // Compare password
     const isMatch = await bcrypt.compare(password, user.password_hash);
+    console.log("BODY:", isMatch);
 
     if (!isMatch) {
         return APIResponse.send(

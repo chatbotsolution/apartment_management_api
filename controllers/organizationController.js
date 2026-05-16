@@ -1,10 +1,11 @@
 const service = require("../services/organization.service");
+const usersService = require("../services/user.service");
 const APIResponse = require("../utils/response");
 const asyncHandler = require("../middlewares/async.middleware");
+const bcrypt = require("bcrypt");
 
 /* ================= GET ALL ================= */
 const getAll = asyncHandler(async (req, res) => {
-
     const data = await service.getAll();
 
     return APIResponse.send(
@@ -16,7 +17,6 @@ const getAll = asyncHandler(async (req, res) => {
 
 /* ================= GET BY ID ================= */
 const getById = asyncHandler(async (req, res) => {
-
     const id = parseInt(req.params.id);
 
     const data = await service.getById(id);
@@ -31,11 +31,65 @@ const getById = asyncHandler(async (req, res) => {
 /* ================= CREATE ================= */
 const create = asyncHandler(async (req, res) => {
 
-    const result = await service.create(req.body);
+    const b = req.body;
+
+    //  Validation
+    if (!b.org_name || !b.contact_email) {
+        return APIResponse.send(
+            res,
+            APIResponse.errorResponse("Organization name and email are required")
+        );
+    }
+
+    // 1. Create Organization
+    const orgResult = await service.create(b);
+
+    const newOrgId =
+        orgResult?.[0]?.org_id ||
+        orgResult?.org_id;
+
+    if (!newOrgId) {
+        return APIResponse.send(
+            res,
+            APIResponse.errorResponse("Organization created but ID not found")
+        );
+    }
+
+    // 2. Create User (AUTO)
+    const password = b.password || "Org@123";
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    try {
+        await usersService.execute(
+            "INSERT",
+            null,               // userId
+            null,               // ownerId
+            null,               // tenantId
+            null,               // staffId
+            b.contact_email,    // username = email
+            hashedPassword,
+            150,                // FIXED ROLE ID
+            1,                  // is_active
+            newOrgId            // org_id
+        );
+    } catch (err) {
+        console.error("User Creation Failed:", err.message);
+
+        return APIResponse.send(
+            res,
+            APIResponse.successResponse(
+                "Organization created but user creation failed",
+                { org_id: newOrgId }
+            )
+        );
+    }
 
     return APIResponse.send(
         res,
-        APIResponse.successResponse(result)
+        APIResponse.successResponse(
+            { org_id: newOrgId },
+            "Organization and User created successfully"
+        )
     );
 });
 
@@ -58,10 +112,9 @@ const remove = asyncHandler(async (req, res) => {
     const id = parseInt(req.params.id);
 
     const result = await service.remove(id);
-
     return APIResponse.send(
         res,
-        APIResponse.successResponse(result)
+        APIResponse.successResponse("Organization deleted", result)
     );
 });
 
