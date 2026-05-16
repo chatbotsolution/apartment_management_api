@@ -6,7 +6,7 @@ const asyncHandler = require("../middlewares/async.middleware");
 /* ======================= GET ALL ======================= */
 const getAll = asyncHandler(async (req, res) => {
 
-    const society_id = parseInt(req.query.society_id);
+    const society_id = req.query.society_id || null;
 
     if (!society_id) {
         return APIResponse.send(

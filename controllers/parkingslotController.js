@@ -125,7 +125,7 @@ const getById = asyncHandler(async (req, res) => {
 /* ======================= GET ALL ======================= */
 const getAll = asyncHandler(async (req, res) => {
 
-    const societyId = parseInt(req.query.society_id);
+    const societyId = req.query.society_id || null;
 
     const data = await service.execute(
         "GET_ALL",
@@ -143,7 +143,7 @@ const getAll = asyncHandler(async (req, res) => {
 /* ======================= GET AVAILABLE ======================= */
 const getAvailable = asyncHandler(async (req, res) => {
 
-    const societyId = parseInt(req.query.society_id);
+    const societyId = req.query.society_id || null;
 
     const data = await service.execute(
         "GET_AVAILABLE",

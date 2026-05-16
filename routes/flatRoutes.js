@@ -21,7 +21,7 @@ const controller = require("../controllers/flatController");
  *         name: society_id
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
  *     responses:
  *       200:
  *         description: Flat list fetched successfully
