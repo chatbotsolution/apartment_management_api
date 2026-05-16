@@ -1,4 +1,5 @@
 const fs = require("fs");
+const fsPromises = require("fs").promises; // 👉 NEW: Added for non-blocking file writes
 const path = require("path");
 const tenantService = require("../services/tenant.service");
 const usersService = require("../services/user.service");
@@ -13,18 +14,27 @@ const insert = asyncHandler(async (req, res) => {
     let photoUrl = null;
     let agreementUrl = null;
 
-    // Handle multiple file uploads (assuming multer .fields() or similar)
+    // 👉 FIX: Handle File Uploads safely without blocking the event loop
     if (req.files) {
+        const dirPath = path.join(process.cwd(), "public", "uploads");
+        
+        // Ensure directory exists so app doesn't crash
+        if (!fs.existsSync(dirPath)) {
+            fs.mkdirSync(dirPath, { recursive: true });
+        }
+
         if (req.files['profile_photo_url'] && req.files['profile_photo_url'][0]) {
             const file = req.files['profile_photo_url'][0];
             const filename = `tenant_photo_${Date.now()}${path.extname(file.originalname)}`;
-            fs.writeFileSync(path.join(process.cwd(), "public", "uploads", filename), file.buffer);
+            const savePath = path.join(dirPath, filename);
+            await fsPromises.writeFile(savePath, file.buffer); // Non-blocking write
             photoUrl = `/uploads/${filename}`;
         }
         if (req.files['agreement_doc_url'] && req.files['agreement_doc_url'][0]) {
             const file = req.files['agreement_doc_url'][0];
             const filename = `tenant_agreement_${Date.now()}${path.extname(file.originalname)}`;
-            fs.writeFileSync(path.join(process.cwd(), "public", "uploads", filename), file.buffer);
+            const savePath = path.join(dirPath, filename);
+            await fsPromises.writeFile(savePath, file.buffer); // Non-blocking write
             agreementUrl = `/uploads/${filename}`;
         }
     }
@@ -57,7 +67,7 @@ const insert = asyncHandler(async (req, res) => {
         b.emergency_contact_phone || null,
         photoUrl,
         agreementUrl,
-        b.police_verification !== undefined ? b.police_verification : 0, // 👉 FIXED: Defaults to 0 (No) for tinyint
+        b.police_verification !== undefined ? b.police_verification : 0, 
         b.society_id || null,
         b.block_id || null,
         b.country_id || null,
@@ -112,18 +122,26 @@ const update = asyncHandler(async (req, res) => {
     let photoUrl = b.profile_photo_url || null;
     let agreementUrl = b.agreement_doc_url || null;
 
-    // Handle multiple file uploads during update
+    // 👉 FIX: Handle File Uploads safely without blocking the event loop
     if (req.files) {
+        const dirPath = path.join(process.cwd(), "public", "uploads");
+        
+        if (!fs.existsSync(dirPath)) {
+            fs.mkdirSync(dirPath, { recursive: true });
+        }
+
         if (req.files['profile_photo_url'] && req.files['profile_photo_url'][0]) {
             const file = req.files['profile_photo_url'][0];
             const filename = `tenant_photo_${Date.now()}${path.extname(file.originalname)}`;
-            fs.writeFileSync(path.join(process.cwd(), "public", "uploads", filename), file.buffer);
+            const savePath = path.join(dirPath, filename);
+            await fsPromises.writeFile(savePath, file.buffer);
             photoUrl = `/uploads/${filename}`;
         }
         if (req.files['agreement_doc_url'] && req.files['agreement_doc_url'][0]) {
             const file = req.files['agreement_doc_url'][0];
             const filename = `tenant_agreement_${Date.now()}${path.extname(file.originalname)}`;
-            fs.writeFileSync(path.join(process.cwd(), "public", "uploads", filename), file.buffer);
+            const savePath = path.join(dirPath, filename);
+            await fsPromises.writeFile(savePath, file.buffer);
             agreementUrl = `/uploads/${filename}`;
         }
     }
@@ -155,7 +173,7 @@ const update = asyncHandler(async (req, res) => {
         b.emergency_contact_phone || null,
         photoUrl,
         agreementUrl,
-        b.police_verification !== undefined ? b.police_verification : 0, // 👉 FIXED: Defaults to 0 (No) for tinyint
+        b.police_verification !== undefined ? b.police_verification : 0, 
         b.society_id || null,
         b.block_id || null,
         b.country_id || null,
@@ -163,6 +181,17 @@ const update = asyncHandler(async (req, res) => {
         b.district_id || null,
         b.postal_code || null
     );
+
+    // 👉 FIX: Sync user account status if is_active is modified during a profile edit
+    if (b.is_active !== undefined) {
+        try {
+            await usersService.execute(
+                "UPDATE_STATUS", null, null, b.tenant_id, null, null, null, null, parseInt(b.is_active)
+            );
+        } catch (e) {
+            console.error("Warning: Could not sync user status on profile update", e);
+        }
+    }
 
     return APIResponse.send(res, APIResponse.successResponse("Tenant updated", result));
 });
@@ -219,9 +248,14 @@ const getById = asyncHandler(async (req, res) => {
 
     return APIResponse.send(res, APIResponse.emptyOr404(data?.[0]));
 });
+
 /* ======================= GET ALL ======================= */
 const getAll = asyncHandler(async (req, res) => {
-    const societyId = parseInt(req.query.society_id) || null;
+    // 👉 CRITICAL FIX: Sanitize string to allow "1,2" properly in MySQL
+    let societyId = req.query.society_id ? req.query.society_id.toString() : null;
+    if (societyId) {
+        societyId = societyId.replace(/[^0-9,]/g, "");
+    }
 
     // Build the 33-parameter array
     const args = Array(33).fill(null);
@@ -235,7 +269,12 @@ const getAll = asyncHandler(async (req, res) => {
 
 /* ======================= SEARCH ======================= */
 const search = asyncHandler(async (req, res) => {
-    const societyId = parseInt(req.query.society_id) || null;
+    // 👉 CRITICAL FIX: Sanitize string to allow "1,2" properly in MySQL
+    let societyId = req.query.society_id ? req.query.society_id.toString() : null;
+    if (societyId) {
+        societyId = societyId.replace(/[^0-9,]/g, "");
+    }
+
     const keyword = req.query.keyword || "";
 
     // Build the 33-parameter array

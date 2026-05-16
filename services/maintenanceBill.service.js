@@ -17,14 +17,15 @@ const execute = async (
     p_receipt_number = null,
     p_notes = null,
     p_created_by = null,
-    p_updated_by = null
+    p_updated_by = null,
+    p_society_id = null // 👉 NEW: 17th Parameter
 ) => {
 
     try {
-
+        // 👉 FIX: Added the 17th question mark
         const query = `
             CALL sp_maintenance_fee(
-                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
             )
         `;
 
@@ -44,7 +45,8 @@ const execute = async (
             p_receipt_number,
             p_notes,
             p_created_by,
-            p_updated_by
+            p_updated_by,
+            p_society_id // 👉 NEW: Appended to array
         ];
 
         console.log("SP PARAMS:", params);
@@ -54,7 +56,6 @@ const execute = async (
         return rows;
 
     } catch (error) {
-
         console.error(
             "Database Error in sp_maintenance_fee:",
             error
@@ -64,23 +65,24 @@ const execute = async (
     }
 };
 
-
 /* ======================= BULK MONTHLY GENERATION ======================= */
 const generate = async (
     monthYear,
     dueDate,
+    societyId, // 👉 NEW: Mapped societyId from controller
     createdBy = 1
 ) => {
 
     try {
-
+        // 👉 FIX: Added 4th question mark
         const query = `
-            CALL sp_generate_maintenance(?, ?, ?)
+            CALL sp_generate_maintenance(?, ?, ?, ?)
         `;
 
         const params = [
             monthYear,
             dueDate,
+            societyId, // 👉 NEW: Appended to array
             createdBy
         ];
 
@@ -91,7 +93,6 @@ const generate = async (
         return rows;
 
     } catch (error) {
-
         console.error(
             "Database Error in sp_generate_maintenance:",
             error
@@ -100,7 +101,6 @@ const generate = async (
         throw error;
     }
 };
-
 
 module.exports = {
     execute,

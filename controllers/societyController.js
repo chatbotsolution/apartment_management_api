@@ -80,14 +80,24 @@ const remove = asyncHandler(async (req, res) => {
 
 
 /* ======================= GET BY ID ======================= */
+/* ======================= GET BY ID ======================= */
 const getById = asyncHandler(async (req, res) => {
-
     const id = parseInt(req.params.id);
+    
+    // Extract org_id if provided (for extra security)
+    const orgId = req.query.org_id ? parseInt(req.query.org_id) : null;
 
-    const data = await service.execute(
-        "GET_BY_ID",
-        id
-    );
+    if (isNaN(id)) {
+        return APIResponse.send(res, APIResponse.badRequestResponse("Valid society_id is required"));
+    }
+
+    // sp_society expects exactly 15 parameters
+    const args = Array(15).fill(null);
+    args[0] = "GET_BY_ID";   // 1st param: p_action
+    args[1] = id;            // 2nd param: p_society_id
+    args[13] = orgId;        // 14th param: p_org_id
+
+    const data = await service.execute(...args);
 
     return APIResponse.send(
         res,
@@ -95,17 +105,22 @@ const getById = asyncHandler(async (req, res) => {
     );
 });
 
-
 /* ======================= GET ALL ======================= */
 const getAll = asyncHandler(async (req, res) => {
+    // Extract org_id from the query/cookies
+    const orgId = req.query.org_id ? parseInt(req.query.org_id) : null;
 
-    const data = await service.execute(
-        "GET_ALL"
-    );
+    // sp_society expects exactly 15 parameters
+    const args = Array(15).fill(null);
+    args[0] = "GET_ALL";     // 1st param: p_action
+    args[13] = orgId;        // 14th param: p_org_id
 
+    const data = await service.execute(...args);
+
+    // Using successResponse is usually better for lists, but I kept it similar to your style
     return APIResponse.send(
         res,
-        APIResponse.emptyOr404(data?.[0])
+        APIResponse.successResponse(data?.[0] || [], "Societies fetched successfully")
     );
 });
 

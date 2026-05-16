@@ -6,27 +6,22 @@ const asyncHandler = require("../middlewares/async.middleware");
 const create = asyncHandler(async (req, res) => {
     const b = req.body;
 
-    console.log("=== INCOMING BILL DATA ===", b);
+    // Use the 17-parameter array pattern to prevent misalignment
+    const args = Array(17).fill(null);
+    args[0] = "INSERT";                             // p_action
+    args[2] = b.flat_id || b.flatId;                // p_flat_id
+    args[3] = b.owner_id || b.ownerId || null;      // p_owner_id
+    args[4] = b.amount;                             // p_amount
+    args[5] = b.penalty_amount || b.penaltyAmount || 0; // p_penalty_amount
+    args[6] = b.billing_month || b.month_year || b.monthYear; // p_month_year
+    args[7] = b.due_date || b.dueDate;              // p_due_date
+    args[9] = b.status_id || b.statusId || 1;       // p_status_id
+    args[13] = b.remarks || b.notes || "";          // p_notes
+    args[14] = b.created_by || b.createdBy || 1;    // p_created_by
+    args[15] = b.updated_by || b.updatedBy || 1;    // p_updated_by
+    args[16] = b.societyId || b.society_id || null; // 👉 NEW: p_society_id
 
-    // EXACTLY 16 PARAMETERS mapped to match your console output
-    const result = await service.execute(
-        "INSERT",                               // 1. p_action
-        null,                                   // 2. p_fee_id
-        b.flat_id || b.flatId,                  // 3. p_flat_id
-        b.owner_id || b.ownerId || null,        // 4. p_owner_id
-        b.amount,                               // 5. p_amount
-        b.penalty_amount || b.penaltyAmount || 0, // 6. p_penalty_amount
-        b.billing_month || b.month_year || b.monthYear, // 7. p_month_year
-        b.due_date || b.dueDate,                // 8. p_due_date
-        null,                                   // 9. p_paid_date
-        b.status_id || b.statusId || 1,         // 10. p_status_id
-        null,                                   // 11. p_payment_mode_id
-        null,                                   // 12. p_transaction_ref
-        null,                                   // 13. p_receipt_number
-        b.remarks || b.notes || "",             // 14. p_notes
-        b.created_by || b.createdBy || 1,       // 15. p_created_by
-        b.updated_by || b.updatedBy || 1        // 16. p_updated_by
-    );
+    const result = await service.execute(...args);
 
     return APIResponse.send(res, APIResponse.successResponse("Bill generated successfully", result));
 });
@@ -35,56 +30,38 @@ const create = asyncHandler(async (req, res) => {
 const update = asyncHandler(async (req, res) => {
     const b = req.body;
 
-    const result = await service.execute(
-        "UPDATE",
-        b.feeId,        // p_fee_id
-        null,           // p_flat_id
-        null,           // p_owner_id
-        b.amount,       // p_amount
-        b.penaltyAmount,// p_penalty_amount
-        null,           // p_month_year
-        b.dueDate,      // p_due_date
-        null,           // p_paid_date
-        b.statusId,     // p_status_id
-        null,           // p_payment_mode_id
-        null,           // p_transaction_ref
-        null,           // p_receipt_number
-        b.notes,        // p_notes
-        null,           // p_created_by
-        b.updatedBy     // p_updated_by
-    );
+    const args = Array(17).fill(null);
+    args[0] = "UPDATE";         // p_action
+    args[1] = b.feeId;          // p_fee_id
+    args[4] = b.amount;         // p_amount
+    args[5] = b.penaltyAmount;  // p_penalty_amount
+    args[7] = b.dueDate;        // p_due_date
+    args[9] = b.statusId;       // p_status_id
+    args[13] = b.notes;         // p_notes
+    args[15] = b.updatedBy;     // p_updated_by
 
-    return APIResponse.send(res,
-        APIResponse.successResponse("Maintenance fee updated", result)
-    );
+    const result = await service.execute(...args);
+
+    return APIResponse.send(res, APIResponse.successResponse("Maintenance fee updated", result));
 });
 
 /* ======================= PROCESS PAYMENT ======================= */
 const pay = asyncHandler(async (req, res) => {
     const b = req.body;
 
-    const result = await service.execute(
-        "PAY",
-        b.feeId,            // p_fee_id
-        null,               // p_flat_id
-        null,               // p_owner_id
-        null,               // p_amount
-        null,               // p_penalty_amount
-        null,               // p_month_year
-        null,               // p_due_date
-        b.paidDate,         // p_paid_date
-        b.statusId,         // p_status_id
-        b.paymentModeId,    // p_payment_mode_id
-        b.transactionRef,   // p_transaction_ref
-        b.receiptNumber,    // p_receipt_number
-        null,               // p_notes
-        null,               // p_created_by
-        b.updatedBy         // p_updated_by
-    );
+    const args = Array(17).fill(null);
+    args[0] = "PAY";                // p_action
+    args[1] = b.feeId;              // p_fee_id
+    args[8] = b.paidDate;           // p_paid_date
+    args[9] = b.statusId;           // p_status_id
+    args[10] = b.paymentModeId;     // p_payment_mode_id
+    args[11] = b.transactionRef;    // p_transaction_ref
+    args[12] = b.receiptNumber;     // p_receipt_number
+    args[15] = b.updatedBy;         // p_updated_by
 
-    return APIResponse.send(res,
-        APIResponse.successResponse("Payment processed successfully", result)
-    );
+    const result = await service.execute(...args);
+
+    return APIResponse.send(res, APIResponse.successResponse("Payment processed successfully", result));
 });
 
 /* ======================= GET BY ID ======================= */
@@ -95,7 +72,11 @@ const getById = asyncHandler(async (req, res) => {
         return APIResponse.send(res, APIResponse.badRequestResponse("Valid feeId is required"));
     }
 
-    const data = await service.execute("GET_BY_ID", id);
+    const args = Array(17).fill(null);
+    args[0] = "GET_BY_ID";
+    args[1] = id;
+
+    const data = await service.execute(...args);
     
     // SP result structure: [ [rows], {meta} ]
     const record = (data && data[0] && data[0][0]) ? data[0][0] : null;
@@ -103,36 +84,40 @@ const getById = asyncHandler(async (req, res) => {
     return APIResponse.send(res, APIResponse.emptyOr404(record));
 });
 
-/* ======================= GET ALL (BY FLAT) ======================= */
+/* ======================= GET ALL (BY FLAT / SOCIETY) ======================= */
 const getAll = asyncHandler(async (req, res) => {
-    // If flatId isn't provided, default it to 0
+    // 👉 CRITICAL FIX: Sanitize string to allow "1,2" properly in MySQL
+    let societyId = req.query.society_id ? req.query.society_id.toString() : null;
+    if (societyId) {
+        societyId = societyId.replace(/[^0-9,]/g, "");
+    }
+
     const flatId = req.query.flatId ? parseInt(req.query.flatId) : null;
 
-    // Call service with the flatId (0 means fetch all)
-    const data = await service.execute("GET_ALL", null, flatId);
+    const args = Array(17).fill(null);
+    args[0] = "GET_ALL";
+    args[2] = flatId;
+    args[16] = societyId; // 👉 17th Parameter (Filters by Society)
 
-    // SP returns [ [rows], {metadata} ]
+    const data = await service.execute(...args);
+
     const list = (data && data[0]) ? data[0] : [];
-
-    return APIResponse.send(res,
-        APIResponse.successResponse("Maintenance fees retrieved", list)
-    );
+    return APIResponse.send(res, APIResponse.successResponse("Maintenance fees retrieved", list));
 });
 
 /* ======================= BULK GENERATE ======================= */
 const generateMonthly = asyncHandler(async (req, res) => {
-    const { monthYear, dueDate, createdBy } = req.body;
+    // 👉 EXTRACT societyId so we don't accidentally generate bills for other societies
+    const { monthYear, dueDate, societyId, createdBy } = req.body;
 
-    if (!monthYear || !dueDate) {
-        return APIResponse.send(res, APIResponse.badRequestResponse("Month and Due Date are required"));
+    if (!monthYear || !dueDate || !societyId) {
+        return APIResponse.send(res, APIResponse.badRequestResponse("Month, Due Date, and Society ID are required"));
     }
 
-    // This calls the other service function 'generate' which triggers sp_generate_maintenance
-    const result = await service.generate(monthYear, dueDate, createdBy);
+    // 👉 Passed societyId to the generate service
+    const result = await service.generate(monthYear, dueDate, societyId, createdBy);
 
-    return APIResponse.send(res,
-        APIResponse.successResponse("Monthly maintenance generated for all flats", result)
-    );
+    return APIResponse.send(res, APIResponse.successResponse("Monthly maintenance generated for active flats", result));
 });
 
 module.exports = {

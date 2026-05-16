@@ -161,7 +161,7 @@ const getById = asyncHandler(async (req, res) => {
 
 /* ======================= GET ALL ======================= */
 const getAll = asyncHandler(async (req, res) => {
-    const societyId = parseInt(req.query.society_id) || null;
+const societyId = req.query.society_id ? req.query.society_id.toString() : null;
     const data = await staffService.execute("GET_ALL", null, societyId);
 
     return APIResponse.send(res, APIResponse.successResponse(data?.[0], "Fetched successfully"));
@@ -169,7 +169,7 @@ const getAll = asyncHandler(async (req, res) => {
 
 /* ======================= SEARCH ======================= */
 const search = asyncHandler(async (req, res) => {
-    const societyId = parseInt(req.query.society_id) || null;
+const societyId = req.query.society_id ? req.query.society_id.toString() : null;
     const keyword = req.query.keyword || "";
 
     const data = await staffService.execute("SEARCH", null, societyId, keyword);
