@@ -15,6 +15,12 @@ const controller = require("../controllers/bhkController");
  *   get:
  *     summary: Get all BHK records
  *     tags: [BHKMaster]
+ *     parameters:
+ *       - in: query
+ *         name: society_id
+ *         required: true
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
  *         description: BHK records fetched successfully
