@@ -16,10 +16,28 @@ const controller = require("../controllers/organizationController");
  * /Organization/GetAll:
  *   get:
  *     summary: Get all organizations
+ *     description: Fetch all active organizations from the database
  *     tags: [Organization Master]
  *     responses:
  *       200:
  *         description: Organization list fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Data fetched successfully
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *       500:
+ *         description: Internal server error
  */
 router.get("/Organization/GetAll", controller.getAll);
 
@@ -30,16 +48,26 @@ router.get("/Organization/GetAll", controller.getAll);
  * /Organization/GetById/{id}:
  *   get:
  *     summary: Get organization by ID
+ *     description: Fetch a single organization using org_id
  *     tags: [Organization Master]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
+ *         description: Organization ID
  *         schema:
  *           type: integer
  *     responses:
  *       200:
  *         description: Organization fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *       404:
+ *         description: Organization not found
+ *       500:
+ *         description: Internal server error
  */
 router.get("/Organization/GetById/:id", controller.getById);
 
@@ -49,7 +77,13 @@ router.get("/Organization/GetById/:id", controller.getById);
  * @swagger
  * /Organization/Create:
  *   post:
- *     summary: Create organization
+ *     summary: Create new organization with user account
+ *     description: |
+ *       This API creates a new organization and automatically creates a user.
+ *       
+ *       - Username is taken from contact_email
+ *       - Role ID is fixed internally (150)
+ *       - Password is optional (default: Org@123)
  *     tags: [Organization Master]
  *     requestBody:
  *       required: true
@@ -57,22 +91,54 @@ router.get("/Organization/GetById/:id", controller.getById);
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - org_name
+ *               - contact_email
  *             properties:
  *               org_name:
  *                 type: string
+ *                 example: ABC Society
  *               registration_number:
  *                 type: string
+ *                 example: REG123
  *               contact_email:
  *                 type: string
+ *                 example: abc@gmail.com
  *               contact_phone:
  *                 type: string
+ *                 example: 9876543210
  *               address:
  *                 type: string
+ *                 example: Kolkata
  *               website:
  *                 type: string
+ *                 example: www.abc.com
+ *               password:
+ *                 type: string
+ *                 example: 123456
  *     responses:
  *       200:
- *         description: Organization created successfully
+ *         description: Organization and user created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Organization and User created successfully
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     org_id:
+ *                       type: integer
+ *       400:
+ *         description: Missing required fields
+ *       500:
+ *         description: Internal server error
  */
 router.post("/Organization/Create", controller.create);
 
@@ -82,7 +148,8 @@ router.post("/Organization/Create", controller.create);
  * @swagger
  * /Organization/Update:
  *   put:
- *     summary: Update organization
+ *     summary: Update organization details
+ *     description: Update organization information using org_id
  *     tags: [Organization Master]
  *     requestBody:
  *       required: true
@@ -90,9 +157,12 @@ router.post("/Organization/Create", controller.create);
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - org_id
  *             properties:
  *               org_id:
  *                 type: integer
+ *                 example: 1
  *               org_name:
  *                 type: string
  *               registration_number:
@@ -108,6 +178,10 @@ router.post("/Organization/Create", controller.create);
  *     responses:
  *       200:
  *         description: Organization updated successfully
+ *       400:
+ *         description: Invalid request
+ *       500:
+ *         description: Internal server error
  */
 router.put("/Organization/Update", controller.update);
 
@@ -117,17 +191,29 @@ router.put("/Organization/Update", controller.update);
  * @swagger
  * /Organization/Delete/{id}:
  *   delete:
- *     summary: Delete organization
+ *     summary: Soft delete organization
+ *     description: |
+ *       This API performs soft delete (is_active = 0) on organization
+ *       and also updates the related user status to inactive.
  *     tags: [Organization Master]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
+ *         description: Organization ID
  *         schema:
  *           type: integer
  *     responses:
  *       200:
  *         description: Organization deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *       404:
+ *         description: Organization not found
+ *       500:
+ *         description: Internal server error
  */
 router.delete("/Organization/Delete/:id", controller.remove);
 
