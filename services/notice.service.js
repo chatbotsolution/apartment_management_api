@@ -119,12 +119,15 @@ const getById = async (id) => {
 
 /* ======================= GET ALL ======================= */
 const getAll = async (societyId) => {
+    // Keep as a string type to avoid breaking FIND_IN_SET arrays in your stored procedure
+    const safeSocietyId = societyId ? String(societyId) : null;
+
     const [rows] = await db.query(
         "CALL sp_notice(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         [
             "GET_ALL",
             null,
-            societyId,
+            safeSocietyId, // Injected parameter handles the VARCHAR input mapping seamlessly
             null,
             null,
             null,
@@ -136,7 +139,7 @@ const getAll = async (societyId) => {
         ]
     );
 
-    return rows[0];
+    return rows[0] || [];
 };
 
 module.exports = {

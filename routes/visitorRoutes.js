@@ -225,8 +225,27 @@ router.get("/Visitor/GetById/:id", controller.getVisitorById);
 router.get("/Visitor/GetToday", controller.getTodayVisitors);
 
 
-/* ======================= GET ACTIVE ======================= */
+/* ======================= GET TODAY ======================= */
+/**
+ * @swagger
+ * /Visitor/GetToday:
+ *   get:
+ *     summary: Get Today Visitors
+ *     tags: [Visitor Management]
+ *     parameters:
+ *       - in: query
+ *         name: society_id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Pass a single society ID (e.g., 10) or comma-separated IDs (e.g., 10,11,12)
+ *     responses:
+ *       200:
+ *         description: Today's visitors fetched successfully
+ */
+router.get("/Visitor/GetToday", controller.getTodayVisitors);
 
+/* ======================= GET ACTIVE ======================= */
 /**
  * @swagger
  * /Visitor/GetActive:
@@ -238,34 +257,44 @@ router.get("/Visitor/GetToday", controller.getTodayVisitors);
  *         name: society_id
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
+ *         description: Pass a single society ID (e.g., 10) or comma-separated IDs (e.g., 10,11,12)
  *     responses:
  *       200:
  *         description: Active visitors fetched successfully
  */
 router.get("/Visitor/GetActive", controller.getActiveVisitors);
-
-
-/* ======================= HISTORY BY FLAT ======================= */
+ /* ======================= HISTORY BY FLAT ======================= */
 
 /**
  * @swagger
  * /Visitor/GetHistoryByFlat:
  *   get:
  *     summary: Get Visitor History By Flat
- *     tags: [Visitor Management]
+ *     description: Returns historical visitor logs for a specific flat. Optionally filtered by single or multiple society IDs.
+ *     tags:
+ *       - Visitor Management
  *     parameters:
  *       - in: query
  *         name: flat_id
  *         required: true
  *         schema:
  *           type: integer
+ *         description: Required. Pass the specific flat ID to look up history.
+ *       - in: query
+ *         name: society_id
+ *         required: false
+ *         schema:
+ *           type: string
+ *         description: Optional. Pass a single ID ("1"), comma-separated IDs ("1,2"), or leave empty for all records of this flat.
  *     responses:
  *       200:
  *         description: Visitor history fetched successfully
+ *       500:
+ *         description: Internal server error
  */
-router.get("/Visitor/GetHistoryByFlat", controller.getVisitorHistoryByFlat);
 
+router.get("/Visitor/GetHistoryByFlat", controller.getVisitorHistoryByFlat);
 
 /* ======================= SEARCH ======================= */
 
@@ -296,7 +325,6 @@ router.get("/Visitor/GetHistoryByFlat", controller.getVisitorHistoryByFlat);
  *         description: Search result fetched successfully
  */
 router.post("/Visitor/Search", controller.searchVisitors);
-
 /* ======================= VISITOR ENTRY STATUS ======================= */
 
 /**
@@ -317,8 +345,6 @@ router.post("/Visitor/Search", controller.searchVisitors);
  *         description: Internal server error
  */
 router.get("/Dropdown/VisitorEntryStatus", controller.visitorEntryStatus);
-
-
 /* ======================= VISITOR TYPE ======================= */
 
 /**

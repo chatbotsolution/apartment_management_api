@@ -14,29 +14,29 @@ const controller = require("../controllers/amenitiesController");
  * @swagger
  * /AmenitiesMaster/GetAllAmenities:
  *   get:
- *     summary: Get all amenities by Society ID
+ *     summary: Get all amenities by single or multiple Society IDs
  *     tags: [Amenities Master]
  *     parameters:
  *       - in: query
  *         name: society_id
  *         schema:
- *           type: integer
- *         description: The ID of the society
+ *           type: string
+ *         description: Pass a single society ID (e.g., 10) or a comma-separated string list (e.g., 25,26)
  *     responses:
- *       200:
- *         description: List of amenities retrieved successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 data:
- *                   type: array
- *                   items:
- *                     type: object
+ *       - 200:
+ *           description: List of amenities retrieved successfully
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   success:
+ *                     type: boolean
+ *                     example: true
+ *                   data:
+ *                     type: array
+ *                     items:
+ *                       type: object
  */
 router.get("/AmenitiesMaster/GetAllAmenities", controller.getAll);
 

@@ -121,8 +121,8 @@ const getVisitorById = async (req, res) => {
 /* ======================= GET TODAY ======================= */
 const getTodayVisitors = async (req, res) => {
     try {
-
-        const { society_id } = req.query;
+        // can be a single ID "1" or multiple "1,2,3"
+        const { society_id } = req.query; 
 
         const [result] = await service.getTodayVisitors(society_id);
 
@@ -133,9 +133,7 @@ const getTodayVisitors = async (req, res) => {
             data: result[0],
             timestamp: new Date().toISOString()
         });
-
     } catch (error) {
-
         return res.status(500).json({
             statusCode: 500,
             success: false,
@@ -149,7 +147,6 @@ const getTodayVisitors = async (req, res) => {
 /* ======================= GET ACTIVE ======================= */
 const getActiveVisitors = async (req, res) => {
     try {
-
         const { society_id } = req.query;
 
         const [result] = await service.getActiveVisitors(society_id);
@@ -161,9 +158,7 @@ const getActiveVisitors = async (req, res) => {
             data: result[0],
             timestamp: new Date().toISOString()
         });
-
     } catch (error) {
-
         return res.status(500).json({
             statusCode: 500,
             success: false,
@@ -177,10 +172,20 @@ const getActiveVisitors = async (req, res) => {
 /* ======================= HISTORY BY FLAT ======================= */
 const getVisitorHistoryByFlat = async (req, res) => {
     try {
+        // society_id is optional here; flat_id is strictly required
+        const { flat_id, society_id } = req.query; 
 
-        const { flat_id } = req.query;
+        if (!flat_id) {
+            return res.status(400).json({ 
+                statusCode: 400,
+                success: false, 
+                message: "flat_id query parameter is required.",
+                data: null
+            });
+        }
 
-        const [result] = await service.getVisitorHistoryByFlat(flat_id);
+        // Pass society_id or null fallback if omitted
+        const [result] = await service.getVisitorHistoryByFlat(flat_id, society_id || null);
 
         return res.status(200).json({
             statusCode: 200,
@@ -189,9 +194,7 @@ const getVisitorHistoryByFlat = async (req, res) => {
             data: result[0],
             timestamp: new Date().toISOString()
         });
-
     } catch (error) {
-
         return res.status(500).json({
             statusCode: 500,
             success: false,
@@ -201,7 +204,6 @@ const getVisitorHistoryByFlat = async (req, res) => {
         });
     }
 };
-
 /* ======================= SEARCH ======================= */
 const searchVisitors = async (req, res) => {
     try {

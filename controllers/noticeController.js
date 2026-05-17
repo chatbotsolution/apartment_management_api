@@ -5,17 +5,20 @@ const asyncHandler = require("../middlewares/async.middleware");
 
 /* ======================= GET ALL ======================= */
 const getAll = asyncHandler(async (req, res) => {
+    const { society_id } = req.query;
 
-    const societyId = parseInt(req.query.society_id);
-
-    if (!societyId) {
+    // Validate that society_id exists and is not an empty string
+    if (!society_id || String(society_id).trim() === "") {
         return APIResponse.send(
             res,
-            APIResponse.badRequestResponse("society_id required")
+            APIResponse.badRequestResponse("society_id is required")
         );
     }
 
-    const data = await service.getAll(societyId);
+    // Pass cleanly as a string (e.g., "26,25")
+    const safeSocietyId = String(society_id).trim();
+
+    const data = await service.getAll(safeSocietyId);
 
     return APIResponse.send(res, {
         statusCode: 200,

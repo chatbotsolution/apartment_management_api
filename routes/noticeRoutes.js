@@ -15,21 +15,21 @@ const controller = require("../controllers/noticeController");
  * @swagger
  * /Notice/GetAll:
  *   get:
- *     summary: Get all notices by society
+ *     summary: Get all notices by single or multiple societies
  *     tags: [Notice]
  *     parameters:
  *       - in: query
  *         name: society_id
  *         required: true
  *         schema:
- *           type: integer
- *           example: 1
+ *           type: string
+ *           example: "26,25"
+ *         description: Pass a single society ID (e.g., "25") or a comma-separated list of IDs (e.g., "26,25")
  *     responses:
  *       200:
  *         description: Notices fetched successfully
  */
 router.get("/Notice/GetAll", controller.getAll);
-
 
 /* ======================= GET BY ID ======================= */
 /**
