@@ -1,52 +1,22 @@
 const db = require("../config/db");
 
-/* ======================= CREATE ======================= */
-const create = async (data) => {
-    const { society_id, bhk_type_id, area_sqft, monthly_maintenance } = data;
+/* ======================= MAIN SP EXECUTION ======================= */
+const execute = async (...params) => {
+    try {
+        // Exactly 6 question marks to match the 6 parameters built in the controller
+        const query = `CALL sp_bhk_master(?, ?, ?, ?, ?, ?)`;
+        
+        // The params array is passed directly from the controller to the database
+        const [rows] = await db.query(query, params);
+        
+        return rows;
 
-    const [rows] = await db.query(
-        "CALL BHKMasterCRUD(?, ?, ?, ?, ?, ?)",
-        ["CREATE", null, society_id, bhk_type_id, area_sqft, monthly_maintenance]
-    );
-    return rows;
+    } catch (error) {
+        console.error("Database Error in sp_bhk_master:", error);
+        throw error;
+    }
 };
 
-/* ======================= UPDATE ======================= */
-const update = async (data) => {
-    const { bhk_id, society_id, bhk_type_id, area_sqft, monthly_maintenance } = data;
-
-    const [rows] = await db.query(
-        "CALL BHKMasterCRUD(?, ?, ?, ?, ?, ?)",
-        ["UPDATE", bhk_id, society_id, bhk_type_id, area_sqft, monthly_maintenance]
-    );
-    return rows;
+module.exports = { 
+    execute 
 };
-
-/* ======================= DELETE ======================= */
-const remove = async (id) => {
-    const [rows] = await db.query(
-        "CALL BHKMasterCRUD(?, ?, ?, ?, ?, ?)",
-        ["DELETE", id, null, null, null, null]
-    );
-    return rows;
-};
-
-/* ======================= GET BY ID ======================= */
-const getById = async (id) => {
-    const [rows] = await db.query(
-        "CALL BHKMasterCRUD(?, ?, ?, ?, ?, ?)",
-        ["GET_BY_ID", id, null, null, null, null]
-    );
-    return rows[0][0]; // Extracting the single record from the procedure result
-};
-
-/* ======================= GET ALL ======================= */
-const getAll = async () => {
-    const [rows] = await db.query(
-        "CALL BHKMasterCRUD(?, ?, ?, ?, ?, ?)",
-        ["GET_ALL", null, null, null, null, null]
-    );
-    return rows[0];
-};
-
-module.exports = { create, update, remove, getById, getAll };
