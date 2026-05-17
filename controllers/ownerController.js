@@ -1,4 +1,5 @@
 const fs = require("fs"); 
+const fsPromises = require("fs").promises; // 👉 NEW: Added for non-blocking file writes
 const path = require("path"); 
 const ownerService = require("../services/owner.service");
 const usersService = require("../services/user.service");
@@ -13,9 +14,18 @@ const insert = asyncHandler(async (req, res) => {
 
     // Handle File Upload
     if (req.file) {
+        const dirPath = path.join(process.cwd(), "public", "uploads");
+        
+        // 👉 FIX: Ensure directory exists so app doesn't crash
+        if (!fs.existsSync(dirPath)) {
+            fs.mkdirSync(dirPath, { recursive: true });
+        }
+
         const filename = `owner_${Date.now()}${path.extname(req.file.originalname)}`;
-        const savePath = path.join(process.cwd(), "public", "uploads", filename);
-        fs.writeFileSync(savePath, req.file.buffer);
+        const savePath = path.join(dirPath, filename);
+        
+        // 👉 FIX: Non-blocking write
+        await fsPromises.writeFile(savePath, req.file.buffer);
         photoUrl = `/uploads/${filename}`;
     }
 
@@ -37,7 +47,6 @@ const insert = asyncHandler(async (req, res) => {
 
     if (!newOwnerId) {
         console.error("DEBUG: MySQL ownerResult Structure:", JSON.stringify(ownerResult));
-        // 👉 Matches staffController pattern perfectly
         return APIResponse.send(res, new APIResponse(
             500, false, "Owner created, but failed to retrieve new ID. User account not created.", ownerResult
         ));
@@ -60,7 +69,6 @@ const insert = asyncHandler(async (req, res) => {
         );
     } catch (userError) {
         console.error("User Creation Failed:", userError.message);
-        // 👉 Matches staffController pattern perfectly
         return APIResponse.send(res, new APIResponse(
             201, true, "Owner created successfully, but User account failed: " + userError.message, { owner_id: newOwnerId }
         ));
@@ -75,9 +83,16 @@ const update = asyncHandler(async (req, res) => {
 
     let photoUrl = body.profile_photo_url; 
     if (req.file) {
+        const dirPath = path.join(process.cwd(), "public", "uploads");
+        
+        // 👉 FIX: Ensure directory exists
+        if (!fs.existsSync(dirPath)) {
+            fs.mkdirSync(dirPath, { recursive: true });
+        }
+
         const filename = `owner_${Date.now()}${path.extname(req.file.originalname)}`;
-        const savePath = path.join(process.cwd(), "public", "uploads", filename);
-        fs.writeFileSync(savePath, req.file.buffer);
+        const savePath = path.join(dirPath, filename);
+        await fsPromises.writeFile(savePath, req.file.buffer);
         photoUrl = `/uploads/${filename}`;
     }
 
@@ -89,6 +104,18 @@ const update = asyncHandler(async (req, res) => {
         body.country_id, body.state_id, body.district_id, body.postal_code, body.address, 
         photoUrl, body.notes, body.society_id
     );
+
+    // 👉 FIX: Sync user account status if is_active is modified during a profile edit
+    if (body.is_active !== undefined) {
+        try {
+            await usersService.execute(
+                "UPDATE_STATUS", 
+                null, body.owner_id, null, null, null, null, null, parseInt(body.is_active)
+            );
+        } catch (e) {
+            console.error("Warning: Could not sync user status on profile update", e);
+        }
+    }
 
     return APIResponse.send(res, APIResponse.successResponse(result, "Owner updated successfully"));
 });
@@ -150,6 +177,7 @@ const remove = asyncHandler(async (req, res) => {
 });
 
 /* ======================= GET BY ID ======================= */
+/* ======================= GET BY ID ======================= */
 const getById = asyncHandler(async (req, res) => {
     const id = parseInt(req.params.id);
     
@@ -157,16 +185,33 @@ const getById = asyncHandler(async (req, res) => {
     const querySocietyId = parseInt(req.query.society_id);
     const societyId = isNaN(querySocietyId) ? null : querySocietyId;
 
-    // We still need the Owner ID to know who to fetch
     if (isNaN(id)) {
         return APIResponse.send(res, APIResponse.badRequestResponse("Valid owner_id is required"));
     }
 
     const data = await ownerService.execute(
-        "GET_BY_ID", 
-        id, 
-        null, null, null, null, null, null, null, null, null, null, null, null, null, 
-        societyId // This will now pass null to the SP if not provided
+        "GET_BY_ID",     // 1: action
+        id,              // 2: ownerId
+        null,            // 3: firstName
+        null,            // 4: lastName
+        null,            // 5: email
+        null,            // 6: phone
+        null,            // 7: alternatePhone
+        null,            // 8: aadhaarNumber
+        null,            // 9: panNumber
+        null,            // 10: dob
+        null,            // 11: genderId
+        null,            // 12: isActive
+        null,            // 13: countryId
+        null,            // 14: stateId
+        null,            // 15: districtId
+        null,            // 16: postalCode
+        null,            // 17: address
+        null,            // 18: profilePhotoUrl
+        null,            // 19: notes
+        societyId,       // 20: societyId (PERFECTLY ALIGNED NOW)
+        null,            // 21: page
+        null             // 22: pageSize
     );
 
     return APIResponse.send(res, APIResponse.emptyOr404(data?.[0]));
@@ -174,14 +219,39 @@ const getById = asyncHandler(async (req, res) => {
 
 /* ======================= GET ALL ======================= */
 const getAll = asyncHandler(async (req, res) => {
-    const societyId = parseInt(req.query.society_id) || null;
+    let societyId = req.query.society_id ? req.query.society_id.toString() : null;
+    
+    // 👉 CRITICAL FIX: Sanitize string to allow "1,2" properly in MySQL
+    if (societyId) {
+        societyId = societyId.replace(/[^0-9,]/g, "");
+    }
+
     const page = parseInt(req.query.page) || 1;
     const pageSize = parseInt(req.query.pageSize) || 10;
 
     const result = await ownerService.execute(
-        "GET_ALL", 
-        null, null, null, null, null, null, null, null, null, null, null, null, null, null, 
-        societyId, page, pageSize
+        "GET_ALL",       // 1: action
+        null,            // 2: ownerId
+        null,            // 3: firstName
+        null,            // 4: lastName
+        null,            // 5: email
+        null,            // 6: phone
+        null,            // 7: alternatePhone
+        null,            // 8: aadhaarNumber
+        null,            // 9: panNumber
+        null,            // 10: dob
+        null,            // 11: genderId
+        null,            // 12: isActive
+        null,            // 13: countryId
+        null,            // 14: stateId
+        null,            // 15: districtId
+        null,            // 16: postalCode
+        null,            // 17: address
+        null,            // 18: profilePhotoUrl
+        null,            // 19: notes
+        societyId,       // 20: societyId (PERFECTLY ALIGNED NOW)
+        page,            // 21: page
+        pageSize         // 22: pageSize
     );
 
     const payload = {
@@ -191,23 +261,45 @@ const getAll = asyncHandler(async (req, res) => {
         pageSize
     };
 
-    // 👉 Used standard successResponse wrapper with customized payload object
     return APIResponse.send(res, APIResponse.successResponse(payload, "Fetched successfully"));
 });
 
 /* ======================= SEARCH ======================= */
 const search = asyncHandler(async (req, res) => {
-    const societyId = parseInt(req.query.society_id) || null;
+    let societyId = req.query.society_id ? req.query.society_id.toString() : null;
+    
+    // 👉 CRITICAL FIX: Sanitize string to allow "1,2" properly in MySQL
+    if (societyId) {
+        societyId = societyId.replace(/[^0-9,]/g, "");
+    }
+
     const keyword = req.query.keyword || "";
     const page = parseInt(req.query.page) || 1;
     const pageSize = parseInt(req.query.pageSize) || 10;
 
     const result = await ownerService.execute(
-        "SEARCH", 
-        null, 
-        keyword, 
-        null, null, null, null, null, null, null, null, null, null, null, null, 
-        societyId, page, pageSize
+        "SEARCH",        // 1: action
+        null,            // 2: ownerId
+        keyword,         // 3: firstName (used as keyword in SP)
+        null,            // 4: lastName
+        null,            // 5: email
+        null,            // 6: phone
+        null,            // 7: alternatePhone
+        null,            // 8: aadhaarNumber
+        null,            // 9: panNumber
+        null,            // 10: dob
+        null,            // 11: genderId
+        null,            // 12: isActive
+        null,            // 13: countryId
+        null,            // 14: stateId
+        null,            // 15: districtId
+        null,            // 16: postalCode
+        null,            // 17: address
+        null,            // 18: profilePhotoUrl
+        null,            // 19: notes
+        societyId,       // 20: societyId (PERFECTLY ALIGNED NOW)
+        page,            // 21: page
+        pageSize         // 22: pageSize
     );
 
     const payload = {
@@ -217,7 +309,6 @@ const search = asyncHandler(async (req, res) => {
         pageSize
     };
 
-    // 👉 Used standard successResponse wrapper with customized payload object
     return APIResponse.send(res, APIResponse.successResponse(payload, "Search results"));
 });
 
