@@ -179,7 +179,7 @@ router.get("/ParkingSlot/GetById/:id", controller.getById);
  *         name: society_id
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
  *     responses:
  *       200:
  *         description: Parking slot list fetched successfully
@@ -199,7 +199,7 @@ router.get("/ParkingSlot/GetAll", controller.getAll);
  *         name: society_id
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
  *     responses:
  *       200:
  *         description: Available parking slot list fetched successfully
