@@ -3,7 +3,7 @@ const db = require("../config/db");
 /* ================= GET ALL ================= */
 const getAll = async () => {
     const [rows] = await db.query(
-        "CALL sp_organization('GET_ALL', NULL, NULL, NULL, NULL, NULL, NULL, NULL)"
+        "CALL sp_organization('GET_ALL', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)"
     );
     return rows[0];
 };
@@ -11,7 +11,7 @@ const getAll = async () => {
 /* ================= GET BY ID ================= */
 const getById = async (id) => {
     const [rows] = await db.query(
-        "CALL sp_organization('GET_BY_ID', ?, NULL, NULL, NULL, NULL, NULL, NULL)",
+        "CALL sp_organization('GET_BY_ID', ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
         [id]
     );
     return rows[0];
@@ -26,18 +26,24 @@ const create = async (data) => {
         contact_email,
         contact_phone,
         address,
-        website
+        website,
+        country_id,
+        state_id,
+        dist_id
     } = data;
 
     const [rows] = await db.query(
-        "CALL sp_organization('INSERT', NULL, ?, ?, ?, ?, ?, ?)",
+        "CALL sp_organization('INSERT', NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         [
             org_name,
             registration_number,
             contact_email,
             contact_phone,
             address,
-            website
+            website,
+            country_id,
+            state_id,
+            dist_id
         ]
     );
 
@@ -54,11 +60,14 @@ const update = async (data) => {
         contact_email,
         contact_phone,
         address,
-        website
+        website,
+        country_id,
+        state_id,
+        dist_id
     } = data;
 
     const [rows] = await db.query(
-        "CALL sp_organization('UPDATE', ?, ?, ?, ?, ?, ?, ?)",
+        "CALL sp_organization('UPDATE', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         [
             org_id,
             org_name,
@@ -66,7 +75,10 @@ const update = async (data) => {
             contact_email,
             contact_phone,
             address,
-            website
+            website,
+            country_id,
+            state_id,
+            dist_id
         ]
     );
 
@@ -76,7 +88,7 @@ const update = async (data) => {
 /* ================= DELETE ================= */
 const remove = async (id) => {
     const [rows] = await db.query(
-        "CALL sp_organization('DELETE', ?, NULL, NULL, NULL, NULL, NULL, NULL)",
+        "CALL sp_organization('DELETE', ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
         [id]
     );
     return rows[0];
