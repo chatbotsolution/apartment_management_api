@@ -36,6 +36,33 @@ const controller = require("../controllers/organizationController");
  *                   type: array
  *                   items:
  *                     type: object
+ *                     properties:
+ *                       org_id:
+ *                         type: integer
+ *                       org_name:
+ *                         type: string
+ *                       registration_number:
+ *                         type: string
+ *                       contact_email:
+ *                         type: string
+ *                       contact_phone:
+ *                         type: string
+ *                       address:
+ *                         type: string
+ *                       website:
+ *                         type: string
+ *                       country_id:
+ *                         type: integer
+ *                       Country_Name:
+ *                         type: string
+ *                       state_id:
+ *                         type: integer
+ *                       State_Name:
+ *                         type: string
+ *                       dist_id:
+ *                         type: integer
+ *                       District_Name:
+ *                         type: string
  *       500:
  *         description: Internal server error
  */
@@ -64,6 +91,40 @@ router.get("/Organization/GetAll", controller.getAll);
  *           application/json:
  *             schema:
  *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     org_id:
+ *                       type: integer
+ *                     org_name:
+ *                       type: string
+ *                     registration_number:
+ *                       type: string
+ *                     contact_email:
+ *                       type: string
+ *                     contact_phone:
+ *                       type: string
+ *                     address:
+ *                       type: string
+ *                     website:
+ *                       type: string
+ *                     country_id:
+ *                       type: integer
+ *                     Country_Name:
+ *                       type: string
+ *                     state_id:
+ *                       type: integer
+ *                     State_Name:
+ *                       type: string
+ *                     dist_id:
+ *                       type: integer
+ *                     District_Name:
+ *                       type: string
  *       404:
  *         description: Organization not found
  *       500:
@@ -94,6 +155,9 @@ router.get("/Organization/GetById/:id", controller.getById);
  *             required:
  *               - org_name
  *               - contact_email
+ *               - country_id
+ *               - state_id
+ *               - dist_id
  *             properties:
  *               org_name:
  *                 type: string
@@ -113,6 +177,15 @@ router.get("/Organization/GetById/:id", controller.getById);
  *               website:
  *                 type: string
  *                 example: www.abc.com
+ *               country_id:
+ *                 type: integer
+ *                 example: 1
+ *               state_id:
+ *                 type: integer
+ *                 example: 5
+ *               dist_id:
+ *                 type: integer
+ *                 example: 10
  *               password:
  *                 type: string
  *                 example: 123456
@@ -126,10 +199,8 @@ router.get("/Organization/GetById/:id", controller.getById);
  *               properties:
  *                 success:
  *                   type: boolean
- *                   example: true
  *                 message:
  *                   type: string
- *                   example: Organization and User created successfully
  *                 data:
  *                   type: object
  *                   properties:
@@ -175,6 +246,12 @@ router.post("/Organization/Create", controller.create);
  *                 type: string
  *               website:
  *                 type: string
+ *               country_id:
+ *                 type: integer
+ *               state_id:
+ *                 type: integer
+ *               dist_id:
+ *                 type: integer
  *     responses:
  *       200:
  *         description: Organization updated successfully
