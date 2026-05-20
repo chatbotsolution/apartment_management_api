@@ -61,6 +61,26 @@ const societyDropdown = asyncHandler(async (req, res) => {
         data: data
     });
 });
+const blockDropdown = asyncHandler(async (req, res) => {
+    // Pull org_id from the authenticated user token context, fallback to query string if needed
+    const societyId = req.user?.society_id || (req.query.society_id ? parseInt(req.query.society_id) : null);
+
+    if (!societyId) {
+        return APIResponse.send(
+            res,
+            APIResponse.badRequestResponse("society_id is required to fetch block")
+        );
+    }
+
+    const data = await service.getBlockDropdown(societyId);
+
+    return APIResponse.send(res, {
+        statusCode: 200,
+        success: true,
+        message: "Societies fetched successfully",
+        data: data
+    });
+});
 
 const societyType = asyncHandler(async (req, res) => {
     const data = await service.getSocietyType();
@@ -117,7 +137,7 @@ const amenityBookingStatus = getLookupByGroup("amenity_booking_status");
 
 const department = byAction("DEPARTMENT");
 const designation = byAction("DESIGNATION");
-const block = byAction("BLOCK", true); // requires society_id
+//const block = byAction("BLOCK", true); // requires society_id
 const floor = byAction("FLOOR");
 const flat = byAction("FLAT");
 const owner = byAction("OWNER");
@@ -132,6 +152,7 @@ const visitor = byAction("VISITOR");
 /* ======================= EXPORT ======================= */
 module.exports = {
     // Custom & Common
+    blockDropdown,
     societyDropdown, // 👈 Maps route request directly to our explicit custom function
     societyType,
     getAllLookups,
@@ -166,7 +187,7 @@ module.exports = {
     // Action APIs
     department,
     designation,
-    block,
+    //block,
     floor,
     flat,
     owner,
