@@ -807,7 +807,7 @@ router.get("/Dropdown/Society", controller.societyDropdown);
  *         required: true
  *         schema:
  *           type: integer
- *           example: 3
+ *           example: 
  *         description: The ID of the society to fetch blocks for.
  *     responses:
  *       200:
@@ -832,7 +832,7 @@ router.get("/Dropdown/Society", controller.societyDropdown);
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.get("/Dropdown/Block", controller.block);
+router.get("/Dropdown/Block", controller.blockDropdown);
 
 /**
  * @swagger

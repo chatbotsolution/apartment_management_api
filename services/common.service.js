@@ -48,11 +48,21 @@ const getSocietyDropdown = async (orgId) => {
 
     return rows[0] || [];
 };
+/* ======================= Block DROPDOWN ======================= */
+const getBlockDropdown = async (societyId) => {
+    const [rows] = await db.query(
+        "CALL sp_dropdown_master(?,?,?,?)",
+        ["BLOCK", null,societyId, null] // 👈 orgId maps perfectly into your SQL parameter slots
+    );
+
+    return rows[0] || [];
+};
 
 module.exports = {
     getLookupByGroup,
     getAllLookups,
     getDropdown,
     getSocietyType,
-    getSocietyDropdown
+    getSocietyDropdown,
+    getBlockDropdown
 };
