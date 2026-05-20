@@ -151,6 +151,26 @@ router.put("/Block/Update", controller.update);
  *         description: Block deleted successfully
  */
 router.delete("/Block/Delete/:id", controller.remove);
+/* ======================= GET Owner ======================= */
+/**
+ * @swagger
+ * /Block/GetOwner:
+ *   get:
+ *     summary: Get all owners by single or multiple societies
+ *     tags: [Block Master]
+ *     parameters:
+ *       - in: query
+ *         name: society_id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: ""
+ *         description: Pass a single society ID (e.g., 25) or a comma-separated list of IDs (e.g., 26,25)
+ *     responses:
+ *       200:
+ *         description: owners list fetched successfully
+ */
+router.get("/Block/GetOwner", controller.getOwner);
 
 
 module.exports = router;
