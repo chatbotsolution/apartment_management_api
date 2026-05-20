@@ -29,7 +29,7 @@ const insert = asyncHandler(async (req, res) => {
 
     // 2. Extract the newly generated ID safely from the procedure result sets
     // (Usually handles select identity or raw insertion metadata packets)
-    const newSocietyId = rrows?.[0]?.[0]?.society_id || null;
+    const newSocietyId = rows?.[0]?.[0]?.society_id || null;
 
     // 3. Return the new ID inside your success response wrapper back to the frontend
     return APIResponse.send(
