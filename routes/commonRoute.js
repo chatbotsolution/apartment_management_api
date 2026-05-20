@@ -771,25 +771,29 @@ router.get("/Dropdown/Designation", controller.designation);
  * @swagger
  * /Dropdown/Society:
  *   get:
- *     summary: Get Society list
- *     description: Returns all societies via sp_dropdown_master (SOCIETY).
+ *     summary: Get Society list by Organization
+ *     description: Returns all societies for a given Organization ID via sp_dropdown_master (SOCIETY).
  *     tags: [Dropdown Master]
+ *     parameters:
+ *       - in: query
+ *         name: org_id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The ID of the Organization to filter societies by
  *     responses:
  *       200:
- *         description: List of societies
+ *         description: List of societies fetched successfully
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/DropdownResponseBasic'
+ *       400:
+ *         description: Bad Request - Missing org_id
  *       500:
  *         description: Internal server error
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.get("/Dropdown/Society", controller.society);
-
+router.get("/Dropdown/Society", controller.societyDropdown);
 /**
  * @swagger
  * /Dropdown/Block:
