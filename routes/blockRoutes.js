@@ -24,7 +24,7 @@ const controller = require("../controllers/blockController");
  *         required: true
  *         schema:
  *           type: string
- *           example: "26,25"
+ *           example: ""
  *         description: Pass a single society ID (e.g., 25) or a comma-separated list of IDs (e.g., 26,25)
  *     responses:
  *       200:

@@ -16,7 +16,6 @@ const byAction = (action, requireSociety = false) =>
             );
         }
 
-        // ✅ FIXED: Calling the correct function from your service!
         const data = await service.getDropdown(action, societyId);
 
         return APIResponse.send(res, {
@@ -40,7 +39,53 @@ const getLookupByGroup = (groupName) =>
         });
     });
 
-/* ================= GROUP APIs ================= */
+/* ================= CUSTOM INDIVIDUAL APIs ================= */
+
+const societyDropdown = asyncHandler(async (req, res) => {
+    // Pull org_id from the authenticated user token context, fallback to query string if needed
+    const orgId = req.user?.org_id || (req.query.org_id ? parseInt(req.query.org_id) : null);
+
+    if (!orgId) {
+        return APIResponse.send(
+            res,
+            APIResponse.badRequestResponse("org_id is required to fetch societies")
+        );
+    }
+
+    const data = await service.getSocietyDropdown(orgId);
+
+    return APIResponse.send(res, {
+        statusCode: 200,
+        success: true,
+        message: "Societies fetched successfully",
+        data: data
+    });
+});
+
+const societyType = asyncHandler(async (req, res) => {
+    const data = await service.getSocietyType();
+
+    return APIResponse.send(res, {
+        statusCode: 200,
+        success: true,
+        message: "Society Type fetched successfully",
+        data: data
+    });
+});
+
+/* ======================= ALL LOOKUPS ======================= */
+const getAllLookups = asyncHandler(async (req, res) => {
+    const data = await service.getAllLookups();
+    return APIResponse.send(res, {
+        statusCode: 200,
+        success: true,
+        message: "All lookups fetched",
+        data: data
+    });
+});
+
+
+/* ================= GROUP LOOKUP APIs ================= */
 
 const gender = getLookupByGroup("gender");
 const vehicleType = getLookupByGroup("vehicle_type");
@@ -68,11 +113,10 @@ const noticeTarget = getLookupByGroup("notice_target");
 const amenityCategory = getLookupByGroup("amenity_category");
 const amenityBookingStatus = getLookupByGroup("amenity_booking_status");
 
-/* ================= ACTION APIs ================= */
+/* ================= ACTION DROP DOWN APIs ================= */
 
 const department = byAction("DEPARTMENT");
 const designation = byAction("DESIGNATION");
-const society = byAction("SOCIETY");
 const block = byAction("BLOCK", true); // requires society_id
 const floor = byAction("FLOOR");
 const flat = byAction("FLAT");
@@ -84,31 +128,15 @@ const vehicle = byAction("VEHICLE");
 const amenity = byAction("AMENITY");
 const visitor = byAction("VISITOR");
 
-/* ======================= ALL LOOKUPS ======================= */
-const getAllLookups = asyncHandler(async (req, res) => {
-    const data = await service.getAllLookups();
-    return APIResponse.send(res, {
-        statusCode: 200,
-        success: true,
-        message: "All lookups fetched",
-        data: data
-    });
-});
 
-/* ======================= SOCIETY TYPE DROPDOWNS ======================= */
-const societyType = asyncHandler(async (req, res) => {
-    const data = await service.getSocietyType();
-
-    return APIResponse.send(res, {
-        statusCode: 200,
-        success: true,
-        message: "Society Type fetched successfully",
-        data: data
-    });
-});
 /* ======================= EXPORT ======================= */
 module.exports = {
-    // lookup group APIs
+    // Custom & Common
+    societyDropdown, // 👈 Maps route request directly to our explicit custom function
+    societyType,
+    getAllLookups,
+
+    // Group Lookup APIs
     gender,
     vehicleType,
     priority,
@@ -135,10 +163,9 @@ module.exports = {
     amenityCategory,
     amenityBookingStatus,
 
-    // action APIs
+    // Action APIs
     department,
     designation,
-    society,
     block,
     floor,
     flat,
@@ -148,11 +175,5 @@ module.exports = {
     parkingSlot,
     vehicle,
     amenity,
-    visitor,
-
-    // common
-    getAllLookups,
-    
-    //Individual
-    societyType
+    visitor
 };
