@@ -8,7 +8,8 @@ const insert = asyncHandler(async (req, res) => {
 
     const body = req.body;
 
-    await service.execute(
+    // 1. Capture the structural row array results from your service execution
+    const rows = await service.execute(
         "INSERT",
         null,
         body.name,
@@ -25,9 +26,15 @@ const insert = asyncHandler(async (req, res) => {
         body.orgId,
         body.societyTypeId
     );
+
+    // 2. Extract the newly generated ID safely from the procedure result sets
+    // (Usually handles select identity or raw insertion metadata packets)
+    const newSocietyId = rrows?.[0]?.[0]?.society_id || null;
+
+    // 3. Return the new ID inside your success response wrapper back to the frontend
     return APIResponse.send(
         res,
-        APIResponse.successResponse(null)
+        APIResponse.successResponse({ society_id: newSocietyId }, "Society registered successfully")
     );
 });
 
