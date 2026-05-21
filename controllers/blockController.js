@@ -86,11 +86,27 @@ const remove = asyncHandler(async (req, res) => {
     const result = await service.execute(...args);
     return APIResponse.send(res, APIResponse.successResponse("Block deleted successfully", result));
 });
+/* ======================= GET Owner ======================= */
+const getOwner = asyncHandler(async (req, res) => {
+    // 1. Sanitize society_id to securely handle "25,26" strings for the database
+    let societyId = req.query.society_id ? req.query.society_id.toString() : null;
+    if (societyId) {
+        societyId = societyId.replace(/[^0-9,]/g, "");
+    }
+
+    const args = Array(11).fill(null);
+    args[0] = "OWNER";
+    args[2] = societyId; // p_society_id
+
+    const data = await service.execute(...args);
+    return APIResponse.send(res, APIResponse.successResponse(data?.[0] || [], "Owners fetched successfully"));
+});
 
 module.exports = {
     getAll,
     getById,
     create,
     update,
-    remove
+    remove,
+    getOwner
 };
