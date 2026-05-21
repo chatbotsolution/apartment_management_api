@@ -37,6 +37,37 @@ const execute = async (
     return rows[0];
 };
 
+/* ======================= FORGOT PASSWORD ======================= */
+const forgotPassword = async (username) => {
+    const result = await execute(
+        "FORGOT_PASSWORD",
+        null,
+        null,
+        null,
+        null,
+        username
+    );
+
+    return result;
+};
+
+/* ======================= RESET PASSWORD ======================= */
+const resetPassword = async (userId, passwordHash) => {
+    const result = await execute(
+        "RESET_PASSWORD",
+        userId,
+        null,
+        null,
+        null,
+        null,
+        passwordHash
+    );
+
+    return result;
+};
+
 module.exports = {
-    execute
+    execute,
+    forgotPassword,
+    resetPassword
 };
