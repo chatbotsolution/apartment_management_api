@@ -1,22 +1,30 @@
 const express = require("express");
 const router = express.Router();
+
 const controller = require("../controllers/staffController");
 const upload = require("../middlewares/upload.middleware");
 
-/* ======================= TAG ======================= */
+/* =========================================================
+   STAFF MASTER ROUTES
+========================================================= */
+
 /**
  * @swagger
  * tags:
  *   name: Staff Master
- *   description: Staff management and user credential APIs
+ *   description: Staff management APIs
  */
 
-/* ======================= INSERT ======================= */
+/* =========================================================
+   INSERT STAFF
+========================================================= */
+
 /**
  * @swagger
  * /Staff/Insert:
  *   post:
- *     summary: Create a new staff member and generate their user account
+ *     summary: Create a new staff member
+ *     description: Create staff profile and login credentials
  *     tags: [Staff Master]
  *     requestBody:
  *       required: true
@@ -31,9 +39,10 @@ const upload = require("../middlewares/upload.middleware");
  *               - society_id
  *               - password
  *             properties:
+ *               user_id:
+ *                 type: integer
  *               society_id:
  *                 type: integer
- *                 description: ID of the society
  *               first_name:
  *                 type: string
  *               last_name:
@@ -62,16 +71,12 @@ const upload = require("../middlewares/upload.middleware");
  *                 type: string
  *               country_id:
  *                 type: integer
- *                 description: ID of the selected country
  *               state_id:
  *                 type: integer
- *                 description: ID of the selected state
  *               district_id:
  *                 type: integer
- *                 description: ID of the selected district
  *               postal_code:
  *                 type: string
- *                 description: Postal or Zip code
  *               address:
  *                 type: string
  *               emergency_contact:
@@ -79,33 +84,37 @@ const upload = require("../middlewares/upload.middleware");
  *               status_id:
  *                 type: integer
  *                 default: 92
- *               photo_url:
- *                 type: string
- *                 format: binary
- *                 description: Staff profile photo
  *               username:
  *                 type: string
- *                 description: Synced with email from frontend
  *               password:
  *                 type: string
- *                 description: User login password
  *               role_id:
  *                 type: integer
  *                 default: 3
+ *               photo_url:
+ *                 type: string
+ *                 format: binary
  *     responses:
  *       200:
- *         description: Staff and User account created successfully
+ *         description: Staff created successfully
  *       400:
- *         description: Bad request / Missing required fields
+ *         description: Bad request
  */
-router.post("/Staff/Insert", upload.single("photo_url"), controller.insert);
+router.post(
+  "/Staff/Insert",
+  upload.single("photo_url"),
+  controller.insert
+);
 
-/* ======================= UPDATE ======================= */
+/* =========================================================
+   UPDATE STAFF
+========================================================= */
+
 /**
  * @swagger
  * /Staff/Update:
  *   put:
- *     summary: Update an existing staff member's profile
+ *     summary: Update staff details
  *     tags: [Staff Master]
  *     requestBody:
  *       required: true
@@ -116,6 +125,8 @@ router.post("/Staff/Insert", upload.single("photo_url"), controller.insert);
  *             required:
  *               - staff_id
  *             properties:
+ *               user_id:
+ *                 type: integer
  *               staff_id:
  *                 type: integer
  *               society_id:
@@ -151,16 +162,12 @@ router.post("/Staff/Insert", upload.single("photo_url"), controller.insert);
  *                 type: string
  *               country_id:
  *                 type: integer
- *                 description: ID of the selected country
  *               state_id:
  *                 type: integer
- *                 description: ID of the selected state
  *               district_id:
  *                 type: integer
- *                 description: ID of the selected district
  *               postal_code:
  *                 type: string
- *                 description: Postal or Zip code
  *               address:
  *                 type: string
  *               emergency_contact:
@@ -170,21 +177,27 @@ router.post("/Staff/Insert", upload.single("photo_url"), controller.insert);
  *               photo_url:
  *                 type: string
  *                 format: binary
- *                 description: Upload new photo or pass existing URL string
  *     responses:
  *       200:
  *         description: Staff updated successfully
  *       400:
  *         description: Bad request
  */
-router.put("/Staff/Update", upload.single("photo_url"), controller.update);
+router.put(
+  "/Staff/Update",
+  upload.single("photo_url"),
+  controller.update
+);
 
-/* ======================= UPDATE STATUS ======================= */
+/* =========================================================
+   UPDATE STATUS
+========================================================= */
+
 /**
  * @swagger
  * /Staff/UpdateStatus:
  *   put:
- *     summary: Change the active status of a staff member
+ *     summary: Update staff status
  *     tags: [Staff Master]
  *     requestBody:
  *       required: true
@@ -196,13 +209,13 @@ router.put("/Staff/Update", upload.single("photo_url"), controller.update);
  *               - staff_id
  *               - status_id
  *             properties:
+ *               user_id:
+ *                 type: integer
  *               staff_id:
  *                 type: integer
- *                 example: 1
  *               status_id:
  *                 type: integer
- *                 example: 93
- *                 description: New status ID (92=Active, 93=Inactive, 94=On Leave, 95=Terminated)
+ *                 description: 92=Active, 93=Inactive, 94=On Leave, 95=Terminated
  *     responses:
  *       200:
  *         description: Status updated successfully
@@ -211,12 +224,15 @@ router.put("/Staff/Update", upload.single("photo_url"), controller.update);
  */
 router.put("/Staff/UpdateStatus", controller.updateStatus);
 
-/* ======================= DELETE ======================= */
+/* =========================================================
+   DELETE STAFF
+========================================================= */
+
 /**
  * @swagger
  * /Staff/Delete:
  *   post:
- *     summary: Soft delete/deactivate a staff member
+ *     summary: Soft delete staff
  *     tags: [Staff Master]
  *     requestBody:
  *       required: true
@@ -227,21 +243,25 @@ router.put("/Staff/UpdateStatus", controller.updateStatus);
  *             required:
  *               - staff_id
  *             properties:
+ *               user_id:
+ *                 type: integer
  *               staff_id:
  *                 type: integer
- *                 example: 1
  *     responses:
  *       200:
- *         description: Staff deactivated successfully
+ *         description: Staff deleted successfully
  */
 router.post("/Staff/Delete", controller.remove);
 
-/* ======================= GET BY ID ======================= */
+/* =========================================================
+   GET STAFF BY ID
+========================================================= */
+
 /**
  * @swagger
  * /Staff/GetById/{id}:
  *   get:
- *     summary: Get full profile of a staff member by their ID
+ *     summary: Get staff by ID
  *     tags: [Staff Master]
  *     parameters:
  *       - in: path
@@ -249,7 +269,7 @@ router.post("/Staff/Delete", controller.remove);
  *         required: true
  *         schema:
  *           type: integer
- *         description: The staff ID
+ *         description: Staff ID
  *     responses:
  *       200:
  *         description: Staff details fetched successfully
@@ -258,49 +278,54 @@ router.post("/Staff/Delete", controller.remove);
  */
 router.get("/Staff/GetById/:id", controller.getById);
 
-/* ======================= GET ALL ======================= */
+/* =========================================================
+   GET ALL STAFF
+========================================================= */
+
 /**
  * @swagger
  * /Staff/GetAll:
  *   get:
- *     summary: Get a list of all staff members
+ *     summary: Get all staff members
  *     tags: [Staff Master]
  *     parameters:
  *       - in: query
  *         name: society_id
- *         required: false
  *         schema:
  *           type: integer
- *         description: Filter staff by society ID
+ *         required: false
+ *         description: Filter by society ID
  *     responses:
  *       200:
- *         description: List of staff fetched successfully
+ *         description: Staff list fetched successfully
  */
 router.get("/Staff/GetAll", controller.getAll);
 
-/* ======================= SEARCH ======================= */
+/* =========================================================
+   SEARCH STAFF
+========================================================= */
+
 /**
  * @swagger
  * /Staff/Search:
  *   get:
- *     summary: Search staff by keyword (name, phone, designation)
+ *     summary: Search staff
  *     tags: [Staff Master]
  *     parameters:
  *       - in: query
  *         name: society_id
- *         required: false
  *         schema:
  *           type: integer
- *         description: Scope search to a specific society ID
+ *         required: false
  *       - in: query
  *         name: keyword
- *         required: false
  *         schema:
  *           type: string
- *         description: Keyword to search for
+ *         required: false
+ *         description: Search by name, phone, designation
  *     responses:
  *       200:
- *         description: Search results
+ *         description: Search result fetched successfully
  */
 router.get("/Staff/Search", controller.search);
 
