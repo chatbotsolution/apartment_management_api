@@ -34,12 +34,13 @@ const execute = async (
     countryId = null,  // 30
     stateId = null,    // 31
     districtId = null, // 32
-    postalCode = null  // 33
+    postalCode = null, // 33
+    userId = null      // 34 👉 NEW PARAMETER
 ) => {
 
-    // EXACTLY 33 question marks here
+    // EXACTLY 34 question marks here
     const [rows] = await db.query(
-        "CALL sp_tenant(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        "CALL sp_tenant(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         [
             action,
             tenantId,
@@ -73,7 +74,8 @@ const execute = async (
             countryId,
             stateId,
             districtId,
-            postalCode
+            postalCode,
+            userId // 👉 NEW PARAMETER
         ]
     );
 

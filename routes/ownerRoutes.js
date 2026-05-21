@@ -1,215 +1,357 @@
 const express = require("express");
 const router = express.Router();
+
 const controller = require("../controllers/ownerController");
 const upload = require("../middlewares/upload.middleware");
+
+/* =========================================================
+   OWNER MASTER ROUTES
+========================================================= */
 
 /**
  * @swagger
  * tags:
  *   name: Owner Master
+ *   description: Owner management APIs
  */
 
-/* ======================= GET ALL ======================= */
+/* =========================================================
+   GET ALL OWNERS
+========================================================= */
+
 /**
  * @swagger
  * /OwnerMaster/GetAll:
  *   get:
- *     summary: Get all owners with pagination
+ *     summary: Get all owners
  *     tags: [Owner Master]
  *     parameters:
  *       - in: query
  *         name: society_id
+ *         schema:
+ *           type: string
+ *         required: false
+ *         description: Single or comma separated society IDs
  *       - in: query
  *         name: page
+ *         schema:
+ *           type: integer
+ *         required: false
+ *         example: 1
  *       - in: query
  *         name: pageSize
+ *         schema:
+ *           type: integer
+ *         required: false
+ *         example: 10
  *     responses:
  *       200:
- *         description: Success
+ *         description: Owners fetched successfully
  */
 router.get("/OwnerMaster/GetAll", controller.getAll);
 
 
-/* ======================= SEARCH ======================= */
+/* =========================================================
+   SEARCH OWNERS
+========================================================= */
+
 /**
  * @swagger
  * /OwnerMaster/Search:
  *   get:
- *     summary: Search owners by name or phone
+ *     summary: Search owners
  *     tags: [Owner Master]
  *     parameters:
  *       - in: query
  *         name: society_id
+ *         schema:
+ *           type: string
+ *         required: false
+ *         description: Single or comma separated society IDs
  *       - in: query
  *         name: keyword
+ *         schema:
+ *           type: string
+ *         required: false
+ *         description: Search by first name, last name or phone
  *       - in: query
  *         name: page
+ *         schema:
+ *           type: integer
  *       - in: query
  *         name: pageSize
+ *         schema:
+ *           type: integer
  *     responses:
  *       200:
- *         description: Success
+ *         description: Search result fetched successfully
  */
 router.get("/OwnerMaster/Search", controller.search);
 
 
-/* ======================= GET BY ID ======================= */
+/* =========================================================
+   GET OWNER BY ID
+========================================================= */
+
 /**
  * @swagger
  * /OwnerMaster/GetById/{id}:
  *   get:
- *     summary: Get owner by id
+ *     summary: Get owner details by ID
  *     tags: [Owner Master]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Owner ID
  *       - in: query
  *         name: society_id
+ *         required: false
+ *         schema:
+ *           type: string
+ *         description: Society ID
  *     responses:
  *       200:
- *         description: Success
+ *         description: Owner fetched successfully
+ *       404:
+ *         description: Owner not found
  */
 router.get("/OwnerMaster/GetById/:id", controller.getById);
 
 
-/* ======================= CREATE ======================= */
+/* =========================================================
+   CREATE OWNER
+========================================================= */
+
 /**
  * @swagger
  * /OwnerMaster/Create:
  *   post:
- *     summary: Register a new owner (and user account)
+ *     summary: Create owner and user account
  *     tags: [Owner Master]
- *     consumes:
- *       - multipart/form-data
- *     parameters:
- *       - in: formData
- *         name: society_id
- *         type: integer
- *         required: true
- *       - in: formData
- *         name: first_name
- *         type: string
- *         required: true
- *       - in: formData
- *         name: last_name
- *         type: string
- *         required: true
- *       - in: formData
- *         name: email
- *         type: string
- *         required: true
- *       - in: formData
- *         name: phone
- *         type: string
- *         required: true
- *       - in: formData
- *         name: username
- *         type: string
- *         description: For user account creation
- *       - in: formData
- *         name: password_hash
- *         type: string
- *         description: Initial password
- *       - in: formData
- *         name: profile_photo_url
- *         type: file
- *         description: Profile photo upload
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - society_id
+ *               - first_name
+ *               - email
+ *               - phone
+ *             properties:
+ *               user_id:
+ *                 type: integer
+ *               society_id:
+ *                 type: integer
+ *               first_name:
+ *                 type: string
+ *               last_name:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *               alternate_phone:
+ *                 type: string
+ *               aadhaar_number:
+ *                 type: string
+ *               pan_number:
+ *                 type: string
+ *               date_of_birth:
+ *                 type: string
+ *                 format: date
+ *               gender_id:
+ *                 type: integer
+ *               is_active:
+ *                 type: integer
+ *               country_id:
+ *                 type: integer
+ *               state_id:
+ *                 type: integer
+ *               district_id:
+ *                 type: integer
+ *               postal_code:
+ *                 type: string
+ *               address:
+ *                 type: string
+ *               notes:
+ *                 type: string
+ *               username:
+ *                 type: string
+ *               password_hash:
+ *                 type: string
+ *               role_id:
+ *                 type: integer
+ *               profile_photo_url:
+ *                 type: string
+ *                 format: binary
  *     responses:
  *       200:
  *         description: Owner created successfully
+ *       400:
+ *         description: Bad request
  */
-// 👉 FIXED: Changed controller.create to controller.insert
-router.post("/OwnerMaster/Create", upload.single("profile_photo_url"), controller.insert);
+router.post(
+    "/OwnerMaster/Create",
+    upload.single("profile_photo_url"),
+    controller.insert
+);
 
 
-/* ======================= UPDATE ======================= */
+/* =========================================================
+   UPDATE OWNER
+========================================================= */
+
 /**
  * @swagger
  * /OwnerMaster/Update:
  *   put:
- *     summary: Update an existing owner
+ *     summary: Update owner details
  *     tags: [Owner Master]
- *     consumes:
- *       - multipart/form-data
- *     parameters:
- *       - in: formData
- *         name: owner_id
- *         type: integer
- *         required: true
- *       - in: formData
- *         name: society_id
- *         type: integer
- *         required: true
- *       - in: formData
- *         name: first_name
- *         type: string
- *       - in: formData
- *         name: is_active
- *         type: integer
- *         description: 1 for Active, 0 for Inactive
- *       - in: formData
- *         name: profile_photo_url
- *         type: file
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - owner_id
+ *               - society_id
+ *             properties:
+ *               user_id:
+ *                 type: integer
+ *               owner_id:
+ *                 type: integer
+ *               society_id:
+ *                 type: integer
+ *               first_name:
+ *                 type: string
+ *               last_name:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *               alternate_phone:
+ *                 type: string
+ *               aadhaar_number:
+ *                 type: string
+ *               pan_number:
+ *                 type: string
+ *               date_of_birth:
+ *                 type: string
+ *                 format: date
+ *               gender_id:
+ *                 type: integer
+ *               is_active:
+ *                 type: integer
+ *               country_id:
+ *                 type: integer
+ *               state_id:
+ *                 type: integer
+ *               district_id:
+ *                 type: integer
+ *               postal_code:
+ *                 type: string
+ *               address:
+ *                 type: string
+ *               notes:
+ *                 type: string
+ *               profile_photo_url:
+ *                 type: string
+ *                 format: binary
  *     responses:
  *       200:
  *         description: Owner updated successfully
  */
-router.put("/OwnerMaster/Update", upload.single("profile_photo_url"), controller.update);
+router.put(
+    "/OwnerMaster/Update",
+    upload.single("profile_photo_url"),
+    controller.update
+);
 
 
-/* ======================= UPDATE STATUS ======================= */
+/* =========================================================
+   UPDATE STATUS
+========================================================= */
+
 /**
  * @swagger
  * /OwnerMaster/UpdateStatus:
  *   put:
- *     summary: Toggle Owner Account Status (Active/Inactive)
+ *     summary: Update owner status
  *     tags: [Owner Master]
- *     parameters:
- *       - in: body
- *         name: body
- *         required: true
- *         schema:
- *           type: object
- *           properties:
- *             owner_id:
- *               type: integer
- *             society_id:
- *               type: integer
- *             is_active:
- *               type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - owner_id
+ *               - society_id
+ *               - is_active
+ *             properties:
+ *               user_id:
+ *                 type: integer
+ *               owner_id:
+ *                 type: integer
+ *               society_id:
+ *                 type: integer
+ *               is_active:
+ *                 type: integer
+ *                 example: 1
  *     responses:
  *       200:
  *         description: Status updated successfully
  */
-// 👉 FIXED: Added the missing route for toggling the switch in the UI
-router.put("/OwnerMaster/UpdateStatus", controller.updateStatus);
+router.put(
+    "/OwnerMaster/UpdateStatus",
+    controller.updateStatus
+);
 
 
-/* ======================= DELETE ======================= */
+/* =========================================================
+   DELETE OWNER
+========================================================= */
+
 /**
  * @swagger
  * /OwnerMaster/Delete/{id}:
  *   delete:
- *     summary: Soft delete an owner and deactivate user account
+ *     summary: Soft delete owner
  *     tags: [Owner Master]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         type: integer
- *       - in: body
- *         name: body
- *         required: true
  *         schema:
- *           type: object
- *           properties:
- *             society_id:
- *               type: integer
+ *           type: integer
+ *         description: Owner ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - society_id
+ *             properties:
+ *               society_id:
+ *                 type: integer
+ *               user_id:
+ *                 type: integer
  *     responses:
  *       200:
  *         description: Owner deleted successfully
  */
-router.delete("/OwnerMaster/Delete/:id", controller.remove);
+router.delete(
+    "/OwnerMaster/Delete/:id",
+    controller.remove
+);
 
 module.exports = router;

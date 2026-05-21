@@ -1,257 +1,382 @@
-const fs = require("fs"); 
-const fsPromises = require("fs").promises; // 👉 NEW: Added for non-blocking file writes
-const path = require("path"); 
+/* =========================================================
+   ownerController.js
+========================================================= */
+
+const fs = require("fs");
+const fsPromises = require("fs").promises;
+const path = require("path");
+
 const ownerService = require("../services/owner.service");
 const usersService = require("../services/user.service");
-const APIResponse = require("../utils/response"); 
+
+const APIResponse = require("../utils/response");
 const asyncHandler = require("../middlewares/async.middleware");
+
 const bcrypt = require("bcrypt");
 
 /* ======================= INSERT ======================= */
 const insert = asyncHandler(async (req, res) => {
+
     const body = req.body;
+
     let photoUrl = null;
 
-    // Handle File Upload
     if (req.file) {
+
         const dirPath = path.join(process.cwd(), "public", "uploads");
-        
-        // 👉 FIX: Ensure directory exists so app doesn't crash
+
         if (!fs.existsSync(dirPath)) {
             fs.mkdirSync(dirPath, { recursive: true });
         }
 
         const filename = `owner_${Date.now()}${path.extname(req.file.originalname)}`;
+
         const savePath = path.join(dirPath, filename);
-        
-        // 👉 FIX: Non-blocking write
+
         await fsPromises.writeFile(savePath, req.file.buffer);
+
         photoUrl = `/uploads/${filename}`;
     }
 
     const ownerResult = await ownerService.execute(
-        "INSERT", null, body.first_name, body.last_name, 
-        body.email, body.phone, body.alternate_phone, 
-        body.aadhaar_number, body.pan_number, body.date_of_birth, 
-        body.gender_id, body.is_active !== undefined ? body.is_active : 1, 
-        body.country_id, body.state_id, body.district_id, body.postal_code, body.address, 
-        photoUrl, body.notes, 
-        body.society_id
+        "INSERT",
+        null,
+        body.first_name,
+        body.last_name,
+        body.email,
+        body.phone,
+        body.alternate_phone,
+        body.aadhaar_number,
+        body.pan_number,
+        body.date_of_birth,
+        body.gender_id,
+        body.is_active !== undefined ? body.is_active : 1,
+        body.country_id,
+        body.state_id,
+        body.district_id,
+        body.postal_code,
+        body.address,
+        photoUrl,
+        body.notes,
+        body.society_id,
+        null,
+        null,
+        body.user_id
     );
 
-    // ✅ ROBUST ID EXTRACTION
-    const newOwnerId = 
-        ownerResult?.[0]?.[0]?.new_id || 
-        ownerResult?.[0]?.insertId || 
+    const newOwnerId =
+        ownerResult?.[0]?.[0]?.new_id ||
+        ownerResult?.[0]?.insertId ||
         ownerResult?.insertId;
 
     if (!newOwnerId) {
-        console.error("DEBUG: MySQL ownerResult Structure:", JSON.stringify(ownerResult));
-        return APIResponse.send(res, new APIResponse(
-            500, false, "Owner created, but failed to retrieve new ID. User account not created.", ownerResult
-        ));
+        return APIResponse.send(
+            res,
+            new APIResponse(
+                500,
+                false,
+                "Owner created but ID not found",
+                ownerResult
+            )
+        );
     }
 
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(body.password_hash || "Owner@123", salt);
+
+    const hashedPassword = await bcrypt.hash(
+        body.password_hash || "Owner@123",
+        salt
+    );
 
     try {
+
         await usersService.execute(
-            "INSERT",            
-            null,                
-            newOwnerId,          // ownerId 
-            null,                
-            null,                
-            body.username || body.email, 
-            hashedPassword,      
-            body.role_id || 142, // 142 is the Owner role
-            body.is_active !== undefined ? body.is_active : 1 
+            "INSERT",
+            null,
+            newOwnerId,
+            null,
+            null,
+            body.username || body.email,
+            hashedPassword,
+            body.role_id || 142,
+            body.is_active !== undefined ? body.is_active : 1
         );
-    } catch (userError) {
-        console.error("User Creation Failed:", userError.message);
-        return APIResponse.send(res, new APIResponse(
-            201, true, "Owner created successfully, but User account failed: " + userError.message, { owner_id: newOwnerId }
-        ));
+
+    } catch (err) {
+
+        return APIResponse.send(
+            res,
+            new APIResponse(
+                201,
+                true,
+                "Owner created but user creation failed",
+                err.message
+            )
+        );
     }
 
-    return APIResponse.send(res, APIResponse.successResponse({ owner_id: newOwnerId }, "Owner and User account created successfully"));
+    return APIResponse.send(
+        res,
+        APIResponse.successResponse(
+            { owner_id: newOwnerId },
+            "Owner and user created successfully"
+        )
+    );
 });
+
 
 /* ======================= UPDATE ======================= */
 const update = asyncHandler(async (req, res) => {
+
     const body = req.body;
 
-    let photoUrl = body.profile_photo_url; 
+    let photoUrl = body.profile_photo_url;
+
     if (req.file) {
+
         const dirPath = path.join(process.cwd(), "public", "uploads");
-        
-        // 👉 FIX: Ensure directory exists
+
         if (!fs.existsSync(dirPath)) {
             fs.mkdirSync(dirPath, { recursive: true });
         }
 
         const filename = `owner_${Date.now()}${path.extname(req.file.originalname)}`;
+
         const savePath = path.join(dirPath, filename);
+
         await fsPromises.writeFile(savePath, req.file.buffer);
+
         photoUrl = `/uploads/${filename}`;
     }
 
     const result = await ownerService.execute(
-        "UPDATE", body.owner_id, body.first_name, body.last_name, 
-        body.email, body.phone, body.alternate_phone, 
-        body.aadhaar_number, body.pan_number, body.date_of_birth, 
-        body.gender_id, body.is_active, 
-        body.country_id, body.state_id, body.district_id, body.postal_code, body.address, 
-        photoUrl, body.notes, body.society_id
+        "UPDATE",
+        body.owner_id,
+        body.first_name,
+        body.last_name,
+        body.email,
+        body.phone,
+        body.alternate_phone,
+        body.aadhaar_number,
+        body.pan_number,
+        body.date_of_birth,
+        body.gender_id,
+        body.is_active,
+        body.country_id,
+        body.state_id,
+        body.district_id,
+        body.postal_code,
+        body.address,
+        photoUrl,
+        body.notes,
+        body.society_id,
+        null,
+        null,
+        body.user_id
     );
 
-    // 👉 FIX: Sync user account status if is_active is modified during a profile edit
-    if (body.is_active !== undefined) {
-        try {
-            await usersService.execute(
-                "UPDATE_STATUS", 
-                null, body.owner_id, null, null, null, null, null, parseInt(body.is_active)
-            );
-        } catch (e) {
-            console.error("Warning: Could not sync user status on profile update", e);
-        }
-    }
-
-    return APIResponse.send(res, APIResponse.successResponse(result, "Owner updated successfully"));
+    return APIResponse.send(
+        res,
+        APIResponse.successResponse(
+            result,
+            "Owner updated successfully"
+        )
+    );
 });
+
 
 /* ======================= UPDATE STATUS ======================= */
 const updateStatus = asyncHandler(async (req, res) => {
-    const { owner_id, society_id, is_active } = req.body;
 
-    if (!owner_id || is_active === undefined || !society_id) {
-        return APIResponse.send(res, APIResponse.badRequestResponse("Owner ID, Society ID, and Status are required"));
+    const {
+        owner_id,
+        society_id,
+        is_active,
+        user_id
+    } = req.body;
+
+    if (!owner_id || !society_id || is_active === undefined) {
+
+        return APIResponse.send(
+            res,
+            APIResponse.badRequestResponse(
+                "owner_id, society_id and is_active are required"
+            )
+        );
     }
 
     const result = await ownerService.execute(
-        "UPDATE_STATUS", 
-        owner_id, 
-        null, null, null, null, null, null, null, null, null, 
-        is_active, 
-        null, null, null, null, null, null, null,
-        society_id
+        "UPDATE_STATUS",
+        owner_id,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        is_active,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        society_id,
+        null,
+        null,
+        user_id
     );
 
-    try {
-        await usersService.execute(
-            "UPDATE_STATUS", 
-            null, owner_id, null, null, null, null, null, is_active
-        );
-    } catch (e) {
-        console.error("Warning: Could not sync user status", e);
-    }
-
-    return APIResponse.send(res, APIResponse.successResponse(result, "Status updated successfully"));
+    return APIResponse.send(
+        res,
+        APIResponse.successResponse(
+            result,
+            "Status updated successfully"
+        )
+    );
 });
 
-/* ======================= DELETE (SOFT) ======================= */
+
+/* ======================= DELETE ======================= */
 const remove = asyncHandler(async (req, res) => {
-    const ownerId = req.params.id || req.body.owner_id;
-    const societyId = req.body.society_id;
 
-    if (!ownerId || !societyId) {
-        return APIResponse.send(res, APIResponse.badRequestResponse("Owner ID and Society ID are required"));
+    const ownerId = req.params.id;
+
+    const {
+        society_id,
+        user_id
+    } = req.body;
+
+    if (!ownerId || !society_id) {
+
+        return APIResponse.send(
+            res,
+            APIResponse.badRequestResponse(
+                "owner_id and society_id are required"
+            )
+        );
     }
 
     const result = await ownerService.execute(
-        "DELETE", 
-        ownerId, 
-        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 
-        societyId
+        "DELETE",
+        ownerId,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        society_id,
+        null,
+        null,
+        user_id
     );
 
-    try {
-        await usersService.execute(
-            "UPDATE_STATUS", null, ownerId, null, null, null, null, null, 0
-        );
-    } catch (e) {
-        console.error("Warning: Could not deactivate linked user", e);
-    }
-
-    return APIResponse.send(res, APIResponse.successResponse(result, "Owner deactivated successfully"));
+    return APIResponse.send(
+        res,
+        APIResponse.successResponse(
+            result,
+            "Owner deleted successfully"
+        )
+    );
 });
 
-/* ======================= GET BY ID ======================= */
+
 /* ======================= GET BY ID ======================= */
 const getById = asyncHandler(async (req, res) => {
-    const id = parseInt(req.params.id);
-    
-    // Attempt to parse, but fallback to null if not provided or NaN
-    const querySocietyId = parseInt(req.query.society_id);
-    const societyId = isNaN(querySocietyId) ? null : querySocietyId;
 
-    if (isNaN(id)) {
-        return APIResponse.send(res, APIResponse.badRequestResponse("Valid owner_id is required"));
-    }
+    const ownerId = req.params.id;
 
-    const data = await ownerService.execute(
-        "GET_BY_ID",     // 1: action
-        id,              // 2: ownerId
-        null,            // 3: firstName
-        null,            // 4: lastName
-        null,            // 5: email
-        null,            // 6: phone
-        null,            // 7: alternatePhone
-        null,            // 8: aadhaarNumber
-        null,            // 9: panNumber
-        null,            // 10: dob
-        null,            // 11: genderId
-        null,            // 12: isActive
-        null,            // 13: countryId
-        null,            // 14: stateId
-        null,            // 15: districtId
-        null,            // 16: postalCode
-        null,            // 17: address
-        null,            // 18: profilePhotoUrl
-        null,            // 19: notes
-        societyId,       // 20: societyId (PERFECTLY ALIGNED NOW)
-        null,            // 21: page
-        null             // 22: pageSize
+    const societyId = req.query.society_id || null;
+
+    const result = await ownerService.execute(
+        "GET_BY_ID",
+        ownerId,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        societyId,
+        null,
+        null,
+        null
     );
 
-    return APIResponse.send(res, APIResponse.emptyOr404(data?.[0]));
+    return APIResponse.send(
+        res,
+        APIResponse.successResponse(
+            result?.[0] || [],
+            "Fetched successfully"
+        )
+    );
 });
+
 
 /* ======================= GET ALL ======================= */
 const getAll = asyncHandler(async (req, res) => {
-    let societyId = req.query.society_id ? req.query.society_id.toString() : null;
-    
-    // 👉 CRITICAL FIX: Sanitize string to allow "1,2" properly in MySQL
+
+    let societyId = req.query.society_id || null;
+
     if (societyId) {
         societyId = societyId.replace(/[^0-9,]/g, "");
     }
 
     const page = parseInt(req.query.page) || 1;
+
     const pageSize = parseInt(req.query.pageSize) || 10;
 
     const result = await ownerService.execute(
-        "GET_ALL",       // 1: action
-        null,            // 2: ownerId
-        null,            // 3: firstName
-        null,            // 4: lastName
-        null,            // 5: email
-        null,            // 6: phone
-        null,            // 7: alternatePhone
-        null,            // 8: aadhaarNumber
-        null,            // 9: panNumber
-        null,            // 10: dob
-        null,            // 11: genderId
-        null,            // 12: isActive
-        null,            // 13: countryId
-        null,            // 14: stateId
-        null,            // 15: districtId
-        null,            // 16: postalCode
-        null,            // 17: address
-        null,            // 18: profilePhotoUrl
-        null,            // 19: notes
-        societyId,       // 20: societyId (PERFECTLY ALIGNED NOW)
-        page,            // 21: page
-        pageSize         // 22: pageSize
+        "GET_ALL",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        societyId,
+        page,
+        pageSize,
+        null
     );
 
     const payload = {
@@ -261,45 +386,55 @@ const getAll = asyncHandler(async (req, res) => {
         pageSize
     };
 
-    return APIResponse.send(res, APIResponse.successResponse(payload, "Fetched successfully"));
+    return APIResponse.send(
+        res,
+        APIResponse.successResponse(
+            payload,
+            "Fetched successfully"
+        )
+    );
 });
+
 
 /* ======================= SEARCH ======================= */
 const search = asyncHandler(async (req, res) => {
-    let societyId = req.query.society_id ? req.query.society_id.toString() : null;
-    
-    // 👉 CRITICAL FIX: Sanitize string to allow "1,2" properly in MySQL
+
+    let societyId = req.query.society_id || null;
+
     if (societyId) {
         societyId = societyId.replace(/[^0-9,]/g, "");
     }
 
     const keyword = req.query.keyword || "";
+
     const page = parseInt(req.query.page) || 1;
+
     const pageSize = parseInt(req.query.pageSize) || 10;
 
     const result = await ownerService.execute(
-        "SEARCH",        // 1: action
-        null,            // 2: ownerId
-        keyword,         // 3: firstName (used as keyword in SP)
-        null,            // 4: lastName
-        null,            // 5: email
-        null,            // 6: phone
-        null,            // 7: alternatePhone
-        null,            // 8: aadhaarNumber
-        null,            // 9: panNumber
-        null,            // 10: dob
-        null,            // 11: genderId
-        null,            // 12: isActive
-        null,            // 13: countryId
-        null,            // 14: stateId
-        null,            // 15: districtId
-        null,            // 16: postalCode
-        null,            // 17: address
-        null,            // 18: profilePhotoUrl
-        null,            // 19: notes
-        societyId,       // 20: societyId (PERFECTLY ALIGNED NOW)
-        page,            // 21: page
-        pageSize         // 22: pageSize
+        "SEARCH",
+        null,
+        keyword,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        societyId,
+        page,
+        pageSize,
+        null
     );
 
     const payload = {
@@ -309,13 +444,19 @@ const search = asyncHandler(async (req, res) => {
         pageSize
     };
 
-    return APIResponse.send(res, APIResponse.successResponse(payload, "Search results"));
+    return APIResponse.send(
+        res,
+        APIResponse.successResponse(
+            payload,
+            "Search fetched successfully"
+        )
+    );
 });
 
 module.exports = {
     insert,
     update,
-    updateStatus, 
+    updateStatus,
     remove,
     getById,
     getAll,
