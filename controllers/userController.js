@@ -4,7 +4,7 @@ const asyncHandler = require("../middlewares/async.middleware");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const { sendResetEmail } = require("../utils/mailer");
-const db = require("../config/db"); 
+const db = require("../config/db");
 
 
 /* ======================= REGISTER USER ======================= */
@@ -225,10 +225,12 @@ const forgotPassword = asyncHandler(async (req, res) => {
     // Send email
     await sendResetEmail(user.username, resetLink);
 
-    return APIResponse.send(
-        res,
-        APIResponse.successResponse("Reset link sent to email")
-    );
+    // FINAL RESPONSE (WITH LINK)
+    return res.status(200).json({
+        success: true,
+        message: "Reset link sent to email",
+        token: token
+    });
 });
 
 /* ======================= RESET PASSWORD ======================= */
