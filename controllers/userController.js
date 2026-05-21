@@ -55,7 +55,7 @@ console.log("BODY:", req.body);
     if (!result || result.length === 0) {
         return APIResponse.send(
             res,
-            APIResponse.errorResponse("Invalid Email or password")
+            APIResponse.errorResponse("Invalid Email or password or not premisstion to login")
         );
     }
 

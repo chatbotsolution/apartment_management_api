@@ -19,20 +19,18 @@ const execute = async (
     statusId = null,
     salary = null,
     shiftTiming = null,
-    
-    // 👉 NEW: Location parameters added here
     countryId = null,
     stateId = null,
     districtId = null,
     postalCode = null,
-    
     address = null,
     emergencyContact = null,
-    photoUrl = null
+    photoUrl = null,
+    userId = null // 👉 NEW: userId parameter mapped to created_by/updated_by
 ) => {
     const [rows] = await db.query(
-        // 👉 UPDATED: Now contains exactly 24 question marks
-        "CALL sp_staff(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        // 👉 UPDATED: Now contains exactly 25 question marks
+        "CALL sp_staff(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         [
             action,
             staffId,
@@ -57,7 +55,8 @@ const execute = async (
             postalCode,
             address,
             emergencyContact,
-            photoUrl
+            photoUrl,
+            userId // 👉 Passes the user ID to the database
         ]
     );
 
