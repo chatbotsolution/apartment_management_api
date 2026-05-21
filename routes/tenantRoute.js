@@ -25,6 +25,9 @@ const upload = require("../middlewares/upload.middleware");
  *           schema:
  *             type: object
  *             properties:
+ *               user_id:
+ *                 type: integer
+ *                 description: ID of the user performing the action
  *               society_id:
  *                 type: integer
  *               block_id:
@@ -101,25 +104,7 @@ const upload = require("../middlewares/upload.middleware");
  *     responses:
  *       200:
  *         description: Tenant created successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 message:
- *                   type: string
- *                   example: Tenant and User account created successfully
- *                 data:
- *                   type: object
- *       400:
- *         description: Bad Request
- *       500:
- *         description: Internal Server Error
  */
-// 👉 FIXED: upload.single() reverted to upload.any() to handle both photo and agreement document safely
 router.post("/Tenant/Insert", upload.any(), controller.insert);
 
 /* ======================= UPDATE ======================= */
@@ -136,6 +121,9 @@ router.post("/Tenant/Insert", upload.any(), controller.insert);
  *           schema:
  *             type: object
  *             properties:
+ *               user_id:
+ *                 type: integer
+ *                 description: ID of the user performing the update
  *               tenant_id:
  *                 type: integer
  *               society_id:
@@ -208,23 +196,6 @@ router.post("/Tenant/Insert", upload.any(), controller.insert);
  *     responses:
  *       200:
  *         description: Tenant updated successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 message:
- *                   type: string
- *                   example: Tenant updated successfully
- *                 data:
- *                   type: object
- *       400:
- *         description: Bad Request
- *       500:
- *         description: Internal Server Error
  */
 router.put("/Tenant/Update", upload.any(), controller.update);
 
@@ -246,26 +217,12 @@ router.put("/Tenant/Update", upload.any(), controller.update);
  *                 type: integer
  *               is_active:
  *                 type: integer
+ *               user_id:
+ *                 type: integer
+ *                 description: ID of the user performing the action
  *     responses:
  *       200:
  *         description: Status updated successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 message:
- *                   type: string
- *                   example: Status updated successfully
- *                 data:
- *                   type: object
- *       400:
- *         description: Bad Request
- *       500:
- *         description: Internal Server Error
  */
 router.put("/Tenant/UpdateStatus", controller.updateStatus);
 
@@ -285,26 +242,12 @@ router.put("/Tenant/UpdateStatus", controller.updateStatus);
  *             properties:
  *               tenant_id:
  *                 type: integer
+ *               user_id:
+ *                 type: integer
+ *                 description: ID of the user performing the deletion
  *     responses:
  *       200:
  *         description: Tenant deleted/deactivated successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 message:
- *                   type: string
- *                   example: Tenant deactivated successfully
- *                 data:
- *                   type: object
- *       400:
- *         description: Bad Request
- *       500:
- *         description: Internal Server Error
  */
 router.post("/Tenant/Delete", controller.remove);
 
@@ -324,20 +267,6 @@ router.post("/Tenant/Delete", controller.remove);
  *     responses:
  *       200:
  *         description: Data fetched successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 data:
- *                   type: object
- *       404:
- *         description: Tenant not found
- *       500:
- *         description: Internal Server Error
  */
 router.get("/Tenant/GetById/:id", controller.getById);
 
@@ -357,23 +286,6 @@ router.get("/Tenant/GetById/:id", controller.getById);
  *     responses:
  *       200:
  *         description: List of tenants fetched successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 message:
- *                   type: string
- *                   example: Fetched successfully
- *                 data:
- *                   type: array
- *                   items:
- *                     type: object
- *       500:
- *         description: Internal Server Error
  */
 router.get("/Tenant/GetAll", controller.getAll);
 
@@ -397,23 +309,6 @@ router.get("/Tenant/GetAll", controller.getAll);
  *     responses:
  *       200:
  *         description: Search results
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 message:
- *                   type: string
- *                   example: Search results
- *                 data:
- *                   type: array
- *                   items:
- *                     type: object
- *       500:
- *         description: Internal Server Error
  */
 router.get("/Tenant/Search", controller.search);
 

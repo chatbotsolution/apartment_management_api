@@ -887,6 +887,13 @@ router.get("/Dropdown/Flat", controller.flat);
  *     summary: Get Owner list
  *     description: Returns all active owners (full name) via sp_dropdown_master (OWNER).
  *     tags: [Dropdown Master]
+ *     parameters:
+ *       - in: query
+ *         name: society_id
+ *         required: false
+ *         schema:
+ *           type: string
+ *         description: Single or comma-separated society IDs (e.g. "1" or "1,2")
  *     responses:
  *       200:
  *         description: List of owners

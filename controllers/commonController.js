@@ -5,9 +5,12 @@ const asyncHandler = require("../middlewares/async.middleware");
 /* ======================= GENERIC ACTION HANDLER ======================= */
 const byAction = (action, requireSociety = false) =>
     asyncHandler(async (req, res) => {
-        const societyId = req.query.society_id
-            ? parseInt(req.query.society_id)
-            : null;
+        
+        // 👉 NEW: Do not use parseInt! Allow string with commas for multiple IDs (e.g. "1,2")
+        let societyId = req.query.society_id ? req.query.society_id.toString() : null;
+        if (societyId) {
+            societyId = societyId.replace(/[^0-9,]/g, ""); // Keep only numbers and commas
+        }
 
         if (requireSociety && !societyId) {
             return APIResponse.send(

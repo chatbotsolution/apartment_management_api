@@ -24,7 +24,8 @@ const getAllLookups = async () => {
 const getDropdown = async (action, societyId = null) => {
     const [rows] = await db.query(
         "CALL sp_dropdown_master(?,?,?,?)",
-        [action, null,null, societyId]
+        // 👉 FIX: Moved societyId from the 4th slot to the 3rd slot!
+        [action, null, societyId, null] 
     );
 
     return rows[0] || [];
