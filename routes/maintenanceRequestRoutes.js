@@ -244,9 +244,21 @@ router.get("/MaintenanceRequest/GetById/:id", controller.getById);
  * @swagger
  * /MaintenanceRequest/GetAll:
  *   get:
- *     summary: Fetch all maintenance requests (Staff/Admin view)
+ *     summary: Fetch all maintenance requests (filtered by society or org)
  *     tags: [Maintenance Request]
  *     parameters:
+ *       - in: query
+ *         name: society_id
+ *         schema:
+ *           type: string
+ *           example: "25"
+ *         description: Single society ID or comma-separated list (e.g., "25,26"). Either this or org_id is required.
+ *       - in: query
+ *         name: org_id
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *         description: Organization ID. Either this or society_id is required.
  *       - in: query
  *         name: limit
  *         schema:
@@ -262,6 +274,8 @@ router.get("/MaintenanceRequest/GetById/:id", controller.getById);
  *     responses:
  *       200:
  *         description: Successfully fetched list of maintenance requests
+ *       400:
+ *         description: Bad Request — society_id or org_id missing
  */
 router.get("/MaintenanceRequest/GetAll", controller.getAll);
 

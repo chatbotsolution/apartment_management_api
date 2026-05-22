@@ -24,9 +24,21 @@ const upload = require("../middlewares/upload.middleware");
  * @swagger
  * /Complaint/GetAll:
  *   get:
- *     summary: Get all complaints with pagination
+ *     summary: Get all complaints with pagination (filtered by society or org)
  *     tags: [Complaint]
  *     parameters:
+ *       - in: query
+ *         name: society_id
+ *         schema:
+ *           type: string
+ *           example: "25"
+ *         description: Single society ID or comma-separated list (e.g., "25,26"). Either this or org_id is required.
+ *       - in: query
+ *         name: org_id
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *         description: Organization ID. Either this or society_id is required.
  *       - in: query
  *         name: limit
  *         schema:
@@ -42,6 +54,8 @@ const upload = require("../middlewares/upload.middleware");
  *     responses:
  *       200:
  *         description: A list of complaints
+ *       400:
+ *         description: Bad Request — society_id or org_id missing
  *       500:
  *         description: Server error
  */

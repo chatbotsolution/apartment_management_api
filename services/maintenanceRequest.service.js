@@ -24,18 +24,23 @@ const execute = async (
     remarks = null,
     beforePhotoUrl = null,
     afterPhotoUrl = null,
-    limit = null,   // <-- NEW PARAMETER
-    offset = null   // <-- NEW PARAMETER
+    limit = null,
+    offset = null,
+    societyId = null,   // 👈 NEW
+    orgId = null        // 👈 NEW
 ) => {
     try {
-        // Calling sp_maintenance_request with exactly 21 parameters
+        const safeSocietyId = societyId ? String(societyId) : null;
+        const safeOrgId = orgId ? Number(orgId) : null;
+
         const [rows] = await db.query(
             `CALL sp_maintenance_request(
-                ?, ?, ?, ?, ?, 
-                ?, ?, ?, ?, ?, 
-                ?, ?, ?, ?, ?, 
-                ?, ?, ?, ?, ?, ? 
-            )`, // <-- Added two more '?' here (Total: 21)
+                ?, ?, ?, ?, ?,
+                ?, ?, ?, ?, ?,
+                ?, ?, ?, ?, ?,
+                ?, ?, ?, ?, ?,
+                ?, ?, ?
+            )`,
             [
                 action,             // 1
                 requestId,          // 2
@@ -56,16 +61,13 @@ const execute = async (
                 remarks,            // 17
                 beforePhotoUrl,     // 18
                 afterPhotoUrl,      // 19
-                limit,              // 20 <-- NEW
-                offset              // 21 <-- NEW
+                limit,              // 20
+                offset,             // 21
+                safeSocietyId,      // 22 👈 NEW
+                safeOrgId           // 23 👈 NEW
             ]
         );
 
-        /**
-         * For CALL statements:
-         * rows[0] contains the actual data from SELECT queries.
-         * rows[1] contains the status/metadata from the DB.
-         */
         return rows;
     } catch (error) {
         console.error("Database Service Error (sp_maintenance_request):", error);
