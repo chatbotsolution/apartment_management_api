@@ -2,18 +2,10 @@ const service = require("../services/flat.service");
 const APIResponse = require("../utils/response");
 const asyncHandler = require("../middlewares/async.middleware");
 
-
 /* ======================= GET ALL ======================= */
 const getAll = asyncHandler(async (req, res) => {
-
+    // Keep it as a string to allow comma-separated values like '25,33'
     const society_id = req.query.society_id || null;
-
-    if (!society_id) {
-        return APIResponse.send(
-            res,
-            APIResponse.badRequestResponse("society_id required")
-        );
-    }
 
     const data = await service.getAll(society_id);
 
@@ -23,10 +15,8 @@ const getAll = asyncHandler(async (req, res) => {
     );
 });
 
-
 /* ======================= GET BY ID ======================= */
 const getById = asyncHandler(async (req, res) => {
-
     const id = parseInt(req.params.id);
 
     const data = await service.getById(id);
@@ -37,11 +27,8 @@ const getById = asyncHandler(async (req, res) => {
     );
 });
 
-
 /* ======================= CREATE ======================= */
 const create = asyncHandler(async (req, res) => {
-
-    // Explicitly destructure to prevent over-posting
     const {
         floor_id,
         block_id,
@@ -54,7 +41,7 @@ const create = asyncHandler(async (req, res) => {
     } = req.body;
 
     const payload = {
-        floor_id,
+        floor_id: floor_id || null, // ✅ Allow null for Duplex/Villas
         block_id,
         flat_number,
         bhk_type_id,
@@ -72,11 +59,8 @@ const create = asyncHandler(async (req, res) => {
     );
 });
 
-
 /* ======================= UPDATE ======================= */
 const update = asyncHandler(async (req, res) => {
-
-    // Explicitly destructure to prevent over-posting
     const {
         flat_id,
         floor_id,
@@ -91,7 +75,7 @@ const update = asyncHandler(async (req, res) => {
 
     const payload = {
         flat_id,
-        floor_id,
+        floor_id: floor_id || null, // ✅ Allow null for Duplex/Villas
         block_id,
         flat_number,
         bhk_type_id,
@@ -109,10 +93,8 @@ const update = asyncHandler(async (req, res) => {
     );
 });
 
-
 /* ======================= DELETE ======================= */
 const remove = asyncHandler(async (req, res) => {
-
     const id = parseInt(req.params.id);
 
     const result = await service.remove(id);
@@ -122,7 +104,6 @@ const remove = asyncHandler(async (req, res) => {
         APIResponse.successResponse(result)
     );
 });
-
 
 module.exports = {
     getAll,

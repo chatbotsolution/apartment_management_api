@@ -2,10 +2,12 @@ const db = require("../config/db");
 
 /* ======================= GET ALL ======================= */
 const getAll = async (society_id) => {
-    // There should be exactly 10 parameters including 'GET_ALL'
+    const param = society_id ? society_id : null;
+    
+    // 11 parameters: Action, flat_id, floor_id, block_id, flat_number, bhk_type_id, balconies, facing_id, status_id, is_corner, society_id
     const [rows] = await db.query(
-        "CALL sp_flat('GET_ALL', NULL, NULL, ?, NULL, NULL, NULL, NULL, NULL, NULL)",
-        [society_id]
+        "CALL sp_flat('GET_ALL', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, ?)",
+        [param]
     );
 
     return rows[0];
@@ -13,9 +15,9 @@ const getAll = async (society_id) => {
 
 /* ======================= GET BY ID ======================= */
 const getById = async (id) => {
-    // 10 parameters total
+    // 11 parameters
     const [rows] = await db.query(
-        "CALL sp_flat('GET_BY_ID', ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
+        "CALL sp_flat('GET_BY_ID', ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
         [id]
     );
 
@@ -35,8 +37,9 @@ const create = async (data) => {
         is_corner_flat
     } = data;
 
+    // 11 parameters
     const [rows] = await db.query(
-        "CALL sp_flat('INSERT', NULL, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "CALL sp_flat('INSERT', NULL, ?, ?, ?, ?, ?, ?, ?, ?, NULL)",
         [
             floor_id,
             block_id,
@@ -66,8 +69,9 @@ const update = async (data) => {
         is_corner_flat
     } = data;
 
+    // 11 parameters
     const [rows] = await db.query(
-        "CALL sp_flat('UPDATE', ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "CALL sp_flat('UPDATE', ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL)",
         [
             flat_id,
             floor_id,
@@ -86,9 +90,9 @@ const update = async (data) => {
 
 /* ======================= DELETE ======================= */
 const remove = async (id) => {
-    // 10 parameters total
+    // 11 parameters
     const [rows] = await db.query(
-        "CALL sp_flat('DELETE', ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
+        "CALL sp_flat('DELETE', ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",
         [id]
     );
 

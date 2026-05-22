@@ -14,12 +14,13 @@ const controller = require("../controllers/flatController");
  * @swagger
  * /Flat/GetAll:
  *   get:
- *     summary: Get all flats by society
+ *     summary: Get all flats (supports comma-separated society IDs)
  *     tags: [Flat Master]
  *     parameters:
  *       - in: query
  *         name: society_id
- *         required: true
+ *         required: false
+ *         description: Comma-separated society IDs (e.g., '25,33') or leave empty for all.
  *         schema:
  *           type: string
  *     responses:
@@ -63,6 +64,8 @@ router.get("/Flat/GetById/:id", controller.getById);
  *             properties:
  *               floor_id:
  *                 type: integer
+ *                 nullable: true
+ *                 description: Optional. Null for Duplex/Plots.
  *               block_id:
  *                 type: integer
  *               flat_number:
@@ -101,6 +104,8 @@ router.post("/Flat/Create", controller.create);
  *                 type: integer
  *               floor_id:
  *                 type: integer
+ *                 nullable: true
+ *                 description: Optional. Null for Duplex/Plots.
  *               block_id:
  *                 type: integer
  *               flat_number:

@@ -5,15 +5,11 @@ const asyncHandler = require("../middlewares/async.middleware");
 
 /* ======================= GET ALL ======================= */
 const getAll = asyncHandler(async (req, res) => {
+    // Keep as a string to allow '1,2,3'. Default to null if not provided.
+    const society_id = req.query.society_id || null;
 
-    const society_id = parseInt(req.query.society_id);
-
-    if (!society_id) {
-        return APIResponse.send(
-            res,
-            APIResponse.badRequestResponse("society_id required")
-        );
-    }
+    // Removed the "society_id required" validation block because 
+    // the SP is now designed to return all records if society_id is NULL.
 
     const data = await service.getAll(society_id);
 
@@ -22,7 +18,6 @@ const getAll = asyncHandler(async (req, res) => {
         APIResponse.successResponse(data)
     );
 });
-
 
 /* ======================= GET BY ID ======================= */
 const getById = asyncHandler(async (req, res) => {

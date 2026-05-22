@@ -6,21 +6,20 @@ const asyncHandler = require("../middlewares/async.middleware");
 const byAction = (action, requireSociety = false) =>
     asyncHandler(async (req, res) => {
         
-        // 👉 NEW: Do not use parseInt! Allow string with commas for multiple IDs (e.g. "1,2")
-        let societyId = req.query.society_id ? req.query.society_id.toString() : null;
-        if (societyId) {
-            societyId = societyId.replace(/[^0-9,]/g, ""); // Keep only numbers and commas
+        // 👉 FIX: Check for block_id too! If the frontend sends ?block_id=X, grab it.
+        let genericId = req.query.society_id ? req.query.society_id.toString() : 
+                        (req.query.block_id ? req.query.block_id.toString() : null);
+        if (genericId) {
+            genericId = genericId.replace(/[^0-9,]/g, ""); // Keep only numbers and commas
         }
-
-        if (requireSociety && !societyId) {
+        if (requireSociety && !genericId) {
             return APIResponse.send(
                 res,
-                APIResponse.badRequestResponse("society_id required")
+                APIResponse.badRequestResponse("Filter ID (society/block) is required")
             );
         }
-
-        const data = await service.getDropdown(action, societyId);
-
+        // This passes genericId into slot 3 of your SP (p_society_id)
+        const data = await service.getDropdown(action, genericId);
         return APIResponse.send(res, {
             statusCode: 200,
             success: true,

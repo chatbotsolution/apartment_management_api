@@ -269,5 +269,36 @@ router.get("/OwnerFlat/GetHistory", controller.getHistoryByFlat);
  */
 router.get("/OwnerFlat/GetByOwner", controller.getByOwner);
 
+/* ======================= GET ALL CURRENT (FOR GRIDS) ======================= */
+
+/**
+ * @swagger
+ * /OwnerFlat/GetAllCurrent:
+ *   get:
+ *     summary: Get all current owners for a society
+ *     tags: [Owner Flat]
+ *     parameters:
+ *       - in: query
+ *         name: society_id
+ *         required: false
+ *         schema:
+ *           type: string
+ *         example: "1,2"
+ *     responses:
+ *       200:
+ *         description: All current owners fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ */
+router.get("/OwnerFlat/GetAllCurrent", controller.getAllCurrent);
 
 module.exports = router;

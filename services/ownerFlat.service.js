@@ -9,11 +9,12 @@ const execute = async (
     ownershipTypeId = null,
     ownershipFrom = null,
     ownershipTo = null,
-    isResiding = null
+    isResiding = null,
+    societyId = null
 ) => {
 
     const [rows] = await db.query(
-        "CALL sp_owner_flat(?,?,?,?,?,?,?,?)",
+        "CALL sp_owner_flat(?,?,?,?,?,?,?,?,?)",
         [
             action,
             ownerFlatId,
@@ -22,7 +23,8 @@ const execute = async (
             ownershipTypeId,
             ownershipFrom,
             ownershipTo,
-            isResiding
+            isResiding,
+            societyId
         ]
     );
 
