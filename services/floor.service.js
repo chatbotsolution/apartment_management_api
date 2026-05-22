@@ -3,10 +3,12 @@ const db = require("../config/db");
 
 /* ======================= GET ALL ======================= */
 const getAll = async (society_id) => {
+    // Pass society_id directly (it will be a string like '1,2' or null)
+    const param = society_id ? society_id : null;
 
     const [rows] = await db.query(
         "CALL sp_floor('GET_ALL', NULL, NULL, NULL, NULL, NULL, ?)",
-        [society_id]
+        [param]
     );
 
     return rows[0];

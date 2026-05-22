@@ -148,11 +148,39 @@ const getByOwner = asyncHandler(async (req, res) => {
 });
 
 
+/* ======================= GET ALL CURRENT ======================= */
+const getAllCurrent = asyncHandler(async (req, res) => {
+    
+    // Support comma separated society IDs
+    let societyId = req.query.society_id ? req.query.society_id.toString() : null;
+    if (societyId) {
+        societyId = societyId.replace(/[^0-9,]/g, "");
+    }
+
+    const data = await service.execute(
+        "GET_ALL_CURRENT",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        societyId
+    );
+
+    return APIResponse.send(
+        res,
+        APIResponse.successResponse("Fetched successfully", data)
+    );
+});
+
 module.exports = {
     assign,
     update,
     transfer,
     getCurrentByFlat,
     getHistoryByFlat,
-    getByOwner
+    getByOwner,
+    getAllCurrent
 };

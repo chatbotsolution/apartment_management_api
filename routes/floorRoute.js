@@ -16,14 +16,15 @@ const controller = require("../controllers/floorController");
  * @swagger
  * /Floor/GetAll:
  *   get:
- *     summary: Get all floors by society
+ *     summary: Get all floors by society (supports multiple comma-separated IDs)
  *     tags: [Floor Master]
  *     parameters:
  *       - in: query
  *         name: society_id
- *         required: true
+ *         required: false
+ *         description: Pass a single ID (e.g., '1'), multiple IDs (e.g., '1,2,3'), or leave empty to fetch all.
  *         schema:
- *           type: integer
+ *           type: string
  *     responses:
  *       200:
  *         description: Floor list fetched successfully
