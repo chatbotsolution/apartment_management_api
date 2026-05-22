@@ -15,7 +15,7 @@ const create = async (data) => {
     } = data;
 
     const [rows] = await db.query(
-        "CALL sp_notice(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "CALL sp_notice(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         [
             "INSERT",
             null,
@@ -27,7 +27,8 @@ const create = async (data) => {
             Target_Audience_Id,
             Valid_Until,
             Is_Pinned,
-            Attachment_Url
+            Attachment_Url,
+            null  // 👈 p_org_id
         ]
     );
 
@@ -51,7 +52,7 @@ const update = async (data) => {
     } = data;
 
     const [rows] = await db.query(
-        "CALL sp_notice(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "CALL sp_notice(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         [
             "UPDATE",
             Notice_Id,
@@ -63,7 +64,8 @@ const update = async (data) => {
             Target_Audience_Id,
             Valid_Until,
             Is_Pinned,
-            Attachment_Url
+            Attachment_Url,
+            null  // 👈 p_org_id
         ]
     );
 
@@ -74,7 +76,7 @@ const update = async (data) => {
 /* ======================= DELETE ======================= */
 const remove = async (id) => {
     const [rows] = await db.query(
-        "CALL sp_notice(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "CALL sp_notice(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         [
             "DELETE",
             id,
@@ -86,7 +88,8 @@ const remove = async (id) => {
             null,
             null,
             null,
-            null
+            null,
+            null  // 👈 p_org_id
         ]
     );
 
@@ -97,7 +100,7 @@ const remove = async (id) => {
 /* ======================= GET BY ID ======================= */
 const getById = async (id) => {
     const [rows] = await db.query(
-        "CALL sp_notice(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "CALL sp_notice(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         [
             "GET_BY_ID",
             id,
@@ -109,7 +112,8 @@ const getById = async (id) => {
             null,
             null,
             null,
-            null
+            null,
+            null  // 👈 p_org_id
         ]
     );
 
@@ -118,16 +122,16 @@ const getById = async (id) => {
 
 
 /* ======================= GET ALL ======================= */
-const getAll = async (societyId) => {
-    // Keep as a string type to avoid breaking FIND_IN_SET arrays in your stored procedure
+const getAll = async (societyId, orgId) => {
     const safeSocietyId = societyId ? String(societyId) : null;
+    const safeOrgId = orgId ? Number(orgId) : null;
 
     const [rows] = await db.query(
-        "CALL sp_notice(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "CALL sp_notice(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         [
             "GET_ALL",
             null,
-            safeSocietyId, // Injected parameter handles the VARCHAR input mapping seamlessly
+            safeSocietyId,
             null,
             null,
             null,
@@ -135,7 +139,8 @@ const getAll = async (societyId) => {
             null,
             null,
             null,
-            null
+            null,
+            safeOrgId  // 👈 p_org_id
         ]
     );
 

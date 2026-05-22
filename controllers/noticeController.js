@@ -5,20 +5,23 @@ const asyncHandler = require("../middlewares/async.middleware");
 
 /* ======================= GET ALL ======================= */
 const getAll = asyncHandler(async (req, res) => {
-    const { society_id } = req.query;
+    const { society_id, org_id } = req.query;
 
-    // Validate that society_id exists and is not an empty string
-    if (!society_id || String(society_id).trim() === "") {
+    const hasSocietyId = society_id && String(society_id).trim() !== "";
+    const hasOrgId = org_id && String(org_id).trim() !== "";
+
+    // Either society_id OR org_id must be provided
+    if (!hasSocietyId && !hasOrgId) {
         return APIResponse.send(
             res,
-            APIResponse.badRequestResponse("society_id is required")
+            APIResponse.badRequestResponse("Either society_id or org_id is required")
         );
     }
 
-    // Pass cleanly as a string (e.g., "26,25")
-    const safeSocietyId = String(society_id).trim();
+    const safeSocietyId = hasSocietyId ? String(society_id).trim() : null;
+    const safeOrgId = hasOrgId ? parseInt(org_id) : null;
 
-    const data = await service.getAll(safeSocietyId);
+    const data = await service.getAll(safeSocietyId, safeOrgId);
 
     return APIResponse.send(res, {
         statusCode: 200,
@@ -31,7 +34,6 @@ const getAll = asyncHandler(async (req, res) => {
 
 /* ======================= GET BY ID ======================= */
 const getById = asyncHandler(async (req, res) => {
-
     const id = parseInt(req.params.id);
 
     const data = await service.getById(id);
@@ -47,7 +49,6 @@ const getById = asyncHandler(async (req, res) => {
 
 /* ======================= CREATE ======================= */
 const create = asyncHandler(async (req, res) => {
-
     await service.create(req.body);
 
     return APIResponse.send(res, {
@@ -60,7 +61,6 @@ const create = asyncHandler(async (req, res) => {
 
 /* ======================= UPDATE ======================= */
 const update = asyncHandler(async (req, res) => {
-
     await service.update(req.body);
 
     return APIResponse.send(res, {
@@ -73,7 +73,6 @@ const update = asyncHandler(async (req, res) => {
 
 /* ======================= DELETE ======================= */
 const remove = asyncHandler(async (req, res) => {
-
     const id = parseInt(req.params.id);
 
     await service.remove(id);
@@ -84,6 +83,7 @@ const remove = asyncHandler(async (req, res) => {
         message: "Notice deleted successfully"
     });
 });
+
 
 module.exports = {
     getAll,
