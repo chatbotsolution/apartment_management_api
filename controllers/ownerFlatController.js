@@ -52,7 +52,7 @@ const update = asyncHandler(async (req, res) => {
         flatId,
         ownershipTypeId,
         ownershipFrom,
-        ownershipTo,
+        ownershipTo || null,
         isResiding
     );
 
