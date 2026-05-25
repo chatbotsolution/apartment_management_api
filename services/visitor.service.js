@@ -161,32 +161,20 @@ const searchVisitors = async (data) => {
 };
 
 /* ======================= VISITOR ENTRY STATUS ======================= */
-/**
- * Fetch visitor entry status dropdown
- * Calls sp_dropdown_master with LOOKUP_BY_GROUP action
- * @returns {Array} List of visitor entry statuses
- */
 const getVisitorEntryStatus = async () => {
     const [rows] = await db.query(
-        "CALL sp_dropdown_master(?,?,?)",
-        ["LOOKUP_BY_GROUP", "visitor_entry_status", null]
+        "CALL sp_dropdown_master(?,?,?,?)",
+        ["LOOKUP_BY_GROUP", "visitor_entry_status", null, null]
     );
-
     return rows[0] || [];
 };
 
 /* ======================= VISITOR TYPE ======================= */
-/**
- * Fetch visitor type dropdown
- * Calls sp_dropdown_master with LOOKUP_BY_GROUP action
- * @returns {Array} List of visitor types
- */
 const getVisitorType = async () => {
     const [rows] = await db.query(
-        "CALL sp_dropdown_master(?,?,?)",
-        ["LOOKUP_BY_GROUP", "visitor_type", null]
+        "CALL sp_dropdown_master(?,?,?,?)",
+        ["LOOKUP_BY_GROUP", "visitor_type", null, null]
     );
-
     return rows[0] || [];
 };
 
