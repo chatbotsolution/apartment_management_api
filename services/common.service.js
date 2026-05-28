@@ -58,6 +58,30 @@ const getBlockDropdown = async (societyId) => {
 
     return rows[0] || [];
 };
+/* ======================= FLAT BY SOCIETY DROPDOWN ======================= */
+const getFlatBySociety = async (societyId = null) => {
+    const [rows] = await db.query(
+        "CALL sp_dropdown_master(?,?,?,?)",
+        ["FLAT_BY_SOCIETY", null, societyId, null]
+    );
+    return rows[0] || [];
+};
+/* ======================= TENANT BY SOCIETY DROPDOWN ======================= */
+const getTenantBySociety = async (societyId = null) => {
+    const [rows] = await db.query(
+        "CALL sp_dropdown_master(?,?,?,?)",
+        ["TENANT_BY_SOCIETY", null, societyId, null]
+    );
+    return rows[0] || [];
+};
+/* ======================= VISITOR BY SOCIETY DROPDOWN ======================= */
+const getVisitorBySociety = async (societyId = null) => {
+    const [rows] = await db.query(
+        "CALL sp_dropdown_master(?,?,?,?)",
+        ["VISITOR_BY_SOCIETY", null, societyId, null]
+    );
+    return rows[0] || [];
+};
 
 module.exports = {
     getLookupByGroup,
@@ -65,5 +89,8 @@ module.exports = {
     getDropdown,
     getSocietyType,
     getSocietyDropdown,
-    getBlockDropdown
+    getBlockDropdown,
+    getFlatBySociety,
+    getTenantBySociety,
+    getVisitorBySociety
 };

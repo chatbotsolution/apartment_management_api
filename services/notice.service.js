@@ -3,15 +3,9 @@ const db = require("../config/db");
 /* ======================= CREATE ======================= */
 const create = async (data) => {
     const {
-        Society_Id,
-        Posted_By_Staff_Id,
-        Title,
-        Body,
-        Category_Id,
-        Target_Audience_Id,
-        Valid_Until,
-        Is_Pinned,
-        Attachment_Url
+        Society_Id, Posted_By_Staff_Id, Title, Body,
+        Category_Id, Target_Audience_Id, Valid_Until,
+        Is_Pinned, Attachment_Url
     } = data;
 
     const [rows] = await db.query(
@@ -28,7 +22,7 @@ const create = async (data) => {
             Valid_Until,
             Is_Pinned,
             Attachment_Url,
-            null  // 👈 p_org_id
+            null
         ]
     );
 
@@ -39,16 +33,9 @@ const create = async (data) => {
 /* ======================= UPDATE ======================= */
 const update = async (data) => {
     const {
-        Notice_Id,
-        Society_Id,
-        Posted_By_Staff_Id,
-        Title,
-        Body,
-        Category_Id,
-        Target_Audience_Id,
-        Valid_Until,
-        Is_Pinned,
-        Attachment_Url
+        Notice_Id, Society_Id, Posted_By_Staff_Id, Title, Body,
+        Category_Id, Target_Audience_Id, Valid_Until,
+        Is_Pinned, Attachment_Url
     } = data;
 
     const [rows] = await db.query(
@@ -65,7 +52,7 @@ const update = async (data) => {
             Valid_Until,
             Is_Pinned,
             Attachment_Url,
-            null  // 👈 p_org_id
+            null
         ]
     );
 
@@ -80,16 +67,7 @@ const remove = async (id) => {
         [
             "DELETE",
             id,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null  // 👈 p_org_id
+            null, null, null, null, null, null, null, null, null, null
         ]
     );
 
@@ -104,16 +82,7 @@ const getById = async (id) => {
         [
             "GET_BY_ID",
             id,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null  // 👈 p_org_id
+            null, null, null, null, null, null, null, null, null, null
         ]
     );
 
@@ -132,15 +101,8 @@ const getAll = async (societyId, orgId) => {
             "GET_ALL",
             null,
             safeSocietyId,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            safeOrgId  // 👈 p_org_id
+            null, null, null, null, null, null, null, null,
+            safeOrgId
         ]
     );
 

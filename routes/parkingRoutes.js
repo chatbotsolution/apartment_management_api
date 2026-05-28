@@ -148,11 +148,31 @@ router.get("/Parking/GetById/:id", controller.getById);
  * @swagger
  * /Parking/GetAll:
  *   get:
- *     summary: Get all active parking allotments
+ *     summary: Get all active parking allotments (by society or organization)
+ *     description: >
+ *       Pass `society_id` for a society/owner login, or `org_id` for an
+ *       organization login. At least one of the two is required.
  *     tags: [Parking Allotment]
+ *     parameters:
+ *       - in: query
+ *         name: society_id
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           example: 47
+ *         description: Filter allotments by a single society (society/owner login)
+ *       - in: query
+ *         name: org_id
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           example: 9
+ *         description: Filter allotments across all societies in an organization (org login)
  *     responses:
  *       200:
  *         description: Parking allotment list fetched successfully
+ *       400:
+ *         description: Either society_id or org_id is required
  */
 router.get("/Parking/GetAll", controller.getAll);
 
