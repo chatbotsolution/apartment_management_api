@@ -311,5 +311,28 @@ router.get("/Tenant/GetAll", controller.getAll);
  *         description: Search results
  */
 router.get("/Tenant/Search", controller.search);
+/* ======================= GET BY FLAT (For Dropdown) ======================= */
+/**
+ * @swagger
+ * /Tenant/GetByFlat:
+ *   get:
+ *     summary: Get active tenants by flat id for dropdowns
+ *     tags: [Tenant Master]
+ *     parameters:
+ *       - in: query
+ *         name: flat_id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Flat ID
+ *     responses:
+ *       200:
+ *         description: List of tenants fetched successfully
+ *       400:
+ *         description: Bad request
+ *       500:
+ *         description: Internal server error
+ */
+router.get("/Tenant/GetByFlat", controller.getByFlat);
 
 module.exports = router;

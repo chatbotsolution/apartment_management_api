@@ -283,6 +283,23 @@ const search = asyncHandler(async (req, res) => {
 
     return APIResponse.send(res, APIResponse.successResponse("Search results", data?.[0]));
 });
+/* ======================= GET BY FLAT (For Dropdown) ======================= */
+const getByFlat = asyncHandler(async (req, res) => {
+    const flatId = parseInt(req.query.flat_id);
+
+    if (!flatId) {
+        return APIResponse.send(res, APIResponse.badRequestResponse("flat_id query parameter is required"));
+    }
+
+    // Build the 34-parameter array
+    const args = Array(34).fill(null);
+    args[0] = "GET_BY_FLAT";
+    args[2] = flatId; // flat_id maps to the 3rd parameter
+
+    const data = await tenantService.execute(...args);
+
+    return APIResponse.send(res, APIResponse.successResponse(data?.[0], "Fetched successfully"));
+});
 
 module.exports = {
     insert,
@@ -291,5 +308,6 @@ module.exports = {
     remove,
     getById,
     getAll,
-    search
+    search,
+    getByFlat
 };
