@@ -104,11 +104,31 @@ router.post("/VisitorParking/Release", controller.release);
  * @swagger
  * /VisitorParking/GetActive:
  *   get:
- *     summary: Get all active (currently parked) visitor records
+ *     summary: Get all active (currently parked) visitor records by society or organization
+ *     description: >
+ *       Pass `society_id` for a society/owner login, or `org_id` for an
+ *       organization login. At least one of the two is required.
  *     tags: [Visitor Parking]
+ *     parameters:
+ *       - in: query
+ *         name: society_id
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           example: 47
+ *         description: Filter active records by a single society (society/owner login)
+ *       - in: query
+ *         name: org_id
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           example: 9
+ *         description: Filter active records across all societies in an organization (org login)
  *     responses:
  *       200:
  *         description: Active visitor parking list fetched successfully
+ *       400:
+ *         description: Either society_id or org_id is required
  */
 router.get("/VisitorParking/GetActive", controller.getActive);
 
@@ -138,11 +158,31 @@ router.get("/VisitorParking/GetById/:id", controller.getById);
  * @swagger
  * /VisitorParking/GetHistory:
  *   get:
- *     summary: Get full visitor parking history (active + released)
+ *     summary: Get full visitor parking history (active + released) by society or organization
+ *     description: >
+ *       Pass `society_id` for a society/owner login, or `org_id` for an
+ *       organization login. At least one of the two is required.
  *     tags: [Visitor Parking]
+ *     parameters:
+ *       - in: query
+ *         name: society_id
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           example: 47
+ *         description: Filter history by a single society (society/owner login)
+ *       - in: query
+ *         name: org_id
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           example: 9
+ *         description: Filter history across all societies in an organization (org login)
  *     responses:
  *       200:
  *         description: Visitor parking history fetched successfully
+ *       400:
+ *         description: Either society_id or org_id is required
  */
 router.get("/VisitorParking/GetHistory", controller.getHistory);
 

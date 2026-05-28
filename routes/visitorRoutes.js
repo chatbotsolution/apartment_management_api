@@ -11,7 +11,6 @@ const controller = require("../controllers/visitorController");
 
 
 /* ======================= CHECK-IN ======================= */
-
 /**
  * @swagger
  * /Visitor/CheckIn:
@@ -83,7 +82,6 @@ router.post("/Visitor/CheckIn", controller.checkInVisitor);
 
 
 /* ======================= CHECK-OUT ======================= */
-
 /**
  * @swagger
  * /Visitor/CheckOut:
@@ -117,7 +115,6 @@ router.post("/Visitor/CheckOut", controller.checkOutVisitor);
 
 
 /* ======================= UPDATE ======================= */
-
 /**
  * @swagger
  * /Visitor/Update:
@@ -173,7 +170,7 @@ router.post("/Visitor/CheckOut", controller.checkOutVisitor);
  *               created_by:
  *                 type: integer
  *               society_id:
- *                 type: integerz
+ *                 type: integer
  *     responses:
  *       200:
  *         description: Visitor updated successfully
@@ -182,7 +179,6 @@ router.put("/Visitor/Update", controller.updateVisitor);
 
 
 /* ======================= GET BY ID ======================= */
-
 /**
  * @swagger
  * /Visitor/GetById/{id}:
@@ -205,104 +201,115 @@ router.get("/Visitor/GetById/:id", controller.getVisitorById);
 
 
 /* ======================= GET TODAY ======================= */
-
 /**
  * @swagger
  * /Visitor/GetToday:
  *   get:
- *     summary: Get Today's Visitors
+ *     summary: Get Today's Visitors (by society or organization)
+ *     description: >
+ *       Pass `society_id` for society/owner login (single "10" or comma-separated "10,11,12"),
+ *       or `org_id` for organization login. At least one is required.
  *     tags: [Visitor Management]
  *     parameters:
  *       - in: query
  *         name: society_id
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Today's visitors fetched successfully
- */
-router.get("/Visitor/GetToday", controller.getTodayVisitors);
-
-
-/* ======================= GET TODAY ======================= */
-/**
- * @swagger
- * /Visitor/GetToday:
- *   get:
- *     summary: Get Today Visitors
- *     tags: [Visitor Management]
- *     parameters:
- *       - in: query
- *         name: society_id
- *         required: true
+ *         required: false
  *         schema:
  *           type: string
- *         description: Pass a single society ID (e.g., 10) or comma-separated IDs (e.g., 10,11,12)
+ *           example: "10"
+ *         description: Single society ID or comma-separated IDs (society/owner login)
+ *       - in: query
+ *         name: org_id
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           example: 9
+ *         description: Organization ID — returns visitors across all societies in the org (org login)
  *     responses:
  *       200:
  *         description: Today's visitors fetched successfully
  */
 router.get("/Visitor/GetToday", controller.getTodayVisitors);
+
 
 /* ======================= GET ACTIVE ======================= */
 /**
  * @swagger
  * /Visitor/GetActive:
  *   get:
- *     summary: Get Active Visitors (Inside Society)
+ *     summary: Get Active Visitors (Inside Society) by society or organization
+ *     description: >
+ *       Pass `society_id` for society/owner login (single "10" or comma-separated "10,11,12"),
+ *       or `org_id` for organization login. At least one is required.
  *     tags: [Visitor Management]
  *     parameters:
  *       - in: query
  *         name: society_id
- *         required: true
+ *         required: false
  *         schema:
  *           type: string
- *         description: Pass a single society ID (e.g., 10) or comma-separated IDs (e.g., 10,11,12)
+ *           example: "10"
+ *         description: Single society ID or comma-separated IDs (society/owner login)
+ *       - in: query
+ *         name: org_id
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           example: 9
+ *         description: Organization ID — returns active visitors across all societies in the org (org login)
  *     responses:
  *       200:
  *         description: Active visitors fetched successfully
  */
 router.get("/Visitor/GetActive", controller.getActiveVisitors);
- /* ======================= HISTORY BY FLAT ======================= */
 
+
+/* ======================= HISTORY BY FLAT ======================= */
 /**
  * @swagger
  * /Visitor/GetHistoryByFlat:
  *   get:
  *     summary: Get Visitor History By Flat
- *     description: Returns historical visitor logs for a specific flat. Optionally filtered by single or multiple society IDs.
- *     tags:
- *       - Visitor Management
+ *     description: >
+ *       Returns historical visitor logs for a specific flat. `flat_id` is required.
+ *       Optionally filtered by `society_id` (single/comma-separated) or `org_id`.
+ *     tags: [Visitor Management]
  *     parameters:
  *       - in: query
  *         name: flat_id
  *         required: true
  *         schema:
  *           type: integer
- *         description: Required. Pass the specific flat ID to look up history.
+ *         description: Required. The flat ID to look up history for.
  *       - in: query
  *         name: society_id
  *         required: false
  *         schema:
  *           type: string
- *         description: Optional. Pass a single ID ("1"), comma-separated IDs ("1,2"), or leave empty for all records of this flat.
+ *         description: Optional. Single ID ("1"), comma-separated ("1,2"), or empty for all records of this flat.
+ *       - in: query
+ *         name: org_id
+ *         required: false
+ *         schema:
+ *           type: integer
+ *         description: Optional. Organization ID for org-wide history of this flat.
  *     responses:
  *       200:
  *         description: Visitor history fetched successfully
+ *       400:
+ *         description: flat_id is required
  *       500:
  *         description: Internal server error
  */
-
 router.get("/Visitor/GetHistoryByFlat", controller.getVisitorHistoryByFlat);
 
-/* ======================= SEARCH ======================= */
 
+/* ======================= SEARCH ======================= */
 /**
  * @swagger
  * /Visitor/Search:
  *   post:
- *     summary: Search Visitors
+ *     summary: Search Visitors (by society or organization)
  *     tags: [Visitor Management]
  *     requestBody:
  *       required: true
@@ -312,21 +319,26 @@ router.get("/Visitor/GetHistoryByFlat", controller.getVisitorHistoryByFlat);
  *             type: object
  *             required:
  *               - search_text
- *               - society_id
  *             properties:
  *               search_text:
  *                 type: string
  *                 example: John
  *               society_id:
+ *                 type: string
+ *                 example: "10"
+ *                 description: Single or comma-separated society IDs (society/owner login)
+ *               org_id:
  *                 type: integer
- *                 example: 10
+ *                 example: 9
+ *                 description: Organization ID (org login)
  *     responses:
  *       200:
  *         description: Search result fetched successfully
  */
 router.post("/Visitor/Search", controller.searchVisitors);
-/* ======================= VISITOR ENTRY STATUS ======================= */
 
+
+/* ======================= VISITOR ENTRY STATUS ======================= */
 /**
  * @swagger
  * /Dropdown/VisitorEntryStatus:
@@ -345,8 +357,9 @@ router.post("/Visitor/Search", controller.searchVisitors);
  *         description: Internal server error
  */
 router.get("/Dropdown/VisitorEntryStatus", controller.visitorEntryStatus);
-/* ======================= VISITOR TYPE ======================= */
 
+
+/* ======================= VISITOR TYPE ======================= */
 /**
  * @swagger
  * /Dropdown/VisitorType:

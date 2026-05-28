@@ -106,6 +106,70 @@ const getAllLookups = asyncHandler(async (req, res) => {
     });
 });
 
+const flatBySociety = asyncHandler(async (req, res) => {
+    const societyId = req.query.society_id
+        ? parseInt(req.query.society_id)
+        : null;
+
+    if (!societyId) {
+        return APIResponse.send(
+            res,
+            APIResponse.badRequestResponse("society_id is required to fetch flats")
+        );
+    }
+
+    const data = await service.getFlatBySociety(societyId);
+
+    return APIResponse.send(res, {
+        statusCode: 200,
+        success: true,
+        message: "Flats fetched successfully",
+        data: data
+    });
+});
+const tenantBySociety = asyncHandler(async (req, res) => {
+    const societyId = req.query.society_id
+        ? parseInt(req.query.society_id)
+        : null;
+
+    if (!societyId) {
+        return APIResponse.send(
+            res,
+            APIResponse.badRequestResponse("society_id is required to fetch tenants")
+        );
+    }
+
+    const data = await service.getTenantBySociety(societyId);
+
+    return APIResponse.send(res, {
+        statusCode: 200,
+        success: true,
+        message: "Tenants fetched successfully",
+        data: data
+    });
+});
+const visitorBySociety = asyncHandler(async (req, res) => {
+    const societyId = req.query.society_id
+        ? parseInt(req.query.society_id)
+        : null;
+
+    if (!societyId) {
+        return APIResponse.send(
+            res,
+            APIResponse.badRequestResponse("society_id is required to fetch visitors")
+        );
+    }
+
+    const data = await service.getVisitorBySociety(societyId);
+
+    return APIResponse.send(res, {
+        statusCode: 200,
+        success: true,
+        message: "Visitors fetched successfully",
+        data: data
+    });
+});
+
 
 /* ================= GROUP LOOKUP APIs ================= */
 
@@ -185,6 +249,9 @@ module.exports = {
     noticeTarget,
     amenityCategory,
     amenityBookingStatus,
+    flatBySociety,
+    tenantBySociety,
+    visitorBySociety,
 
     // Action APIs
     department,

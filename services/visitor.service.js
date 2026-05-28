@@ -3,25 +3,13 @@ const db = require("../config/db");
 /* ======================= CHECK-IN ======================= */
 const checkInVisitor = async (data) => {
     return await db.query(
-        "CALL sp_visitor(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "CALL sp_visitor(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         [
-            "CHECKIN",
-            0,
-            data.host_flat_id,
-            data.visitor_name,
-            data.visitor_phone,
-            data.vehicle_number,
-            data.vehicle_type,
-            data.purpose,
-            data.expected_checkout,
-            data.id_proof_type_id,
-            data.id_proof_number,
-            data.approved_by,
-            data.entry_status_id,
-            data.visitor_type_id,
-            data.notes,
-            data.created_by,
-            data.society_id
+            "CHECKIN", 0, data.host_flat_id, data.visitor_name, data.visitor_phone,
+            data.vehicle_number, data.vehicle_type, data.purpose, data.expected_checkout,
+            data.id_proof_type_id, data.id_proof_number, data.approved_by,
+            data.entry_status_id, data.visitor_type_id, data.notes,
+            data.created_by, data.society_id, null
         ]
     );
 };
@@ -29,25 +17,11 @@ const checkInVisitor = async (data) => {
 /* ======================= CHECK-OUT ======================= */
 const checkOutVisitor = async (data) => {
     return await db.query(
-        "CALL sp_visitor(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "CALL sp_visitor(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         [
-            "CHECKOUT",
-            data.visitor_id,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            data.entry_status_id,
-            null,
-            null,
-            null,
-            data.society_id
+            "CHECKOUT", data.visitor_id, null, null, null, null, null, null, null,
+            null, null, null, data.entry_status_id, null, null, null,
+            data.society_id, null
         ]
     );
 };
@@ -55,25 +29,13 @@ const checkOutVisitor = async (data) => {
 /* ======================= UPDATE ======================= */
 const updateVisitor = async (data) => {
     return await db.query(
-        "CALL sp_visitor(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "CALL sp_visitor(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         [
-            "UPDATE",
-            data.visitor_id,
-            data.host_flat_id,
-            data.visitor_name,
-            data.visitor_phone,
-            data.vehicle_number,
-            data.vehicle_type,
-            data.purpose,
-            data.expected_checkout,
-            data.id_proof_type_id,
-            data.id_proof_number,
-            data.approved_by,
-            data.entry_status_id,
-            data.visitor_type_id,
-            data.notes,
-            data.created_by,
-            data.society_id
+            "UPDATE", data.visitor_id, data.host_flat_id, data.visitor_name, data.visitor_phone,
+            data.vehicle_number, data.vehicle_type, data.purpose, data.expected_checkout,
+            data.id_proof_type_id, data.id_proof_number, data.approved_by,
+            data.entry_status_id, data.visitor_type_id, data.notes,
+            data.created_by, data.society_id, null
         ]
     );
 };
@@ -81,55 +43,51 @@ const updateVisitor = async (data) => {
 /* ======================= GET BY ID ======================= */
 const getVisitorById = async (visitor_id) => {
     return await db.query(
-        "CALL sp_visitor(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "CALL sp_visitor(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         [
-            "GET_BY_ID",
-            visitor_id,
+            "GET_BY_ID", visitor_id,
             null, null, null, null, null, null,
-            null, null, null, null, null, null, null, null, null
+            null, null, null, null, null, null, null, null, null, null
         ]
     );
 };
 
 /* ======================= GET TODAY ======================= */
-const getTodayVisitors = async (society_id) => {
+const getTodayVisitors = async (society_id, org_id) => {
     return await db.query(
-        "CALL sp_visitor(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "CALL sp_visitor(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         [
-            "GET_TODAY",
-            null,
+            "GET_TODAY", null,
             null, null, null, null, null, null,
             null, null, null, null, null, null, null, null,
-            society_id // Handled by FIND_IN_SET in SP
+            society_id, org_id
         ]
     );
 };
 
 /* ======================= GET ACTIVE ======================= */
-const getActiveVisitors = async (society_id) => {
+const getActiveVisitors = async (society_id, org_id) => {
     return await db.query(
-        "CALL sp_visitor(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "CALL sp_visitor(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         [
-            "GET_ACTIVE",
-            null,
+            "GET_ACTIVE", null,
             null, null, null, null, null, null,
             null, null, null, null, null, null, null, null,
-            society_id // Handled by FIND_IN_SET in SP
+            society_id, org_id
         ]
     );
 };
 
 /* ======================= HISTORY BY FLAT ======================= */
-const getVisitorHistoryByFlat = async (flat_id, society_id) => {
+const getVisitorHistoryByFlat = async (flat_id, society_id, org_id) => {
     return await db.query(
-        "CALL sp_visitor(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "CALL sp_visitor(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         [
-            "GET_HISTORY_BY_FLAT",
-            null,
-            flat_id, // Assigned to p_host_flat_id
+            "GET_HISTORY_BY_FLAT", null,
+            flat_id,
             null, null, null, null, null,
-            null, null, null, null, null, null, null, null, 
-            society_id // Passed cleanly as a string ("1"), comma string ("1,2,3"), or null
+            null, null, null, null, null, null, null, null,
+            society_id, org_id
         ]
     );
 };
@@ -137,25 +95,14 @@ const getVisitorHistoryByFlat = async (flat_id, society_id) => {
 /* ======================= SEARCH ======================= */
 const searchVisitors = async (data) => {
     return await db.query(
-        "CALL sp_visitor(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "CALL sp_visitor(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         [
-            "SEARCH",
-            null,
-            null,
+            "SEARCH", null, null,
             data.search_text,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            data.society_id
+            null, null, null, null, null,
+            null, null, null, null, null, null, null,
+            data.society_id ?? null,
+            data.org_id ?? null
         ]
     );
 };

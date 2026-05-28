@@ -10,7 +10,6 @@ const getAll = asyncHandler(async (req, res) => {
     const hasSocietyId = society_id && String(society_id).trim() !== "";
     const hasOrgId = org_id && String(org_id).trim() !== "";
 
-    // Either society_id OR org_id must be provided
     if (!hasSocietyId && !hasOrgId) {
         return APIResponse.send(
             res,
@@ -35,7 +34,6 @@ const getAll = asyncHandler(async (req, res) => {
 /* ======================= GET BY ID ======================= */
 const getById = asyncHandler(async (req, res) => {
     const id = parseInt(req.params.id);
-
     const data = await service.getById(id);
 
     return APIResponse.send(res, {
@@ -74,7 +72,6 @@ const update = asyncHandler(async (req, res) => {
 /* ======================= DELETE ======================= */
 const remove = asyncHandler(async (req, res) => {
     const id = parseInt(req.params.id);
-
     await service.remove(id);
 
     return APIResponse.send(res, {

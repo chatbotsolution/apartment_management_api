@@ -5,9 +5,7 @@ const service = require("../services/visitor.service");
 /* ======================= CHECK-IN ======================= */
 const checkInVisitor = async (req, res) => {
     try {
-
         await service.checkInVisitor(req.body);
-
         return res.status(200).json({
             statusCode: 200,
             success: true,
@@ -15,9 +13,7 @@ const checkInVisitor = async (req, res) => {
             data: null,
             timestamp: new Date().toISOString()
         });
-
     } catch (error) {
-
         return res.status(500).json({
             statusCode: 500,
             success: false,
@@ -31,9 +27,7 @@ const checkInVisitor = async (req, res) => {
 /* ======================= CHECK-OUT ======================= */
 const checkOutVisitor = async (req, res) => {
     try {
-
         await service.checkOutVisitor(req.body);
-
         return res.status(200).json({
             statusCode: 200,
             success: true,
@@ -41,9 +35,7 @@ const checkOutVisitor = async (req, res) => {
             data: null,
             timestamp: new Date().toISOString()
         });
-
     } catch (error) {
-
         return res.status(500).json({
             statusCode: 500,
             success: false,
@@ -57,9 +49,7 @@ const checkOutVisitor = async (req, res) => {
 /* ======================= UPDATE ======================= */
 const updateVisitor = async (req, res) => {
     try {
-
         await service.updateVisitor(req.body);
-
         return res.status(200).json({
             statusCode: 200,
             success: true,
@@ -67,9 +57,7 @@ const updateVisitor = async (req, res) => {
             data: null,
             timestamp: new Date().toISOString()
         });
-
     } catch (error) {
-
         return res.status(500).json({
             statusCode: 500,
             success: false,
@@ -83,9 +71,7 @@ const updateVisitor = async (req, res) => {
 /* ======================= GET BY ID ======================= */
 const getVisitorById = async (req, res) => {
     try {
-
         const { id } = req.params;
-
         const [result] = await service.getVisitorById(id);
 
         if (!result[0] || result[0].length === 0) {
@@ -105,9 +91,7 @@ const getVisitorById = async (req, res) => {
             data: result[0][0],
             timestamp: new Date().toISOString()
         });
-
     } catch (error) {
-
         return res.status(500).json({
             statusCode: 500,
             success: false,
@@ -121,10 +105,12 @@ const getVisitorById = async (req, res) => {
 /* ======================= GET TODAY ======================= */
 const getTodayVisitors = async (req, res) => {
     try {
-        // can be a single ID "1" or multiple "1,2,3"
-        const { society_id } = req.query; 
+        const { society_id, org_id } = req.query;
 
-        const [result] = await service.getTodayVisitors(society_id);
+        const [result] = await service.getTodayVisitors(
+            society_id || null,
+            org_id ? parseInt(org_id) : null
+        );
 
         return res.status(200).json({
             statusCode: 200,
@@ -147,9 +133,12 @@ const getTodayVisitors = async (req, res) => {
 /* ======================= GET ACTIVE ======================= */
 const getActiveVisitors = async (req, res) => {
     try {
-        const { society_id } = req.query;
+        const { society_id, org_id } = req.query;
 
-        const [result] = await service.getActiveVisitors(society_id);
+        const [result] = await service.getActiveVisitors(
+            society_id || null,
+            org_id ? parseInt(org_id) : null
+        );
 
         return res.status(200).json({
             statusCode: 200,
@@ -172,20 +161,22 @@ const getActiveVisitors = async (req, res) => {
 /* ======================= HISTORY BY FLAT ======================= */
 const getVisitorHistoryByFlat = async (req, res) => {
     try {
-        // society_id is optional here; flat_id is strictly required
-        const { flat_id, society_id } = req.query; 
+        const { flat_id, society_id, org_id } = req.query;
 
         if (!flat_id) {
-            return res.status(400).json({ 
+            return res.status(400).json({
                 statusCode: 400,
-                success: false, 
+                success: false,
                 message: "flat_id query parameter is required.",
                 data: null
             });
         }
 
-        // Pass society_id or null fallback if omitted
-        const [result] = await service.getVisitorHistoryByFlat(flat_id, society_id || null);
+        const [result] = await service.getVisitorHistoryByFlat(
+            flat_id,
+            society_id || null,
+            org_id ? parseInt(org_id) : null
+        );
 
         return res.status(200).json({
             statusCode: 200,
@@ -204,10 +195,10 @@ const getVisitorHistoryByFlat = async (req, res) => {
         });
     }
 };
+
 /* ======================= SEARCH ======================= */
 const searchVisitors = async (req, res) => {
     try {
-
         const [result] = await service.searchVisitors(req.body);
 
         return res.status(200).json({
@@ -217,9 +208,7 @@ const searchVisitors = async (req, res) => {
             data: result[0],
             timestamp: new Date().toISOString()
         });
-
     } catch (error) {
-
         return res.status(500).json({
             statusCode: 500,
             success: false,
@@ -231,14 +220,8 @@ const searchVisitors = async (req, res) => {
 };
 
 /* ======================= VISITOR ENTRY STATUS ======================= */
-/**
- * @desc Get Visitor Entry Status dropdown
- * @route GET /Dropdown/VisitorEntryStatus
- * @access Public
- */
 const visitorEntryStatus = asyncHandler(async (req, res) => {
     const data = await service.getVisitorEntryStatus();
-
     return APIResponse.send(res, {
         statusCode: 200,
         success: true,
@@ -248,14 +231,8 @@ const visitorEntryStatus = asyncHandler(async (req, res) => {
 });
 
 /* ======================= VISITOR TYPE ======================= */
-/**
- * @desc Get Visitor Type dropdown
- * @route GET /Dropdown/VisitorType
- * @access Public
- */
 const visitorType = asyncHandler(async (req, res) => {
     const data = await service.getVisitorType();
-
     return APIResponse.send(res, {
         statusCode: 200,
         success: true,

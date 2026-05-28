@@ -1115,6 +1115,90 @@ router.get("/Dropdown/All", controller.getAllLookups);
  *               $ref: '#/components/schemas/ErrorResponse'
  */
 router.get("/Dropdown/SocietyType", controller.societyType);
+/**
+ * @swagger
+ * /Dropdown/FlatBySociety:
+ *   get:
+ *     summary: Get Flat list filtered by society
+ *     description: Returns flats belonging to the given society (joined via block.society_id) using sp_dropdown_master (FLAT_BY_SOCIETY).
+ *     tags: [Dropdown Master]
+ *     parameters:
+ *       - in: query
+ *         name: society_id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           example: 47
+ *         description: The society to fetch flats for.
+ *     responses:
+ *       200:
+ *         description: List of flats for the given society
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/DropdownResponseBasic'
+ *       400:
+ *         description: Missing society_id
+ *       500:
+ *         description: Internal server error
+ */
+router.get("/Dropdown/FlatBySociety", controller.flatBySociety);
+/**
+ * @swagger
+ * /Dropdown/TenantBySociety:
+ *   get:
+ *     summary: Get Tenant list filtered by society
+ *     description: Returns active tenants for the given society using sp_dropdown_master (TENANT_BY_SOCIETY).
+ *     tags: [Dropdown Master]
+ *     parameters:
+ *       - in: query
+ *         name: society_id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           example: 47
+ *         description: The society to fetch tenants for.
+ *     responses:
+ *       200:
+ *         description: List of tenants for the given society
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/DropdownResponseBasic'
+ *       400:
+ *         description: Missing society_id
+ *       500:
+ *         description: Internal server error
+ */
+router.get("/Dropdown/TenantBySociety", controller.tenantBySociety);
+/**
+ * @swagger
+ * /Dropdown/VisitorBySociety:
+ *   get:
+ *     summary: Get Visitor list filtered by society
+ *     description: Returns visitors for the given society using sp_dropdown_master (VISITOR_BY_SOCIETY).
+ *     tags: [Dropdown Master]
+ *     parameters:
+ *       - in: query
+ *         name: society_id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           example: 47
+ *         description: The society to fetch visitors for.
+ *     responses:
+ *       200:
+ *         description: List of visitors for the given society
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/DropdownResponseBasic'
+ *       400:
+ *         description: Missing society_id
+ *       500:
+ *         description: Internal server error
+ */
+router.get("/Dropdown/VisitorBySociety", controller.visitorBySociety);
 
 
 module.exports = router;
